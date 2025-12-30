@@ -1,0 +1,5 @@
+{
+  "name": "DWD Weather Warnings",
+  "render_readme": true,
+  "filename": "ha-dwd-card.js"
+}

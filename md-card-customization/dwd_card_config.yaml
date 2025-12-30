@@ -1,0 +1,110 @@
+type: markdown
+content: >-
+  {% set current_sensor = 'sensor.dwd_weather_warnings_current_warning_level' %}
+  {% set advance_sensor = 'sensor.dwd_weather_warnings_advance_warning_level' %}
+  
+  {# --- MACROS --- #}
+  {% macro get_icon(warning_type) %}
+    {% set icons = {
+      "0": "mdi:shield-outline",
+      "1": "mdi:weather-windy",
+      "2": "mdi:weather-windy",
+      "3": "mdi:weather-hurricane",
+      "4": "mdi:weather-fog",
+      "5": "mdi:snowflake",
+      "6": "mdi:weather-snowy",
+      "7": "mdi:snowflake-melt",
+      "8": "mdi:snowflake-alert",
+      "9": "mdi:weather-lightning",
+      "10": "mdi:weather-pouring",
+      "11": "mdi:weather-rainy",
+      "12": "mdi:ice-pop",
+      "13": "mdi:fire",
+      "14": "mdi:weather-sunny-alert",
+      "15": "mdi:water-percent",
+      "16": "mdi:weather-fog",
+      "17": "mdi:waves",
+      "18": "mdi:image-filter-hdr",
+      "19": "mdi:fire-alert",
+      "20": "mdi:grass",
+      "21": "mdi:snowflake",
+      "22": "mdi:weather-snowy",
+      "23": "mdi:weather-hail",
+      "24": "mdi:water-percent",
+      "25": "mdi:weather-lightning",
+      "26": "mdi:weather-lightning",
+      "27": "mdi:weather-hurricane",
+      "28": "mdi:weather-pouring",
+      "29": "mdi:snowflake-alert",
+      "30": "mdi:weather-hurricane",
+      "31": "mdi:fire",
+      "32": "mdi:snowflake",
+      "33": "mdi:ice-pop",
+      "34": "mdi:water-percent",
+      "35": "mdi:waves",
+      "36": "mdi:image-filter-hdr",
+      "37": "mdi:fire-alert",
+      "38": "mdi:weather-lightning",
+      "84": "mdi:car-traction-control",
+      "98": "mdi:alert-circle-outline",
+      "99": "mdi:help-circle-outline"
+    } %}
+    {{ icons.get(warning_type | string, 'mdi:alert-circle-outline') }}
+  {% endmacro %}
+
+  {% macro format_warning(sensor_entity, index) %}
+    {% set headline = state_attr(sensor_entity, 'warning_' ~ index ~ '_headline') %}
+    {% set start_time = state_attr(sensor_entity, 'warning_' ~ index ~ '_start') %}
+    {% set end_time = state_attr(sensor_entity, 'warning_' ~ index ~ '_end') %}
+    {% set warning_type = state_attr(sensor_entity, 'warning_' ~ index ~ '_type') %}
+    {% set icon = get_icon(warning_type) | trim %}
+    
+    <table width="100%" border="0" cellspacing="0" cellpadding="8">
+      <tr>
+        <td width="40" align="center" valign="middle">
+          <ha-icon icon="{{ icon }}"></ha-icon>
+        </td>
+        <td valign="middle">
+          <div><b>{{ headline }}</b></div>
+          <div>
+            {{ as_timestamp(start_time)|timestamp_custom('%d.%m. %H:%M', true) }} - {{ as_timestamp(end_time)|timestamp_custom('%d.%m. %H:%M', true) }}
+          </div>
+        </td>
+      </tr>
+    </table>
+  {% endmacro %}
+
+  {# --- MAIN CONTENT --- #}
+  <h2>Deutscher Wetterdienst</h2>
+
+  {# Check Current Warnings #}
+  {% set current_count = state_attr(current_sensor, 'warning_count') | int(0) %}
+  {% set advance_count = state_attr(advance_sensor, 'warning_count') | int(0) %}
+  
+  {% if current_count > 0 %}
+    <h3>Aktuelle Warnungen</h3>
+    {% for i in range(1, current_count + 1) %}
+      {{ format_warning(current_sensor, i) }}
+    {% endfor %}
+  {% endif %}
+
+  {# Check Advance Warnings #}
+  {% if advance_count > 0 %}
+    <h3>Vorabinformationen</h3>
+    {% for i in range(1, advance_count + 1) %}
+      {{ format_warning(advance_sensor, i) }}
+    {% endfor %}
+  {% endif %}
+
+  {% if current_count == 0 and advance_count == 0 %}
+    <div align="center">
+      <ha-icon icon="mdi:check-circle-outline"></ha-icon>
+      <div>Keine Wetterwarnungen vorhanden.</div>
+    </div>
+  {% endif %}
+
+  <div align="right">
+    {% set last_upd = state_attr(current_sensor, 'last_update') %}
+    Stand: {{ as_timestamp(last_upd) | timestamp_custom('%d.%m. %H:%M', true) if last_upd else 'Unbekannt' }}
+  </div>
+title: DWD Weather Warnings
