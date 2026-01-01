@@ -39,6 +39,10 @@ type: custom:ha-dwd-card
 current_warning_entity: sensor.dwd_weather_warnings_berlin_current_warning_level
 # Optional: explicitly define the pre-warning entity
 # prewarning_entity: sensor.dwd_weather_warnings_berlin_advance_warning_level
+# Optional: Show title for current warnings (default: false)
+show_current_warning_title: true
+# Optional: Use shorter warning name instead of headline (default: false)
+compact_warning_headline: true
 ```
 
 **Note:** If `prewarning_entity` is not provided, the card automatically attempts to find the corresponding `_advance_warning_level` entity based on the `current_warning_entity` you provide. Ensure your DWD integration naming convention is standard.

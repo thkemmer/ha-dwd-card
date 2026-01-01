@@ -7,6 +7,8 @@ interface DWDCardConfig {
   type: string;
   current_warning_entity: string; // The current warning level entity
   prewarning_entity?: string; // Optional: The advance warning level entity
+  show_current_warning_title?: boolean; // Optional: Show title for current warnings
+  compact_warning_headline?: boolean; // Optional: Use shorter warning name instead of headline
 }
 
 @customElement('ha-dwd-card')
@@ -38,16 +40,16 @@ export class HaDwdCard extends LitElement {
     .warning-box {
       background-color: var(--secondary-background-color);
       color: var(--primary-text-color);
-      padding: 12px;
+      padding: 8px;
       border-radius: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
     .icon-box {
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -71,11 +73,13 @@ export class HaDwdCard extends LitElement {
       margin-bottom: 8px;
       font-weight: 500;
     }
+    .warning-box:last-of-type {
+      margin-bottom: 0px;
+    }
     .footer {
       text-align: right;
-      font-size: 0.8em;
+      font-size: 0.7em;
       opacity: 0.5;
-      margin-top: 16px;
     }
     .no-warnings {
       text-align: center;
@@ -151,7 +155,8 @@ export class HaDwdCard extends LitElement {
 
   // Render a single warning
   private renderWarning(entityId: string, index: number) {
-    const headline = this.hass.states[entityId].attributes[`warning_${index}_headline`];
+    const attributeName = this.config.compact_warning_headline ? 'name' : 'headline';
+    const headline = this.hass.states[entityId].attributes[`warning_${index}_${attributeName}`];
     const start = this.hass.states[entityId].attributes[`warning_${index}_start`];
     const end = this.hass.states[entityId].attributes[`warning_${index}_end`];
     const color = this.hass.states[entityId].attributes[`warning_${index}_color`] || '#cccccc';
@@ -187,7 +192,7 @@ export class HaDwdCard extends LitElement {
 
     if (!currentState) {
       return html`
-        <ha-card header="DWD Warnings">
+        <ha-card>
           <div style="padding: 16px; color: red;">Entity not found: ${currentEntity}</div>
         </ha-card>
       `;
@@ -198,10 +203,10 @@ export class HaDwdCard extends LitElement {
     const lastUpdate = currentState.attributes['last_update'];
 
     return html`
-      <ha-card header="Deutscher Wetterdienst">
+      <ha-card>
         
         ${currentCount > 0 ? html`
-          <div class="section-title">Aktuelle Warnungen</div>
+          ${this.config.show_current_warning_title ? html`<div class="section-title">Aktuelle Warnungen</div>` : ''}
           ${Array.from({length: currentCount}, (_, i) => this.renderWarning(currentEntity, i + 1))}
         ` : ''}
 
