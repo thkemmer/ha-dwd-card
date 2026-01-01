@@ -5,7 +5,8 @@ import { HomeAssistant, hasConfigOrEntityChanged } from 'custom-card-helpers';
 // Interface for the card configuration
 interface DWDCardConfig {
   type: string;
-  entity: string; // The base entity, e.g., sensor.dwd_weather_warnings_berlin_current_warning_level
+  current_warning_entity: string; // The current warning level entity
+  prewarning_entity?: string; // Optional: The advance warning level entity
 }
 
 @customElement('ha-dwd-card')
@@ -15,8 +16,8 @@ export class HaDwdCard extends LitElement {
 
   // Configuration check
   public setConfig(config: DWDCardConfig): void {
-    if (!config.entity) {
-      throw new Error('Please define a DWD Warning entity');
+    if (!config.current_warning_entity) {
+      throw new Error('Please define a DWD Warning entity (current_warning_entity)');
     }
     this.config = config;
   }
@@ -128,6 +129,8 @@ export class HaDwdCard extends LitElement {
       "36": "mdi:image-filter-hdr",
       "37": "mdi:fire-alert",
       "38": "mdi:weather-lightning",
+      "51": "mdi:weather-windy",
+      "70": "mdi:weather-snowy",
       "84": "mdi:car-traction-control",
       "98": "mdi:alert-circle-outline",
       "99": "mdi:help-circle-outline"
@@ -175,11 +178,9 @@ export class HaDwdCard extends LitElement {
       return html``;
     }
 
-    const currentEntity = this.config.entity;
-    // Assume advance entity follows standard naming convention based on current entity
-    // or we could allow configuring it separately. For now, let's try to derive it.
-    // e.g. ..._current_warning_level -> ..._advance_warning_level
-    const advanceEntity = currentEntity.replace('_current_warning_level', '_advance_warning_level');
+    const currentEntity = this.config.current_warning_entity;
+    // Use configured prewarning entity or derive it from the current entity
+    const advanceEntity = this.config.prewarning_entity || currentEntity.replace('_current_warning_level', '_advance_warning_level');
     
     const currentState = this.hass.states[currentEntity];
     const advanceState = this.hass.states[advanceEntity];

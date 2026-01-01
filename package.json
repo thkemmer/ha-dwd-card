@@ -1,6 +1,7 @@
 {
   "name": "ha-dwd-card",
   "version": "1.0.0",
+  "type": "module",
   "description": "A custom Home Assistant card for DWD Weather Warnings",
   "main": "dist/ha-dwd-card.js",
   "scripts": {

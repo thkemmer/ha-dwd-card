@@ -1,0 +1,129 @@
+region_name: Mitgliedsgemeinde in Verwaltungsgemeinschaft Kleinwallstadt
+region_id: 809676133
+last_update: "2026-01-01T16:22:06.866000+00:00"
+warning_count: 3
+warning_1_name: WINDBÖEN
+warning_1_type: 51
+warning_1_level: 1
+warning_1_headline: Amtliche WARNUNG vor WINDBÖEN
+warning_1_description: >-
+  Es treten Windböen mit Geschwindigkeiten um 55 km/h (15 m/s, 30 kn, Bft 7) aus
+  südwestlicher Richtung auf. In Schauernähe sowie in exponierten Lagen muss mit
+  Sturmböen um 70 km/h (20 m/s, 38 kn, Bft 8) gerechnet werden.
+warning_1_instruction: |-
+  Hinweis auf: umherfliegende leichte Gegenstände. 
+  Handlungsempfehlungen: 
+  lose Gegenstände sichern; z.B. Zelte und Abdeckungen befestigen
+warning_1_start: "2026-01-01T17:00:00+00:00"
+warning_1_end: "2026-01-02T09:00:00+00:00"
+warning_1_parameters:
+  wind direction: south-west
+  gusts: ~55 [km/h]
+  exposed gusts: ~70 [km/h]
+warning_1_color: "#ffeb3b"
+warning_1:
+  start_time: "2026-01-01T17:00:00+00:00"
+  end_time: "2026-01-02T09:00:00+00:00"
+  event: WINDBÖEN
+  event_code: 51
+  headline: Amtliche WARNUNG vor WINDBÖEN
+  description: >-
+    Es treten Windböen mit Geschwindigkeiten um 55 km/h (15 m/s, 30 kn, Bft 7)
+    aus südwestlicher Richtung auf. In Schauernähe sowie in exponierten Lagen
+    muss mit Sturmböen um 70 km/h (20 m/s, 38 kn, Bft 8) gerechnet werden.
+  instruction: |-
+    Hinweis auf: umherfliegende leichte Gegenstände. 
+    Handlungsempfehlungen: 
+    lose Gegenstände sichern; z.B. Zelte und Abdeckungen befestigen
+  urgency: immediate
+  level: 1
+  parameters:
+    wind direction: south-west
+    gusts: ~55 [km/h]
+    exposed gusts: ~70 [km/h]
+  color: "#ffeb3b"
+warning_2_name: LEICHTER SCHNEEFALL
+warning_2_type: 70
+warning_2_level: 1
+warning_2_headline: Amtliche WARNUNG vor LEICHTEM SCHNEEFALL
+warning_2_description: >-
+  Es tritt im Warnzeitraum leichter Schneefall mit Mengen bis 3 cm auf. In
+  Staulagen werden Mengen bis 5 cm erreicht. Verbreitet wird es glatt.
+warning_2_instruction: >-
+  Hinweis auf: Rutschgefahr. 
+
+  Handlungsempfehlungen: 
+
+  Verhalten im Straßenverkehr anpassen (Schnee/Glätte und mögliche
+  Sichtbehinderungen)
+warning_2_start: "2026-01-01T13:00:00+00:00"
+warning_2_end: "2026-01-02T09:00:00+00:00"
+warning_2_parameters:
+  snowfall: <3 [cm]
+  in windward areas: <5 [cm]
+warning_2_color: "#ffeb3b"
+warning_2:
+  start_time: "2026-01-01T13:00:00+00:00"
+  end_time: "2026-01-02T09:00:00+00:00"
+  event: LEICHTER SCHNEEFALL
+  event_code: 70
+  headline: Amtliche WARNUNG vor LEICHTEM SCHNEEFALL
+  description: >-
+    Es tritt im Warnzeitraum leichter Schneefall mit Mengen bis 3 cm auf. In
+    Staulagen werden Mengen bis 5 cm erreicht. Verbreitet wird es glatt.
+  instruction: >-
+    Hinweis auf: Rutschgefahr. 
+
+    Handlungsempfehlungen: 
+
+    Verhalten im Straßenverkehr anpassen (Schnee/Glätte und mögliche
+    Sichtbehinderungen)
+  urgency: immediate
+  level: 1
+  parameters:
+    snowfall: <3 [cm]
+    in windward areas: <5 [cm]
+  color: "#ffeb3b"
+warning_3_name: WINDBÖEN
+warning_3_type: 51
+warning_3_level: 1
+warning_3_headline: Amtliche WARNUNG vor WINDBÖEN
+warning_3_description: >-
+  Es treten Windböen mit Geschwindigkeiten um 55 km/h (15 m/s, 30 kn, Bft 7) aus
+  südwestlicher Richtung auf. In exponierten Lagen muss mit Sturmböen um 65 km/h
+  (18 m/s, 35 kn, Bft 8) gerechnet werden.
+warning_3_instruction: |-
+  Hinweis auf: umherfliegende leichte Gegenstände. 
+  Handlungsempfehlungen: 
+  lose Gegenstände sichern; z.B. Zelte und Abdeckungen befestigen
+warning_3_start: "2026-01-01T09:00:00+00:00"
+warning_3_end: "2026-01-01T17:00:00+00:00"
+warning_3_parameters:
+  wind direction: south-west
+  gusts: ~55 [km/h]
+  exposed gusts: ~65 [km/h]
+warning_3_color: "#ffeb3b"
+warning_3:
+  start_time: "2026-01-01T09:00:00+00:00"
+  end_time: "2026-01-01T17:00:00+00:00"
+  event: WINDBÖEN
+  event_code: 51
+  headline: Amtliche WARNUNG vor WINDBÖEN
+  description: >-
+    Es treten Windböen mit Geschwindigkeiten um 55 km/h (15 m/s, 30 kn, Bft 7)
+    aus südwestlicher Richtung auf. In exponierten Lagen muss mit Sturmböen um
+    65 km/h (18 m/s, 35 kn, Bft 8) gerechnet werden.
+  instruction: |-
+    Hinweis auf: umherfliegende leichte Gegenstände. 
+    Handlungsempfehlungen: 
+    lose Gegenstände sichern; z.B. Zelte und Abdeckungen befestigen
+  urgency: immediate
+  level: 1
+  parameters:
+    wind direction: south-west
+    gusts: ~55 [km/h]
+    exposed gusts: ~65 [km/h]
+  color: "#ffeb3b"
+attribution: Data provided by DWD
+icon: mdi:alert
+friendly_name: Aktuelle Warnstufe
