@@ -41,22 +41,44 @@ export class HaDwdCard extends LitElement {
 
   // Optimize rendering
   protected shouldUpdate(changedProps: PropertyValues): boolean {
-    return hasConfigOrEntityChanged(this, changedProps, false);
+    if (changedProps.has('config')) {
+      return true;
+    }
+
+    const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
+    if (!oldHass || !this.hass || !this.config) {
+      return true;
+    }
+
+    const entitiesToCheck = [
+      this.config.current_warning_entity,
+      this.config.prewarning_entity || this.config.current_warning_entity.replace('_current_warning_level', '_advance_warning_level')
+    ];
+
+    for (const entity of entitiesToCheck) {
+      if (entity && oldHass.states[entity] !== this.hass.states[entity]) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // Define styles (Standard CSS works here!)
   static styles = css`
     :host {
       display: block;
+      font-family: var(--primary-font-family);
+      box-sizing: border-box;
     }
     ha-card {
-      padding: 16px;
+      padding: 4px;
     }
     .warning-box {
       background-color: var(--secondary-background-color);
       color: var(--primary-text-color);
       padding: 4px;
-      border-radius: 12px;
+      border-radius: 4px;
       margin-bottom: 4px;
       display: flex;
       align-items: center;
@@ -72,34 +94,36 @@ export class HaDwdCard extends LitElement {
     }
     .content-box {
       flex-grow: 1;
+      font-size: var(--paper-font-body1_-_font-size, 14px);
     }
     .headline {
-      font-weight: 600;
-      font-size: 1.1em;
+      font-weight: 700;
+      font-size: 14px;
       line-height: 1.2;
       margin-top: 2px;
     }
     .time-range {
+      color: var(--secondary-text-color);
       font-size: 0.9em;
-      opacity: 0.7;
     }
     .section-title {
       margin-top: 16px;
       margin-bottom: 8px;
       font-weight: 500;
+      color: var(--primary-text-color);
     }
     .warning-box:last-of-type {
       margin-bottom: 0px;
     }
     .footer {
       text-align: right;
-      font-size: 0.7em;
-      opacity: 0.5;
+      font-size: var(--paper-font-caption_-_font-size, 12px);
+      color: var(--secondary-text-color);
     }
     .no-warnings {
       text-align: center;
       padding: 24px;
-      opacity: 0.8;
+      color: var(--secondary-text-color);
       border: 1px solid var(--divider-color);
       border-radius: 12px;
     }
@@ -236,7 +260,7 @@ export class HaDwdCard extends LitElement {
             <div>Keine Wetterwarnungen vorhanden.</div>
           </div>
         ` : ''}
-        
+
         ${this.config.show_last_update_footer ? html`
           <div class="footer">
             Stand: ${lastUpdate ? this.formatTime(lastUpdate) : 'Unbekannt'}
