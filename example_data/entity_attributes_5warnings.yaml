@@ -1,0 +1,172 @@
+region_name: Mitgliedsgemeinde in Verwaltungsgemeinschaft Kleinwallstadt
+region_id: 809676133
+last_update: 2026-01-03T13:52:06.864000+00:00
+warning_count: 5
+warning_1_name: FROST
+warning_1_type: 22
+warning_1_level: 1
+warning_1_headline: Amtliche WARNUNG vor FROST
+warning_1_description: Es tritt leichter Frost zwischen -2 °C und -5 °C auf. Vor allem bei Aufklaren über Schnee sinken die Temperaturen auf Werte bis -10 °C.
+warning_1_instruction: Hinweis auf: mögliche Frostschäden. 
+Handlungsempfehlungen: 
+ggf. Frostschutzmaßnahmen ergreifen
+warning_1_start: 2026-01-03T15:00:00+00:00
+warning_1_end: 2026-01-04T10:00:00+00:00
+warning_1_parameters: 
+minimum temperature: '-2 - -5 [°C]'
+local minimum: '>-10 [°C]'
+local occurrence: particularly as the sky clears over snow
+
+warning_1_color: #ffeb3b
+warning_1: 
+start_time: '2026-01-03T15:00:00+00:00'
+end_time: '2026-01-04T10:00:00+00:00'
+event: FROST
+event_code: 22
+headline: Amtliche WARNUNG vor FROST
+description: >-
+  Es tritt leichter Frost zwischen -2 °C und -5 °C auf. Vor allem bei Aufklaren
+  über Schnee sinken die Temperaturen auf Werte bis -10 °C.
+instruction: |-
+  Hinweis auf: mögliche Frostschäden. 
+  Handlungsempfehlungen: 
+  ggf. Frostschutzmaßnahmen ergreifen
+urgency: immediate
+level: 1
+parameters:
+  minimum temperature: '-2 - -5 [°C]'
+  local minimum: '>-10 [°C]'
+  local occurrence: particularly as the sky clears over snow
+color: '#ffeb3b'
+
+warning_2_name: GLÄTTE
+warning_2_type: 84
+warning_2_level: 1
+warning_2_headline: Amtliche WARNUNG vor GLÄTTE
+warning_2_description: Es besteht Glättegefahr.
+warning_2_instruction: Hinweis auf: Rutschgefahr. 
+Handlungsempfehlungen: 
+Verhalten im Straßenverkehr anpassen
+warning_2_start: 2026-01-03T15:00:00+00:00
+warning_2_end: 2026-01-04T10:00:00+00:00
+warning_2_parameters: null
+warning_2_color: #ffeb3b
+warning_2: 
+start_time: '2026-01-03T15:00:00+00:00'
+end_time: '2026-01-04T10:00:00+00:00'
+event: GLÄTTE
+event_code: 84
+headline: Amtliche WARNUNG vor GLÄTTE
+description: Es besteht Glättegefahr.
+instruction: |-
+  Hinweis auf: Rutschgefahr. 
+  Handlungsempfehlungen: 
+  Verhalten im Straßenverkehr anpassen
+urgency: immediate
+level: 1
+parameters: null
+color: '#ffeb3b'
+
+warning_3_name: GLÄTTE
+warning_3_type: 84
+warning_3_level: 1
+warning_3_headline: Amtliche WARNUNG vor GLÄTTE
+warning_3_description: Es besteht Glättegefahr.
+warning_3_instruction: Hinweis auf: Rutschgefahr. 
+Handlungsempfehlungen: 
+Verhalten im Straßenverkehr anpassen
+warning_3_start: 2026-01-03T10:00:00+00:00
+warning_3_end: 2026-01-03T15:00:00+00:00
+warning_3_parameters: null
+warning_3_color: #ffeb3b
+warning_3: 
+start_time: '2026-01-03T10:00:00+00:00'
+end_time: '2026-01-03T15:00:00+00:00'
+event: GLÄTTE
+event_code: 84
+headline: Amtliche WARNUNG vor GLÄTTE
+description: Es besteht Glättegefahr.
+instruction: |-
+  Hinweis auf: Rutschgefahr. 
+  Handlungsempfehlungen: 
+  Verhalten im Straßenverkehr anpassen
+urgency: immediate
+level: 1
+parameters: null
+color: '#ffeb3b'
+
+warning_4_name: WINDBÖEN
+warning_4_type: 51
+warning_4_level: 1
+warning_4_headline: Amtliche WARNUNG vor WINDBÖEN
+warning_4_description: Es treten Windböen mit Geschwindigkeiten um 55 km/h (15 m/s, 30 kn, Bft 7) anfangs aus südwestlicher, später aus westlicher Richtung auf. In Schauernähe sowie in exponierten Lagen muss mit Sturmböen um 65 km/h (18 m/s, 35 kn, Bft 8) gerechnet werden.
+warning_4_instruction: Hinweis auf: umherfliegende leichte Gegenstände. 
+Handlungsempfehlungen: 
+lose Gegenstände sichern; z.B. Zelte und Abdeckungen befestigen
+warning_4_start: 2026-01-03T08:00:00+00:00
+warning_4_end: 2026-01-03T15:00:00+00:00
+warning_4_parameters: 
+wind direction: west
+subsequent wind direction: west
+gusts: ~55 [km/h]
+exposed gusts: ~65 [km/h]
+
+warning_4_color: #ffeb3b
+warning_4: 
+start_time: '2026-01-03T08:00:00+00:00'
+end_time: '2026-01-03T15:00:00+00:00'
+event: WINDBÖEN
+event_code: 51
+headline: Amtliche WARNUNG vor WINDBÖEN
+description: >-
+  Es treten Windböen mit Geschwindigkeiten um 55 km/h (15 m/s, 30 kn, Bft 7)
+  anfangs aus südwestlicher, später aus westlicher Richtung auf. In Schauernähe
+  sowie in exponierten Lagen muss mit Sturmböen um 65 km/h (18 m/s, 35 kn, Bft
+  8) gerechnet werden.
+instruction: |-
+  Hinweis auf: umherfliegende leichte Gegenstände. 
+  Handlungsempfehlungen: 
+  lose Gegenstände sichern; z.B. Zelte und Abdeckungen befestigen
+urgency: immediate
+level: 1
+parameters:
+  wind direction: west
+  subsequent wind direction: west
+  gusts: ~55 [km/h]
+  exposed gusts: ~65 [km/h]
+color: '#ffeb3b'
+
+warning_5_name: FROST
+warning_5_type: 22
+warning_5_level: 1
+warning_5_headline: Amtliche WARNUNG vor FROST
+warning_5_description: Es tritt leichter Frost zwischen 0 °C und -3 °C auf.
+warning_5_instruction: Hinweis auf: mögliche Frostschäden. 
+Handlungsempfehlungen: 
+ggf. Frostschutzmaßnahmen ergreifen
+warning_5_start: 2026-01-03T10:00:00+00:00
+warning_5_end: 2026-01-03T15:00:00+00:00
+warning_5_parameters: 
+minimum temperature: 0 - -3 [°C]
+
+warning_5_color: #ffeb3b
+warning_5: 
+start_time: '2026-01-03T10:00:00+00:00'
+end_time: '2026-01-03T15:00:00+00:00'
+event: FROST
+event_code: 22
+headline: Amtliche WARNUNG vor FROST
+description: Es tritt leichter Frost zwischen 0 °C und -3 °C auf.
+instruction: |-
+  Hinweis auf: mögliche Frostschäden. 
+  Handlungsempfehlungen: 
+  ggf. Frostschutzmaßnahmen ergreifen
+urgency: immediate
+level: 1
+parameters:
+  minimum temperature: 0 - -3 [°C]
+color: '#ffeb3b'
+
+attribution: Data provided by DWD
+icon: mdi:alert
+friendly_name: Aktuelle Warnstufe
