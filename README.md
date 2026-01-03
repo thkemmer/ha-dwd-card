@@ -1,8 +1,10 @@
 # DWD Weather Warnings Card
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=thkemmer&repository=ha-dwd-card&category=plugin)
+
 A custom Home Assistant card to display Deutscher Wetterdienst (DWD) weather warnings with a modern, clean design.
 
-![Screenshot](https://via.placeholder.com/600x400?text=DWD+Card+Screenshot+Placeholder)
+![Screenshot](assets/preview-card.png)
 
 ## Features
 
@@ -10,11 +12,13 @@ A custom Home Assistant card to display Deutscher Wetterdienst (DWD) weather war
 - **Official Colors:** Uses the official DWD severity colors.
 - **Advance Warnings:** Separately lists advance warnings.
 - **Responsive Design:** Looks great on desktop and mobile.
-- **Visual Editor:** (Coming soon) currently configured via YAML.
+- **Visual Editor:** Fully supported!
 
 ## Installation
 
 ### HACS (Recommended)
+
+Click the button above or:
 
 1.  Make sure [HACS](https://hacs.xyz/) is installed.
 2.  Go to HACS -> Frontend -> Custom Repositories.
