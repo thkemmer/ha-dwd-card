@@ -1,0 +1,156 @@
+region_name: Mitgliedsgemeinde in Verwaltungsgemeinschaft Kleinwallstadt
+region_id: 809676133
+last_update: 2026-01-08T20:41:15.958000+00:00
+warning_count: 4
+warning_1_name: SCHNEEFALL
+warning_1_type: 71
+warning_1_level: 2
+warning_1_headline: Amtliche WARNUNG vor SCHNEEFALL
+warning_1_description: Es tritt im Warnzeitraum Schneefall mit Mengen zwischen 8 cm und 15 cm auf. In Staulagen werden Mengen bis 20 cm erreicht. Die Schneefallgrenze steigt auf 800 Meter. Verbreitet wird es glatt.
+warning_1_instruction: Gefahr durch: geschlossene Schneedecke, Glätte; eingeschränkte Sichtweite. 
+Handlungsempfehlungen: 
+Verhalten im Straßenverkehr anpassen (Schnee/Glätte und mögliche Sichtbehinderungen), Verzögerungen und Behinderungen einplanen; unnötige Fahrten im Straßenverkehr vermeiden
+warning_1_start: 2026-01-08T17:00:00+00:00
+warning_1_end: 2026-01-09T08:00:00+00:00
+warning_1_parameters: 
+snowfall: 8-15 [cm]
+in windward areas: <20 [cm]
+snowfall level: rising to 800 meter
+
+warning_1_color: #fb8c00
+warning_1: 
+start_time: '2026-01-08T17:00:00+00:00'
+end_time: '2026-01-09T08:00:00+00:00'
+event: SCHNEEFALL
+event_code: 71
+headline: Amtliche WARNUNG vor SCHNEEFALL
+description: >-
+  Es tritt im Warnzeitraum Schneefall mit Mengen zwischen 8 cm und 15 cm auf. In
+  Staulagen werden Mengen bis 20 cm erreicht. Die Schneefallgrenze steigt auf
+  800 Meter. Verbreitet wird es glatt.
+instruction: >-
+  Gefahr durch: geschlossene Schneedecke, Glätte; eingeschränkte Sichtweite. 
+
+  Handlungsempfehlungen: 
+
+  Verhalten im Straßenverkehr anpassen (Schnee/Glätte und mögliche
+  Sichtbehinderungen), Verzögerungen und Behinderungen einplanen; unnötige
+  Fahrten im Straßenverkehr vermeiden
+urgency: immediate
+level: 2
+parameters:
+  snowfall: 8-15 [cm]
+  in windward areas: <20 [cm]
+  snowfall level: rising to 800 meter
+color: '#fb8c00'
+
+warning_2_name: FROST
+warning_2_type: 22
+warning_2_level: 1
+warning_2_headline: Amtliche WARNUNG vor FROST
+warning_2_description: Es tritt leichter Frost bis -1 °C auf.
+warning_2_instruction: Hinweis auf: mögliche Frostschäden. 
+Handlungsempfehlungen: 
+ggf. Frostschutzmaßnahmen ergreifen
+warning_2_start: 2026-01-08T17:00:00+00:00
+warning_2_end: 2026-01-09T08:00:00+00:00
+warning_2_parameters: 
+minimum temperature: '>-1 [°C]'
+
+warning_2_color: #ffeb3b
+warning_2: 
+start_time: '2026-01-08T17:00:00+00:00'
+end_time: '2026-01-09T08:00:00+00:00'
+event: FROST
+event_code: 22
+headline: Amtliche WARNUNG vor FROST
+description: Es tritt leichter Frost bis -1 °C auf.
+instruction: |-
+  Hinweis auf: mögliche Frostschäden. 
+  Handlungsempfehlungen: 
+  ggf. Frostschutzmaßnahmen ergreifen
+urgency: immediate
+level: 1
+parameters:
+  minimum temperature: '>-1 [°C]'
+color: '#ffeb3b'
+
+warning_3_name: MARKANTE GLÄTTE
+warning_3_type: 87
+warning_3_level: 2
+warning_3_headline: Amtliche WARNUNG vor MARKANTER GLÄTTE
+warning_3_description: Es besteht erhöhte Glättegefahr durch gefrierenden Regen.
+warning_3_instruction: Gefahr durch: Glatteis. 
+Handlungsempfehlungen: 
+nicht notwendige Aufenthalte im Freien und Fahrten vermeiden bzw. Verhalten im Straßenverkehr anpassen; Verzögerungen und Behinderungen einplanen
+warning_3_start: 2026-01-08T17:00:00+00:00
+warning_3_end: 2026-01-09T05:00:00+00:00
+warning_3_parameters: 
+cause: freezing rain
+
+warning_3_color: #fb8c00
+warning_3: 
+start_time: '2026-01-08T17:00:00+00:00'
+end_time: '2026-01-09T05:00:00+00:00'
+event: MARKANTE GLÄTTE
+event_code: 87
+headline: Amtliche WARNUNG vor MARKANTER GLÄTTE
+description: Es besteht erhöhte Glättegefahr durch gefrierenden Regen.
+instruction: >-
+  Gefahr durch: Glatteis. 
+
+  Handlungsempfehlungen: 
+
+  nicht notwendige Aufenthalte im Freien und Fahrten vermeiden bzw. Verhalten im
+  Straßenverkehr anpassen; Verzögerungen und Behinderungen einplanen
+urgency: immediate
+level: 2
+parameters:
+  cause: freezing rain
+color: '#fb8c00'
+
+warning_4_name: STURMBÖEN
+warning_4_type: 52
+warning_4_level: 2
+warning_4_headline: Amtliche WARNUNG vor STURMBÖEN
+warning_4_description: Es treten Sturmböen mit Geschwindigkeiten um 65 km/h (18 m/s, 35 kn, Bft 8) aus südwestlicher Richtung auf. In exponierten Lagen muss mit Sturmböen bis 75 km/h (21 m/s, 41 kn, Bft 9) gerechnet werden.
+warning_4_instruction: Gefahr durch: einzelne herabstürzende Äste; umherfliegende Gegenstände. 
+Handlungsempfehlungen: 
+frei stehende Objekte sichern (z.B. Leinwände und Möbel); z.B. Zelte und Abdeckungen befestigen; im Freien auf herabfallende Gegenstände (z.B. Äste) achten
+warning_4_start: 2026-01-09T08:00:00+00:00
+warning_4_end: 2026-01-09T19:00:00+00:00
+warning_4_parameters: 
+gusts: ~65 [km/h]
+exposed gusts: <75 [km/h]
+wind direction: south-west
+
+warning_4_color: #fb8c00
+warning_4: 
+start_time: '2026-01-09T08:00:00+00:00'
+end_time: '2026-01-09T19:00:00+00:00'
+event: STURMBÖEN
+event_code: 52
+headline: Amtliche WARNUNG vor STURMBÖEN
+description: >-
+  Es treten Sturmböen mit Geschwindigkeiten um 65 km/h (18 m/s, 35 kn, Bft 8)
+  aus südwestlicher Richtung auf. In exponierten Lagen muss mit Sturmböen bis 75
+  km/h (21 m/s, 41 kn, Bft 9) gerechnet werden.
+instruction: >-
+  Gefahr durch: einzelne herabstürzende Äste; umherfliegende Gegenstände. 
+
+  Handlungsempfehlungen: 
+
+  frei stehende Objekte sichern (z.B. Leinwände und Möbel); z.B. Zelte und
+  Abdeckungen befestigen; im Freien auf herabfallende Gegenstände (z.B. Äste)
+  achten
+urgency: immediate
+level: 2
+parameters:
+  gusts: ~65 [km/h]
+  exposed gusts: <75 [km/h]
+  wind direction: south-west
+color: '#fb8c00'
+
+attribution: Data provided by DWD
+icon: mdi:alert
+friendly_name: Aktuelle Warnstufe

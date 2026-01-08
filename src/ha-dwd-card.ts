@@ -223,9 +223,12 @@ export class HaDwdCard extends LitElement {
       "37": "mdi:fire-alert",
       "38": "mdi:weather-lightning",
       "51": "mdi:weather-windy",
+      "52": "mdi:weather-windy",
       "70": "mdi:weather-snowy",
+      "71": "mdi:weather-snowy",
       "82": "mdi:snowflake",
       "84": "mdi:car-traction-control",
+      "87": "mdi:car-traction-control",
       "98": "mdi:alert-circle-outline",
       "99": "mdi:help-circle-outline"
     };
