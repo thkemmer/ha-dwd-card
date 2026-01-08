@@ -50,6 +50,31 @@ compact_warning_headline: true
 
 **Note:** If `prewarning_entity` is not provided, the card automatically attempts to find the corresponding `_prewarning_level` entity based on the `current_warning_entity` you provide. Ensure your DWD integration naming convention is standard.
 
+## Testing
+
+This project uses [Vitest](https://vitest.dev/) for unit testing. Vitest is a fast, modern testing framework with native TypeScript support and an environment that mimics the browser (JSDOM), making it ideal for testing Lit-based web components.
+
+### Running Tests
+
+To run the tests once:
+```bash
+npm run test
+```
+
+To run tests in watch mode (useful during development):
+```bash
+npx vitest
+```
+
+The tests cover:
+- **Component Rendering:** Ensuring the card loads correctly in different states.
+- **Logic Verification:** Specifically testing the `getCardSize()` method to ensure correct dashboard layout.
+- **Mocking:** Tests use a mocked Home Assistant (`hass`) object to simulate various warning scenarios.
+
+### Continuous Integration (CI)
+
+Every push and pull request to the `main` branch automatically triggers a test run via GitHub Actions to ensure code quality and prevent regressions.
+
 ## Development
 
 1.  Clone this repository.
