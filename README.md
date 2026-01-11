@@ -1,6 +1,7 @@
 # DWD Weather Warnings Card
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=thkemmer&repository=ha-dwd-card&category=plugin)
+![CI Status](https://github.com/thkemmer/ha-dwd-card/actions/workflows/ci.yml/badge.svg)
 
 A custom Home Assistant lovelace card to display Deutscher Wetterdienst (DWD) weather warnings with a modern, clean design.
 
@@ -73,7 +74,7 @@ The tests cover:
 
 ### Continuous Integration (CI)
 
-Every push and pull request to the `main` branch automatically triggers a test run via GitHub Actions to ensure code quality and prevent regressions.
+Every push and pull request to the `main` branch automatically triggers a test run and linting check via GitHub Actions to ensure code quality and prevent regressions.
 
 ## Development
 
