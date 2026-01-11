@@ -2,7 +2,7 @@ type: markdown
 content: >-
   {% set current_sensor = 'sensor.dwd_weather_warnings_current_warning_level' %}
   {% set advance_sensor = 'sensor.dwd_weather_warnings_advance_warning_level' %}
-  
+
   {# --- MACROS --- #}
   {% macro get_icon(warning_type) %}
     {% set icons = {
@@ -80,7 +80,7 @@ content: >-
   {# Check Current Warnings #}
   {% set current_count = state_attr(current_sensor, 'warning_count') | int(0) %}
   {% set advance_count = state_attr(advance_sensor, 'warning_count') | int(0) %}
-  
+
   {% if current_count > 0 %}
     <h3>Aktuelle Warnungen</h3>
     {% for i in range(1, current_count + 1) %}

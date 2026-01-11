@@ -4,31 +4,32 @@ import { HaDwdCard } from './ha-dwd-card';
 import './ha-dwd-card'; // Register the component
 
 // Mock Home Assistant object
-const createMockHass = (attributes = {}) => ({
-  states: {
-    'sensor.dwd_current': {
-      attributes: {
-        warning_count: 0,
-        ...attributes
+const createMockHass = (attributes = {}) =>
+  ({
+    states: {
+      'sensor.dwd_current': {
+        attributes: {
+          warning_count: 0,
+          ...attributes,
+        },
+        state: 'ok',
       },
-      state: 'ok'
+      'sensor.dwd_advance': {
+        attributes: {
+          warning_count: 0,
+        },
+        state: 'ok',
+      },
     },
-    'sensor.dwd_advance': {
-      attributes: {
-        warning_count: 0,
-      },
-      state: 'ok'
-    }
-  }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as any);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }) as any;
 
 const mockConfig = {
   type: 'custom:ha-dwd-card',
   current_warning_entity: 'sensor.dwd_current',
   prewarning_entity: 'sensor.dwd_advance',
   show_current_warning_title: true,
-  show_last_update_footer: true
+  show_last_update_footer: true,
 };
 
 describe('HaDwdCard', () => {
@@ -47,7 +48,7 @@ describe('HaDwdCard', () => {
     it('returns 2 when no warnings exist (header + footer + empty state)', async () => {
       element.hass = createMockHass({ warning_count: 0 });
       await element.updateComplete;
-      
+
       // 2 is the fallback for "no warnings"
       expect(element.getCardSize()).toBe(2);
     });
@@ -77,7 +78,7 @@ describe('HaDwdCard', () => {
       // 284 / 50 = 5.68 -> ceil = 6
       expect(element.getCardSize()).toBe(6);
     });
-    
+
     it('handles missing configuration gracefully', async () => {
       const el = await fixture<HaDwdCard>(html`<ha-dwd-card></ha-dwd-card>`);
       expect(el.getCardSize()).toBe(1);

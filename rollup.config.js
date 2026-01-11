@@ -26,10 +26,5 @@ export default {
     if (warning.code === 'THIS_IS_UNDEFINED') return;
     warn(warning);
   },
-  plugins: [
-    resolve(),
-    json(),
-    typescript(),
-    !dev && terser(),
-  ],
+  plugins: [resolve(), json(), typescript(), !dev && terser()],
 };

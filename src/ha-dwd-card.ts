@@ -24,7 +24,9 @@ export class HaDwdCard extends LitElement {
   // Configuration check
   public setConfig(config: DWDCardConfig): void {
     if (!config.current_warning_entity) {
-      throw new Error('Please define a DWD Warning entity (current_warning_entity)');
+      throw new Error(
+        'Please define a DWD Warning entity (current_warning_entity)'
+      );
     }
     this.config = config;
   }
@@ -37,7 +39,7 @@ export class HaDwdCard extends LitElement {
       show_current_warning_title: false,
       compact_warning_headline: false,
       show_last_update_footer: true,
-      tap_action: { action: 'more-info' }
+      tap_action: { action: 'more-info' },
     };
   }
 
@@ -61,8 +63,10 @@ export class HaDwdCard extends LitElement {
       return 1;
     }
     const currentEntity = this.config.current_warning_entity;
-    const advanceEntity = this.config.prewarning_entity || currentEntity.replace('_aktuelle_warnstufe', '_vorwarnstufe');
-    
+    const advanceEntity =
+      this.config.prewarning_entity ||
+      currentEntity.replace('_aktuelle_warnstufe', '_vorwarnstufe');
+
     const currentState = this.hass.states[currentEntity];
     const advanceState = this.hass.states[advanceEntity];
 
@@ -71,11 +75,13 @@ export class HaDwdCard extends LitElement {
     }
 
     const currentCount = currentState.attributes['warning_count'] || 0;
-    const advanceCount = advanceState ? (advanceState.attributes['warning_count'] || 0) : 0;
-    
+    const advanceCount = advanceState
+      ? advanceState.attributes['warning_count'] || 0
+      : 0;
+
     // No active warnings
     if (currentCount === 0 && advanceCount === 0) {
-        return 2;
+      return 2;
     }
 
     // let's do the calculations a bit more intelligently. 1 - unit is about 50px in height.
@@ -83,14 +89,16 @@ export class HaDwdCard extends LitElement {
     const warning_element_height = 45;
     const card_base_height = 10; // padding and border
     const footer_height = this.config.show_last_update_footer ? 19 : 0;
-    const header_height = this.config.show_current_warning_title ? 30 : 0
+    const header_height = this.config.show_current_warning_title ? 30 : 0;
 
-    const total_height = 
-        card_base_height 
-        + (warning_element_height * currentCount) 
-        + (advanceCount > 0 ? (header_height + warning_element_height * advanceCount) : 0) 
-        + footer_height 
-        + header_height;
+    const total_height =
+      card_base_height +
+      warning_element_height * currentCount +
+      (advanceCount > 0
+        ? header_height + warning_element_height * advanceCount
+        : 0) +
+      footer_height +
+      header_height;
 
     return Math.ceil(total_height / 50.0);
   }
@@ -108,7 +116,11 @@ export class HaDwdCard extends LitElement {
 
     const entitiesToCheck = [
       this.config.current_warning_entity,
-      this.config.prewarning_entity || this.config.current_warning_entity.replace('_aktuelle_warnstufe', '_vorwarnstufe')
+      this.config.prewarning_entity ||
+        this.config.current_warning_entity.replace(
+          '_aktuelle_warnstufe',
+          '_vorwarnstufe'
+        ),
     ];
 
     for (const entity of entitiesToCheck) {
@@ -209,18 +221,26 @@ export class HaDwdCard extends LitElement {
 
   // Render a single warning
   private renderWarning(entityId: string, index: number) {
-    const attributeName = this.config.compact_warning_headline ? 'name' : 'headline';
-    const headline = this.hass.states[entityId].attributes[`warning_${index}_${attributeName}`];
-    const start = this.hass.states[entityId].attributes[`warning_${index}_start`];
+    const attributeName = this.config.compact_warning_headline
+      ? 'name'
+      : 'headline';
+    const headline =
+      this.hass.states[entityId].attributes[
+        `warning_${index}_${attributeName}`
+      ];
+    const start =
+      this.hass.states[entityId].attributes[`warning_${index}_start`];
     const end = this.hass.states[entityId].attributes[`warning_${index}_end`];
-    const color = this.hass.states[entityId].attributes[`warning_${index}_color`] || '#cccccc';
+    const color =
+      this.hass.states[entityId].attributes[`warning_${index}_color`] ||
+      '#cccccc';
     const type = this.hass.states[entityId].attributes[`warning_${index}_type`];
     const icon = this.getIcon(type);
 
     return html`
       <div class="warning-box">
         <div class="icon-box">
-           <ha-icon icon="${icon}" style="color: ${color}"></ha-icon>
+          <ha-icon icon="${icon}" style="color: ${color}"></ha-icon>
         </div>
         <div class="content-box">
           <div class="headline">${headline}</div>
@@ -239,54 +259,76 @@ export class HaDwdCard extends LitElement {
 
     const currentEntity = this.config.current_warning_entity;
     // Use configured prewarning entity or derive it from the current entity
-    const advanceEntity = this.config.prewarning_entity || currentEntity.replace('_aktuelle_warnstufe', '_vorwarnstufe');
-    
+    const advanceEntity =
+      this.config.prewarning_entity ||
+      currentEntity.replace('_aktuelle_warnstufe', '_vorwarnstufe');
+
     const currentState = this.hass.states[currentEntity];
     const advanceState = this.hass.states[advanceEntity];
 
     if (!currentState) {
       return html`
         <ha-card>
-          <div style="padding: 16px; color: red;">Entity not found: ${currentEntity}</div>
+          <div style="padding: 16px; color: red;">
+            Entity not found: ${currentEntity}
+          </div>
         </ha-card>
       `;
     }
 
     const currentCount = currentState.attributes['warning_count'] || 0;
-    const advanceCount = advanceState ? (advanceState.attributes['warning_count'] || 0) : 0;
+    const advanceCount = advanceState
+      ? advanceState.attributes['warning_count'] || 0
+      : 0;
     const lastUpdate = currentState.attributes['last_update'];
-    
+
     // Check if card is clickable (has tap action other than none)
-    const isClickable = this.config.tap_action && this.config.tap_action.action !== 'none';
+    const isClickable =
+      this.config.tap_action && this.config.tap_action.action !== 'none';
 
     return html`
-      <ha-card 
+      <ha-card
         @click=${this._handleAction}
         class=${isClickable ? 'clickable' : ''}
       >
-        
-        ${currentCount > 0 ? html`
-          ${this.config.show_current_warning_title ? html`<div class="section-title">Aktuelle Warnungen (${currentCount})</div>` : ''}
-          ${Array.from({length: currentCount}, (_, i) => this.renderWarning(currentEntity, i + 1))}
-        ` : ''}
-
-        ${advanceCount > 0 ? html`
-          <div class="section-title">Vorabinformationen</div>
-          ${Array.from({length: advanceCount}, (_, i) => this.renderWarning(advanceEntity, i + 1))}
-        ` : ''}
-
-        ${currentCount === 0 && advanceCount === 0 ? html`
-          <div class="no-warnings">
-            <ha-icon icon="mdi:check-circle-outline" style="color: var(--success-color); width: 48px; height: 48px; margin-bottom: 4px;"></ha-icon>
-            <div>Keine Wetterwarnungen vorhanden.</div>
-          </div>
-        ` : ''}
-
-        ${this.config.show_last_update_footer ? html`
-          <div class="footer">
-            Stand: ${lastUpdate ? this.formatTime(lastUpdate) : 'Unbekannt'}
-          </div>
-        ` : ''}
+        ${currentCount > 0
+          ? html`
+              ${this.config.show_current_warning_title
+                ? html`<div class="section-title">
+                    Aktuelle Warnungen (${currentCount})
+                  </div>`
+                : ''}
+              ${Array.from({ length: currentCount }, (_, i) =>
+                this.renderWarning(currentEntity, i + 1)
+              )}
+            `
+          : ''}
+        ${advanceCount > 0
+          ? html`
+              <div class="section-title">Vorabinformationen</div>
+              ${Array.from({ length: advanceCount }, (_, i) =>
+                this.renderWarning(advanceEntity, i + 1)
+              )}
+            `
+          : ''}
+        ${currentCount === 0 && advanceCount === 0
+          ? html`
+              <div class="no-warnings">
+                <ha-icon
+                  icon="mdi:check-circle-outline"
+                  style="color: var(--success-color); width: 48px; height: 48px; margin-bottom: 4px;"
+                ></ha-icon>
+                <div>Keine Wetterwarnungen vorhanden.</div>
+              </div>
+            `
+          : ''}
+        ${this.config.show_last_update_footer
+          ? html`
+              <div class="footer">
+                Stand: ${lastUpdate ? this.formatTime(lastUpdate) : 'Unbekannt'}
+              </div>
+            `
+          : ''}
       </ha-card>
     `;
   }
@@ -311,13 +353,16 @@ export class HaDwdCardEditor extends LitElement {
     const target = ev.target as any;
     const configValue = target.configValue as keyof DWDCardConfig;
 
-    if (this._config[configValue] === target.value || 
-        (String(configValue).includes('show_') && this._config[configValue] === target.checked) ||
-        (String(configValue).includes('compact_') && this._config[configValue] === target.checked)
-        ) {
+    if (
+      this._config[configValue] === target.value ||
+      (String(configValue).includes('show_') &&
+        this._config[configValue] === target.checked) ||
+      (String(configValue).includes('compact_') &&
+        this._config[configValue] === target.checked)
+    ) {
       return;
     }
-    
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let newValue: any;
     if (ev.detail && ev.detail.value !== undefined) {
@@ -327,14 +372,14 @@ export class HaDwdCardEditor extends LitElement {
     } else {
       newValue = target.value;
     }
-    
+
     if (configValue) {
-        this._config = {
-          ...this._config,
-          [configValue]: newValue,
-        };
+      this._config = {
+        ...this._config,
+        [configValue]: newValue,
+      };
     }
-    
+
     const event = new CustomEvent('config-changed', {
       detail: { config: this._config },
       bubbles: true,
@@ -358,7 +403,7 @@ export class HaDwdCardEditor extends LitElement {
           @value-changed=${this._valueChanged}
           allow-custom-entity
         ></ha-entity-picker>
-        
+
         <ha-entity-picker
           label="Pre-warning Entity (Optional)"
           .hass=${this.hass}
@@ -376,7 +421,7 @@ export class HaDwdCardEditor extends LitElement {
               @change=${this._valueChanged}
             ></ha-switch>
           </ha-formfield>
-          
+
           <ha-formfield label="Compact Headline">
             <ha-switch
               .checked=${this._config.compact_warning_headline === true}
@@ -399,26 +444,26 @@ export class HaDwdCardEditor extends LitElement {
             .hass=${this.hass}
             .selector=${{ ui_action: {} }}
             .value=${this._config.tap_action}
-            .label=${"Tap Action"}
-            .configValue=${"tap_action"}
+            .label=${'Tap Action'}
+            .configValue=${'tap_action'}
             @value-changed=${this._valueChanged}
           ></ha-selector>
-          
+
           <ha-selector
             .hass=${this.hass}
             .selector=${{ ui_action: {} }}
             .value=${this._config.hold_action}
-            .label=${"Hold Action"}
-            .configValue=${"hold_action"}
+            .label=${'Hold Action'}
+            .configValue=${'hold_action'}
             @value-changed=${this._valueChanged}
           ></ha-selector>
-          
+
           <ha-selector
             .hass=${this.hass}
             .selector=${{ ui_action: {} }}
             .value=${this._config.double_tap_action}
-            .label=${"Double Tap Action"}
-            .configValue=${"double_tap_action"}
+            .label=${'Double Tap Action'}
+            .configValue=${'double_tap_action'}
             @value-changed=${this._valueChanged}
           ></ha-selector>
         </div>
@@ -445,7 +490,9 @@ export class HaDwdCardEditor extends LitElement {
       padding-top: 12px;
       border-top: 1px solid var(--divider-color);
     }
-    ha-entity-picker, ha-selector, ha-textfield {
+    ha-entity-picker,
+    ha-selector,
+    ha-textfield {
       display: block;
       width: 100%;
     }

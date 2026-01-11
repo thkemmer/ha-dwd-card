@@ -1,40 +1,42 @@
-import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
-import litPlugin from "eslint-plugin-lit";
-import wcPlugin from "eslint-plugin-wc";
+import globals from 'globals';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import litPlugin from 'eslint-plugin-lit';
+import wcPlugin from 'eslint-plugin-wc';
+import prettierConfig from 'eslint-config-prettier';
 
 export default [
   {
-    files: ["**/*.ts"],
+    files: ['**/*.ts'],
     languageOptions: {
       parser: tsParser,
       globals: {
         ...globals.browser,
-        ...globals.node
+        ...globals.node,
       },
       parserOptions: {
         ecmaVersion: 2020,
-        sourceType: "module"
-      }
+        sourceType: 'module',
+      },
     },
     plugins: {
-      "@typescript-eslint": tsPlugin,
-      "lit": litPlugin,
-      "wc": wcPlugin
+      '@typescript-eslint': tsPlugin,
+      lit: litPlugin,
+      wc: wcPlugin,
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
       ...litPlugin.configs.recommended.rules,
       ...wcPlugin.configs.recommended.rules,
-      
+      ...prettierConfig.rules,
+
       // Custom overrides
-      "@typescript-eslint/no-explicit-any": "warn", // Allow 'any' but warn
-      "@typescript-eslint/explicit-module-boundary-types": "off",
-      "no-console": ["warn", { allow: ["warn", "error"] }]
-    }
+      '@typescript-eslint/no-explicit-any': 'warn', // Allow 'any' but warn
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+    },
   },
   {
-    ignores: ["dist/**", "node_modules/**"]
-  }
+    ignores: ['dist/**', 'node_modules/**'],
+  },
 ];

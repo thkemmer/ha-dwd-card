@@ -58,16 +58,19 @@ This project uses [Vitest](https://vitest.dev/) for unit testing. Vitest is a fa
 ### Running Tests
 
 To run the tests once:
+
 ```bash
 npm run test
 ```
 
 To run tests in watch mode (useful during development):
+
 ```bash
 npx vitest
 ```
 
 The tests cover:
+
 - **Component Rendering:** Ensuring the card loads correctly in different states.
 - **Logic Verification:** Specifically testing the `getCardSize()` method to ensure correct dashboard layout.
 - **Mocking:** Tests use a mocked Home Assistant (`hass`) object to simulate various warning scenarios.
