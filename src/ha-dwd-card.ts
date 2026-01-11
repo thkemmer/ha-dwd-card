@@ -1,6 +1,6 @@
 import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { HomeAssistant, hasConfigOrEntityChanged, handleAction, ActionConfig } from 'custom-card-helpers';
+import { HomeAssistant, handleAction, ActionConfig } from 'custom-card-helpers';
 import { getWarningIcon } from './warning-icons';
 
 // Interface for the card configuration
@@ -120,7 +120,7 @@ export class HaDwdCard extends LitElement {
     return false;
   }
 
-  private _handleAction(ev: Event): void {
+  private _handleAction(): void {
     if (this.config && this.hass) {
       handleAction(this, this.hass, this.config, 'tap');
     }
@@ -307,6 +307,7 @@ export class HaDwdCardEditor extends LitElement {
     if (!this._config || !this.hass) {
       return;
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const target = ev.target as any;
     const configValue = target.configValue as keyof DWDCardConfig;
 
@@ -317,6 +318,7 @@ export class HaDwdCardEditor extends LitElement {
       return;
     }
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let newValue: any;
     if (ev.detail && ev.detail.value !== undefined) {
       newValue = ev.detail.value;

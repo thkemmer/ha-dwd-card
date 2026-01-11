@@ -20,6 +20,7 @@ const createMockHass = (attributes = {}) => ({
       state: 'ok'
     }
   }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
 
 const mockConfig = {

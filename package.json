@@ -7,7 +7,8 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint ."
   },
   "author": "Mact",
   "license": "MIT",
@@ -21,6 +22,12 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@typescript-eslint/eslint-plugin": "^8.52.0",
+    "@typescript-eslint/parser": "^8.52.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-lit": "^2.1.1",
+    "eslint-plugin-wc": "^3.0.2",
+    "globals": "^17.0.0",
     "home-assistant-js-websocket": "^9.1.0",
     "jsdom": "^27.4.0",
     "rollup": "^4.9.6",
