@@ -1,0 +1,16 @@
+import { describe, it, expect } from 'vitest';
+import { getWarningIcon } from './warning-icons';
+
+describe('getWarningIcon', () => {
+  it('returns the correct icon for an existing mapping (Type 85)', () => {
+    // 85 -> Glatteis -> mdi:car-traction-control
+    expect(getWarningIcon(85)).toBe('mdi:car-traction-control');
+    expect(getWarningIcon('85')).toBe('mdi:car-traction-control');
+  });
+
+  it('returns the fallback icon for a non-existing mapping', () => {
+    // 999 is likely not defined
+    expect(getWarningIcon(999)).toBe('mdi:alert-circle-outline');
+    expect(getWarningIcon('unknown')).toBe('mdi:alert-circle-outline');
+  });
+});

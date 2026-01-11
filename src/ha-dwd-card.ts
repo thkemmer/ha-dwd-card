@@ -1,6 +1,7 @@
 import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, hasConfigOrEntityChanged, handleAction, ActionConfig } from 'custom-card-helpers';
+import { getWarningIcon } from './warning-icons';
 
 // Interface for the card configuration
 interface DWDCardConfig {
@@ -42,6 +43,17 @@ export class HaDwdCard extends LitElement {
 
   public static getConfigElement(): HTMLElement {
     return document.createElement('ha-dwd-card-editor');
+  }
+
+  public getLayoutOptions() {
+    const compact = this.config?.compact_warning_headline ?? false;
+    const currentSize = this.getCardSize ? this.getCardSize() : 2;
+    return {
+      grid_min_rows: 2,
+      grid_rows: Math.max(2, currentSize),
+      grid_min_columns: compact ? 6 : 12,
+      grid_columns: compact ? 6 : 12,
+    };
   }
 
   public getCardSize(): number {
@@ -181,58 +193,7 @@ export class HaDwdCard extends LitElement {
 
   // Icon mapping logic
   private getIcon(warningType: string | number): string {
-    const typeStr = String(warningType);
-    const icons: Record<string, string> = {
-      "0": "mdi:shield-outline",
-      "1": "mdi:weather-windy",
-      "2": "mdi:weather-windy",
-      "3": "mdi:weather-hurricane",
-      "4": "mdi:weather-fog",
-      "5": "mdi:snowflake",
-      "6": "mdi:weather-snowy",
-      "7": "mdi:snowflake-melt",
-      "8": "mdi:snowflake-alert",
-      "9": "mdi:weather-lightning",
-      "10": "mdi:weather-pouring",
-      "11": "mdi:weather-rainy",
-      "12": "mdi:ice-pop",
-      "13": "mdi:fire",
-      "14": "mdi:weather-sunny-alert",
-      "15": "mdi:water-percent",
-      "16": "mdi:weather-fog",
-      "17": "mdi:waves",
-      "18": "mdi:image-filter-hdr",
-      "19": "mdi:fire-alert",
-      "20": "mdi:grass",
-      "21": "mdi:snowflake",
-      "22": "mdi:snowflake",
-      "23": "mdi:weather-hail",
-      "24": "mdi:water-percent",
-      "25": "mdi:weather-lightning",
-      "26": "mdi:weather-lightning",
-      "27": "mdi:weather-hurricane",
-      "28": "mdi:weather-pouring",
-      "29": "mdi:snowflake-alert",
-      "30": "mdi:weather-hurricane",
-      "31": "mdi:fire",
-      "32": "mdi:snowflake",
-      "33": "mdi:ice-pop",
-      "34": "mdi:water-percent",
-      "35": "mdi:waves",
-      "36": "mdi:image-filter-hdr",
-      "37": "mdi:fire-alert",
-      "38": "mdi:weather-lightning",
-      "51": "mdi:weather-windy",
-      "52": "mdi:weather-windy",
-      "70": "mdi:weather-snowy",
-      "71": "mdi:weather-snowy",
-      "82": "mdi:snowflake",
-      "84": "mdi:car-traction-control",
-      "87": "mdi:car-traction-control",
-      "98": "mdi:alert-circle-outline",
-      "99": "mdi:help-circle-outline"
-    };
-    return icons[typeStr] || "mdi:alert-circle-outline";
+    return getWarningIcon(warningType);
   }
 
   // Format timestamp
