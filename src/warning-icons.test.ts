@@ -8,6 +8,10 @@ describe('getWarningIcon', () => {
     expect(getWarningIcon('85')).toBe('mdi:car-traction-control');
   });
 
+  it('returns the correct icon for warning type 59 (Fog)', () => {
+    expect(getWarningIcon(59)).toBe('mdi:weather-fog');
+  });
+
   it('returns the fallback icon for a non-existing mapping', () => {
     // 999 is likely not defined
     expect(getWarningIcon(999)).toBe('mdi:alert-circle-outline');
