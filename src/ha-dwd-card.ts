@@ -89,9 +89,9 @@ export class HaDwdCard extends LitElement {
     const warning_element_height = 45;
     const card_base_height = 10; // padding and border
     const footer_height = this.config.show_last_update_footer ? 19 : 0;
-    const header_height = this.config.show_current_warnings_headline ? 30 : 0
+    const header_height = this.config.show_current_warnings_headline ? 30 : 0;
 
-    const total_height = 
+    const total_height =
       card_base_height +
       warning_element_height * currentCount +
       (prewarningCount > 0
@@ -287,18 +287,27 @@ export class HaDwdCard extends LitElement {
       this.config.tap_action && this.config.tap_action.action !== 'none';
 
     return html`
-            <ha-card 
-              @click=${this._handleAction}
-              class=${isClickable ? 'clickable' : ''}
-            >
-              
-              ${currentCount > 0 ? html`
-                ${this.config.show_current_warnings_headline ? html`<div class="section-title">Aktuelle Warnungen (${currentCount})</div>` : ''}
-                ${Array.from({length: currentCount}, (_, i) => this.renderWarning(currentEntity, i + 1))}
-              ` : ''}
+      <ha-card
+        @click=${this._handleAction}
+        class=${isClickable ? 'clickable' : ''}
+      >
+        ${currentCount > 0
+          ? html`
+              ${this.config.show_current_warnings_headline
+                ? html`<div class="section-title">
+                    Aktuelle Warnungen (${currentCount})
+                  </div>`
+                : ''}
+              ${Array.from({ length: currentCount }, (_, i) =>
+                this.renderWarning(currentEntity, i + 1)
+              )}
+            `
+          : ''}
         ${prewarningCount > 0
           ? html`
-              ${this.config.show_current_warnings_headline ? html`<div class="section-title">Vorabinformationen</div>` : ''}
+              ${this.config.show_current_warnings_headline
+                ? html`<div class="section-title">Vorabinformationen</div>`
+                : ''}
               ${Array.from({ length: prewarningCount }, (_, i) =>
                 this.renderWarning(prewarningEntity, i + 1)
               )}
@@ -406,16 +415,17 @@ export class HaDwdCardEditor extends LitElement {
           allow-custom-entity
         ></ha-entity-picker>
 
-                <div class="switches">
-                  <ha-formfield label="Show Section Headlines">
-                    <ha-switch
-                      .checked=${this._config.show_current_warnings_headline === true}
-                      .configValue=${'show_current_warnings_headline'}
-                      @change=${this._valueChanged}
-                    ></ha-switch>
-                  </ha-formfield>
-                  
-                  <ha-formfield label="Compact Headline">            <ha-switch
+        <div class="switches">
+          <ha-formfield label="Show Section Headlines">
+            <ha-switch
+              .checked=${this._config.show_current_warnings_headline === true}
+              .configValue=${'show_current_warnings_headline'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
+          <ha-formfield label="Compact Headline">
+            <ha-switch
               .checked=${this._config.compact_warning_headline === true}
               .configValue=${'compact_warning_headline'}
               @change=${this._valueChanged}

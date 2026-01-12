@@ -7,19 +7,19 @@ import './ha-dwd-card'; // Register the component
 const createMockHass = (attributes = {}) =>
   ({
     states: {
-    'sensor.dwd_current': {
-      attributes: {
-        warning_count: 0,
-        ...attributes
+      'sensor.dwd_current': {
+        attributes: {
+          warning_count: 0,
+          ...attributes,
+        },
+        state: 'ok',
       },
-      state: 'ok'
-    },
-    'sensor.dwd_prewarning': {
-      attributes: {
-        warning_count: 0,
+      'sensor.dwd_prewarning': {
+        attributes: {
+          warning_count: 0,
+        },
+        state: 'ok',
       },
-      state: 'ok'
-    }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any;
@@ -29,7 +29,7 @@ const mockConfig = {
   current_warning_entity: 'sensor.dwd_current',
   prewarning_entity: 'sensor.dwd_prewarning',
   show_current_warnings_headline: true,
-  show_last_update_footer: true
+  show_last_update_footer: true,
 };
 
 describe('HaDwdCard', () => {

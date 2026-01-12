@@ -9,9 +9,10 @@ warning_1_headline: VORABINFORMATION UNWETTER vor GLATTEIS
 warning_1_description: Am Montagfrüh zieht von Westen Niederschlag auf. Nach einer kurzen Schneephase geht der Niederschlag in Regen über, der auf kalten Böden gefriert. Es besteht verbreitet Gefahr vor Glatteis. Es ist mit erheblichen Beeinträchtigungen auf allen Verkehrswegen zu rechnen. Im Laufe des Mittags setzt sich von Südwesten eine deutliche Milderung durch und die Lage entspannt sich. 
 warning_1_instruction: Dies ist ein Hinweis auf eine Wetterlage mit hohem Unwetterpotential. Er soll die rechtzeitige Vorbereitung von Schutzmaßnahmen ermöglichen.
 
-Hilfestellung unter: https://www.dwd.de/handlungsempfehlungen-vorabinformation
+Hilfestellung unter: >- 
+  https://www.dwd.de/handlungsempfehlungen-vorabinformation
 
-Das Unwetterereignis wird verbreitet erwartet. Genauere Angaben zu Ort, Gebiet und Zeitpunkt des Ereignisses können erst mit der Ausgabe der amtlichen Unwetterwarnungen erfolgen. Bitte verfolgen Sie die weiteren Wettervorhersagen mit besonderer Aufmerksamkeit. Bitte verfolgen Sie die weiteren Wettervorhersagen mit besonderer Aufmerksamkeit.
+  Das Unwetterereignis wird verbreitet erwartet. Genauere Angaben zu Ort, Gebiet und Zeitpunkt des Ereignisses können erst mit der Ausgabe der amtlichen Unwetterwarnungen erfolgen. Bitte verfolgen Sie die weiteren Wettervorhersagen mit besonderer Aufmerksamkeit. Bitte verfolgen Sie die weiteren Wettervorhersagen mit besonderer Aufmerksamkeit.
 warning_1_start: 2026-01-12T04:00:00+00:00
 warning_1_end: 2026-01-12T12:00:00+00:00
 warning_1_parameters: null
