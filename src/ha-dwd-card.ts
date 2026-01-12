@@ -8,7 +8,7 @@ interface DWDCardConfig {
   type: string;
   current_warning_entity: string; // The current warning level entity
   prewarning_entity?: string; // Optional: The prewarning level entity
-  show_current_warning_title?: boolean; // Optional: Show title for current warnings
+  show_current_warnings_headline?: boolean; // Optional: Show headline for current warnings
   compact_warning_headline?: boolean; // Optional: Use shorter warning name instead of headline
   show_last_update_footer?: boolean; // Optional: Show last update time in footer
   tap_action?: ActionConfig; // Action to perform on tap
@@ -36,7 +36,7 @@ export class HaDwdCard extends LitElement {
       type: 'custom:ha-dwd-card',
       current_warning_entity: 'sensor.dwd_weather_warnings__aktuelle_warnstufe',
       prewarning_entity: 'sensor.dwd_weather_warnings__vorwarnstufe',
-      show_current_warning_title: false,
+      show_current_warnings_headline: false,
       compact_warning_headline: false,
       show_last_update_footer: true,
       tap_action: { action: 'more-info' },
@@ -89,9 +89,9 @@ export class HaDwdCard extends LitElement {
     const warning_element_height = 45;
     const card_base_height = 10; // padding and border
     const footer_height = this.config.show_last_update_footer ? 19 : 0;
-    const header_height = this.config.show_current_warning_title ? 30 : 0;
+    const header_height = this.config.show_current_warnings_headline ? 30 : 0
 
-    const total_height =
+    const total_height = 
       card_base_height +
       warning_element_height * currentCount +
       (advanceCount > 0
@@ -287,22 +287,15 @@ export class HaDwdCard extends LitElement {
       this.config.tap_action && this.config.tap_action.action !== 'none';
 
     return html`
-      <ha-card
-        @click=${this._handleAction}
-        class=${isClickable ? 'clickable' : ''}
-      >
-        ${currentCount > 0
-          ? html`
-              ${this.config.show_current_warning_title
-                ? html`<div class="section-title">
-                    Aktuelle Warnungen (${currentCount})
-                  </div>`
-                : ''}
-              ${Array.from({ length: currentCount }, (_, i) =>
-                this.renderWarning(currentEntity, i + 1)
-              )}
-            `
-          : ''}
+            <ha-card 
+              @click=${this._handleAction}
+              class=${isClickable ? 'clickable' : ''}
+            >
+              
+              ${currentCount > 0 ? html`
+                ${this.config.show_current_warnings_headline ? html`<div class="section-title">Aktuelle Warnungen (${currentCount})</div>` : ''}
+                ${Array.from({length: currentCount}, (_, i) => this.renderWarning(currentEntity, i + 1))}
+              ` : ''}
         ${advanceCount > 0
           ? html`
               <div class="section-title">Vorabinformationen</div>
@@ -413,17 +406,16 @@ export class HaDwdCardEditor extends LitElement {
           allow-custom-entity
         ></ha-entity-picker>
 
-        <div class="switches">
-          <ha-formfield label="Show Current Warning Title">
-            <ha-switch
-              .checked=${this._config.show_current_warning_title === true}
-              .configValue=${'show_current_warning_title'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield label="Compact Headline">
-            <ha-switch
+                <div class="switches">
+                  <ha-formfield label="Show Current Warnings Headline">
+                    <ha-switch
+                      .checked=${this._config.show_current_warnings_headline === true}
+                      .configValue=${'show_current_warnings_headline'}
+                      @change=${this._valueChanged}
+                    ></ha-switch>
+                  </ha-formfield>
+                  
+                  <ha-formfield label="Compact Headline">            <ha-switch
               .checked=${this._config.compact_warning_headline === true}
               .configValue=${'compact_warning_headline'}
               @change=${this._valueChanged}

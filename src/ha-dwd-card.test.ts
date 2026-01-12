@@ -28,8 +28,8 @@ const mockConfig = {
   type: 'custom:ha-dwd-card',
   current_warning_entity: 'sensor.dwd_current',
   prewarning_entity: 'sensor.dwd_advance',
-  show_current_warning_title: true,
-  show_last_update_footer: true,
+  show_current_warnings_headline: true,
+  show_last_update_footer: true
 };
 
 describe('HaDwdCard', () => {

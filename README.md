@@ -1,13 +1,14 @@
 # DWD Weather Warnings Card
+![CI Status](https://github.com/thkemmer/ha-dwd-card/actions/workflows/ci.yml/badge.svg)
 
-A custom Home Assistant lovelace card to display Deutscher Wetterdienst (DWD) weather warnings with a modern, clean design. The goal is to have a very compatct view for small displays.
+A custom Home Assistant lovelace card to display Deutscher Wetterdienst (DWD) weather warnings with a modern, clean design. The goal is to have a very compatct view for small displays:
 
-<img src="assets/preview-card.png" alt="Screenshot" width="400">
+<img src="assets/preview-card.png" alt="Screenshot" height="250">
 
+
+You can install the releases via HACS directly in Home Assistant:
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=thkemmer&repository=ha-dwd-card&category=plugin)
 
-
-![CI Status](https://github.com/thkemmer/ha-dwd-card/actions/workflows/ci.yml/badge.svg)
 
 ## Features
 
@@ -45,8 +46,8 @@ type: custom:ha-dwd-card
 current_warning_entity: sensor.dwd_weather_warnings_berlin_current_warning_level
 # Optional: explicitly define the pre-warning entity
 # prewarning_entity: sensor.dwd_weather_warnings_berlin_prewarning_level
-# Optional: Show title for current warnings (default: false)
-show_current_warning_title: true
+# Optional: Show headline for current warnings (default: false)
+show_current_warnings_headline: true
 # Optional: Use shorter warning name instead of headline (default: false)
 compact_warning_headline: true
 ```
