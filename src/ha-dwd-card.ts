@@ -8,7 +8,7 @@ interface DWDCardConfig {
   type: string;
   current_warning_entity: string; // The current warning level entity
   prewarning_entity?: string; // Optional: The prewarning level entity
-  show_current_warnings_headline?: boolean; // Optional: Show headline for current warnings
+  show_current_warnings_headline?: boolean; // Optional: Show section headlines
   compact_warning_headline?: boolean; // Optional: Use shorter warning name instead of headline
   show_last_update_footer?: boolean; // Optional: Show last update time in footer
   tap_action?: ActionConfig; // Action to perform on tap
@@ -298,7 +298,7 @@ export class HaDwdCard extends LitElement {
               ` : ''}
         ${advanceCount > 0
           ? html`
-              <div class="section-title">Vorabinformationen</div>
+              ${this.config.show_current_warnings_headline ? html`<div class="section-title">Vorabinformationen</div>` : ''}
               ${Array.from({ length: advanceCount }, (_, i) =>
                 this.renderWarning(advanceEntity, i + 1)
               )}
@@ -407,7 +407,7 @@ export class HaDwdCardEditor extends LitElement {
         ></ha-entity-picker>
 
                 <div class="switches">
-                  <ha-formfield label="Show Current Warnings Headline">
+                  <ha-formfield label="Show Section Headlines">
                     <ha-switch
                       .checked=${this._config.show_current_warnings_headline === true}
                       .configValue=${'show_current_warnings_headline'}

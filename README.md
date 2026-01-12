@@ -46,7 +46,7 @@ type: custom:ha-dwd-card
 current_warning_entity: sensor.dwd_weather_warnings_berlin_current_warning_level
 # Optional: explicitly define the pre-warning entity
 # prewarning_entity: sensor.dwd_weather_warnings_berlin_prewarning_level
-# Optional: Show headline for current warnings (default: false)
+# Optional: Show section headlines (default: false)
 show_current_warnings_headline: true
 # Optional: Use shorter warning name instead of headline (default: false)
 compact_warning_headline: true
