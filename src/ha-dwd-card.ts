@@ -63,24 +63,24 @@ export class HaDwdCard extends LitElement {
       return 1;
     }
     const currentEntity = this.config.current_warning_entity;
-    const advanceEntity =
+    const prewarningEntity =
       this.config.prewarning_entity ||
       currentEntity.replace('_aktuelle_warnstufe', '_vorwarnstufe');
 
     const currentState = this.hass.states[currentEntity];
-    const advanceState = this.hass.states[advanceEntity];
+    const prewarningState = this.hass.states[prewarningEntity];
 
     if (!currentState) {
       return 1;
     }
 
     const currentCount = currentState.attributes['warning_count'] || 0;
-    const advanceCount = advanceState
-      ? advanceState.attributes['warning_count'] || 0
+    const prewarningCount = prewarningState
+      ? prewarningState.attributes['warning_count'] || 0
       : 0;
 
     // No active warnings
-    if (currentCount === 0 && advanceCount === 0) {
+    if (currentCount === 0 && prewarningCount === 0) {
       return 2;
     }
 
@@ -94,8 +94,8 @@ export class HaDwdCard extends LitElement {
     const total_height = 
       card_base_height +
       warning_element_height * currentCount +
-      (advanceCount > 0
-        ? header_height + warning_element_height * advanceCount
+      (prewarningCount > 0
+        ? header_height + warning_element_height * prewarningCount
         : 0) +
       footer_height +
       header_height;
@@ -259,12 +259,12 @@ export class HaDwdCard extends LitElement {
 
     const currentEntity = this.config.current_warning_entity;
     // Use configured prewarning entity or derive it from the current entity
-    const advanceEntity =
+    const prewarningEntity =
       this.config.prewarning_entity ||
       currentEntity.replace('_aktuelle_warnstufe', '_vorwarnstufe');
 
     const currentState = this.hass.states[currentEntity];
-    const advanceState = this.hass.states[advanceEntity];
+    const prewarningState = this.hass.states[prewarningEntity];
 
     if (!currentState) {
       return html`
@@ -277,8 +277,8 @@ export class HaDwdCard extends LitElement {
     }
 
     const currentCount = currentState.attributes['warning_count'] || 0;
-    const advanceCount = advanceState
-      ? advanceState.attributes['warning_count'] || 0
+    const prewarningCount = prewarningState
+      ? prewarningState.attributes['warning_count'] || 0
       : 0;
     const lastUpdate = currentState.attributes['last_update'];
 
@@ -296,15 +296,15 @@ export class HaDwdCard extends LitElement {
                 ${this.config.show_current_warnings_headline ? html`<div class="section-title">Aktuelle Warnungen (${currentCount})</div>` : ''}
                 ${Array.from({length: currentCount}, (_, i) => this.renderWarning(currentEntity, i + 1))}
               ` : ''}
-        ${advanceCount > 0
+        ${prewarningCount > 0
           ? html`
               ${this.config.show_current_warnings_headline ? html`<div class="section-title">Vorabinformationen</div>` : ''}
-              ${Array.from({ length: advanceCount }, (_, i) =>
-                this.renderWarning(advanceEntity, i + 1)
+              ${Array.from({ length: prewarningCount }, (_, i) =>
+                this.renderWarning(prewarningEntity, i + 1)
               )}
             `
           : ''}
-        ${currentCount === 0 && advanceCount === 0
+        ${currentCount === 0 && prewarningCount === 0
           ? html`
               <div class="no-warnings">
                 <ha-icon
