@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HA DWD Card Preview</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+    <style>
+        body {
+            font-family: Roboto, Noto, sans-serif;
+            background-color: #111; /* Dark mode background */
+            color: #e1e1e1;
+            padding: 20px;
+            --primary-text-color: #e1e1e1;
+            --secondary-text-color: #b0b0b0;
+            --divider-color: #444;
+            --card-background-color: #1c1c1c;
+            --ha-card-background: #1c1c1c;
+            --success-color: #4caf50;
+        }
+        
+        .preview-container {
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px dashed #555;
+            padding: 20px;
+        }
+
+        .controls {
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        button {
+            padding: 8px 16px;
+            margin: 0 4px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #444;
+        }
+
+        /* Mock ha-icon styles */
+        ha-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mdi {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <h3>Scenario Selector</h3>
+        <button onclick="setScenario('no_warnings')">No Warnings</button>
+        <button onclick="setScenario('warnings_mixed')">Mixed Warnings</button>
+        <button onclick="setScenario('prewarning_only')">Prewarning Only</button>
+    </div>
+
+    <div class="controls">
+        <h3>Configuration</h3>
+        <label>
+            <input type="checkbox" id="compact_warning_headline" onchange="updateConfig()">
+            Compact Headline
+        </label>
+        <label>
+            <input type="checkbox" id="show_last_update_footer" checked onchange="updateConfig()">
+            Show Footer
+        </label>
+        <label>
+            <input type="checkbox" id="show_current_warnings_headline" checked onchange="updateConfig()">
+            Show Headlines
+        </label>
+    </div>
+
+    <div class="preview-container">
+        <h3>Card Preview</h3>
+        <ha-dwd-card id="card"></ha-dwd-card>
+    </div>
+
+    <script>
+        // --- Mock HA Components ---
+        class HaCard extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+            }
+            connectedCallback() {
+                this.shadowRoot.innerHTML = `
+                    <style>
+                        :host {
+                            display: block;
+                            background: var(--ha-card-background, #fff);
+                            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                            border-radius: 4px;
+                            color: var(--primary-text-color, #212121);
+                        }
+                    </style>
+                    <slot></slot>
+                `;
+            }
+        }
+        customElements.define('ha-card', HaCard);
+
+        class HaIcon extends HTMLElement {
+            static get observedAttributes() { return ['icon']; }
+            
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+            }
+
+            connectedCallback() {
+                this.render();
+            }
+
+            attributeChangedCallback() {
+                this.render();
+            }
+
+            render() {
+                const icon = this.getAttribute('icon');
+                if (icon) {
+                    const mdiClass = icon.replace(':', '-');
+                    this.shadowRoot.innerHTML = `
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+                        <style>
+                            :host {
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                            .mdi {
+                                font-size: 24px;
+                            }
+                        </style>
+                        <span class="mdi ${mdiClass}"></span>
+                    `;
+                }
+            }
+        }
+        customElements.define('ha-icon', HaIcon);
+
+        // --- Mock Data Scenarios ---
+        const SCENARIOS = {
+            no_warnings: {
+                current: {
+                    attributes: {
+                        warning_count: 0,
+                        last_update: "2026-01-01T10:00:00+00:00"
+                    }
+                },
+                pre: {
+                    attributes: {
+                        warning_count: 0
+                    }
+                }
+            },
+            warnings_mixed: {
+                current: {
+                    attributes: {
+                        warning_count: 3,
+                        last_update: "2026-01-01T16:22:06+00:00",
+                        warning_1_headline: "Amtliche WARNUNG vor WINDBÖEN",
+                        warning_1_name: "WINDBÖEN",
+                        warning_1_start: "2026-01-01T17:00:00+00:00",
+                        warning_1_end: "2026-01-02T09:00:00+00:00",
+                        warning_1_color: "#ffeb3b",
+                        warning_1_type: 51,
+                        
+                        warning_2_headline: "Amtliche WARNUNG vor LEICHTEM SCHNEEFALL",
+                        warning_2_name: "LEICHTER SCHNEEFALL",
+                        warning_2_start: "2026-01-01T13:00:00+00:00",
+                        warning_2_end: "2026-01-02T09:00:00+00:00",
+                        warning_2_color: "#ffeb3b",
+                        warning_2_type: 70,
+
+                        warning_3_headline: "Amtliche WARNUNG vor WINDBÖEN",
+                        warning_3_name: "WINDBÖEN",
+                        warning_3_start: "2026-01-01T09:00:00+00:00",
+                        warning_3_end: "2026-01-01T17:00:00+00:00",
+                        warning_3_color: "#ffeb3b",
+                        warning_3_type: 51
+                    }
+                },
+                pre: {
+                    attributes: {
+                        warning_count: 0
+                    }
+                }
+            },
+            prewarning_only: {
+                current: {
+                    attributes: {
+                        warning_count: 0,
+                        last_update: "2026-01-11T10:00:00+00:00"
+                    }
+                },
+                pre: {
+                    attributes: {
+                        warning_count: 1,
+                        warning_1_headline: "VORABINFORMATION UNWETTER vor GLATTEIS",
+                        warning_1_start: "2026-01-12T04:00:00+00:00",
+                        warning_1_end: "2026-01-12T12:00:00+00:00",
+                        warning_1_color: "#ff8080",
+                        warning_1_type: 85
+                    }
+                }
+            }
+        };
+
+        // --- Setup ---
+        const card = document.getElementById('card');
+        
+        window.setScenario = function(name) {
+            const data = SCENARIOS[name];
+            const hass = {
+                states: {
+                    'sensor.dwd_current': data.current,
+                    'sensor.dwd_pre': data.pre
+                }
+            };
+            card.hass = hass;
+        }
+
+        window.updateConfig = function() {
+            card.setConfig({
+                type: 'custom:ha-dwd-card',
+                current_warning_entity: 'sensor.dwd_current',
+                prewarning_entity: 'sensor.dwd_pre',
+                show_current_warnings_headline: document.getElementById('show_current_warnings_headline').checked,
+                compact_warning_headline: document.getElementById('compact_warning_headline').checked,
+                show_last_update_footer: document.getElementById('show_last_update_footer').checked
+            });
+        }
+
+        // Load module
+        import('../dist/ha-dwd-card.js').then(() => {
+            console.log('Card loaded');
+            
+            // Initial Config
+            updateConfig();
+            setScenario('warnings_mixed');
+        });
+
+    </script>
+</body>
+</html>
