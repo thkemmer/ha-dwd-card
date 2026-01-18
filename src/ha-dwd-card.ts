@@ -2,6 +2,8 @@ import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, handleAction, ActionConfig } from 'custom-card-helpers';
 import { getWarningIcon } from './warning-icons';
+import { getDWDData, getPrewarningEntityId, Warning } from './dwd-data';
+import './ha-dwd-details-card'; // Register the details card
 
 // Interface for the card configuration
 interface DWDCardConfig {
@@ -11,6 +13,7 @@ interface DWDCardConfig {
   show_current_warnings_headline?: boolean; // Optional: Show section headlines
   compact_warning_headline?: boolean; // Optional: Use shorter warning name instead of headline
   show_last_update_footer?: boolean; // Optional: Show last update time in footer
+  hide_empty?: boolean; // Optional: Hide card if no warnings
   tap_action?: ActionConfig; // Action to perform on tap
   hold_action?: ActionConfig; // Action to perform on hold
   double_tap_action?: ActionConfig; // Action to perform on double tap
@@ -39,6 +42,7 @@ export class HaDwdCard extends LitElement {
       show_current_warnings_headline: false,
       compact_warning_headline: false,
       show_last_update_footer: true,
+      hide_empty: false,
       tap_action: { action: 'more-info' },
     };
   }
@@ -63,25 +67,20 @@ export class HaDwdCard extends LitElement {
       return 1;
     }
     const currentEntity = this.config.current_warning_entity;
-    const prewarningEntity =
-      this.config.prewarning_entity ||
-      currentEntity.replace('_aktuelle_warnstufe', '_vorwarnstufe');
+    const prewarningEntity = getPrewarningEntityId(
+      currentEntity,
+      this.config.prewarning_entity
+    );
 
-    const currentState = this.hass.states[currentEntity];
-    const prewarningState = this.hass.states[prewarningEntity];
+    const currentData = getDWDData(this.hass, currentEntity);
+    const prewarningData = getDWDData(this.hass, prewarningEntity);
 
-    if (!currentState) {
-      return 1;
-    }
-
-    const currentCount = currentState.attributes['warning_count'] || 0;
-    const prewarningCount = prewarningState
-      ? prewarningState.attributes['warning_count'] || 0
-      : 0;
+    const currentCount = currentData.warningCount;
+    const prewarningCount = prewarningData.warningCount;
 
     // No active warnings
     if (currentCount === 0 && prewarningCount === 0) {
-      return 2;
+      return this.config.hide_empty ? 0 : 2;
     }
 
     // let's do the calculations a bit more intelligently. 1 - unit is about 50px in height.
@@ -116,11 +115,10 @@ export class HaDwdCard extends LitElement {
 
     const entitiesToCheck = [
       this.config.current_warning_entity,
-      this.config.prewarning_entity ||
-        this.config.current_warning_entity.replace(
-          '_aktuelle_warnstufe',
-          '_vorwarnstufe'
-        ),
+      getPrewarningEntityId(
+        this.config.current_warning_entity,
+        this.config.prewarning_entity
+      ),
     ];
 
     for (const entity of entitiesToCheck) {
@@ -196,7 +194,7 @@ export class HaDwdCard extends LitElement {
     }
     .no-warnings {
       text-align: center;
-      padding: 24px;
+      padding: 8px 4px;
       color: var(--secondary-text-color);
       border: 1px solid var(--divider-color);
       border-radius: 12px;
@@ -220,32 +218,21 @@ export class HaDwdCard extends LitElement {
   }
 
   // Render a single warning
-  private renderWarning(entityId: string, index: number) {
-    const attributeName = this.config.compact_warning_headline
-      ? 'name'
-      : 'headline';
-    const headline =
-      this.hass.states[entityId].attributes[
-        `warning_${index}_${attributeName}`
-      ];
-    const start =
-      this.hass.states[entityId].attributes[`warning_${index}_start`];
-    const end = this.hass.states[entityId].attributes[`warning_${index}_end`];
-    const color =
-      this.hass.states[entityId].attributes[`warning_${index}_color`] ||
-      '#cccccc';
-    const type = this.hass.states[entityId].attributes[`warning_${index}_type`];
-    const icon = this.getIcon(type);
+  private renderWarning(warning: Warning) {
+    const headline = this.config.compact_warning_headline
+      ? warning.name || warning.headline
+      : warning.headline;
+    const icon = this.getIcon(warning.type);
 
     return html`
       <div class="warning-box">
         <div class="icon-box">
-          <ha-icon icon="${icon}" style="color: ${color}"></ha-icon>
+          <ha-icon icon="${icon}" style="color: ${warning.color}"></ha-icon>
         </div>
         <div class="content-box">
           <div class="headline">${headline}</div>
           <div class="time-range">
-            ${this.formatTime(start)} - ${this.formatTime(end)}
+            ${this.formatTime(warning.start)} - ${this.formatTime(warning.end)}
           </div>
         </div>
       </div>
@@ -259,14 +246,15 @@ export class HaDwdCard extends LitElement {
 
     const currentEntity = this.config.current_warning_entity;
     // Use configured prewarning entity or derive it from the current entity
-    const prewarningEntity =
-      this.config.prewarning_entity ||
-      currentEntity.replace('_aktuelle_warnstufe', '_vorwarnstufe');
+    const prewarningEntity = getPrewarningEntityId(
+      currentEntity,
+      this.config.prewarning_entity
+    );
 
-    const currentState = this.hass.states[currentEntity];
-    const prewarningState = this.hass.states[prewarningEntity];
+    const currentData = getDWDData(this.hass, currentEntity);
+    const prewarningData = getDWDData(this.hass, prewarningEntity);
 
-    if (!currentState) {
+    if (!this.hass.states[currentEntity]) {
       return html`
         <ha-card>
           <div style="padding: 16px; color: red;">
@@ -276,11 +264,13 @@ export class HaDwdCard extends LitElement {
       `;
     }
 
-    const currentCount = currentState.attributes['warning_count'] || 0;
-    const prewarningCount = prewarningState
-      ? prewarningState.attributes['warning_count'] || 0
-      : 0;
-    const lastUpdate = currentState.attributes['last_update'];
+    const currentCount = currentData.warningCount;
+    const prewarningCount = prewarningData.warningCount;
+    const lastUpdate = currentData.lastUpdate;
+
+    if (currentCount === 0 && prewarningCount === 0 && this.config.hide_empty) {
+      return html``;
+    }
 
     // Check if card is clickable (has tap action other than none)
     const isClickable =
@@ -298,8 +288,8 @@ export class HaDwdCard extends LitElement {
                     Aktuelle Warnungen (${currentCount})
                   </div>`
                 : ''}
-              ${Array.from({ length: currentCount }, (_, i) =>
-                this.renderWarning(currentEntity, i + 1)
+              ${currentData.warnings.map((warning) =>
+                this.renderWarning(warning)
               )}
             `
           : ''}
@@ -308,8 +298,8 @@ export class HaDwdCard extends LitElement {
               ${this.config.show_current_warnings_headline
                 ? html`<div class="section-title">Vorabinformationen</div>`
                 : ''}
-              ${Array.from({ length: prewarningCount }, (_, i) =>
-                this.renderWarning(prewarningEntity, i + 1)
+              ${prewarningData.warnings.map((warning) =>
+                this.renderWarning(warning)
               )}
             `
           : ''}
@@ -318,7 +308,7 @@ export class HaDwdCard extends LitElement {
               <div class="no-warnings">
                 <ha-icon
                   icon="mdi:check-circle-outline"
-                  style="color: var(--success-color); width: 48px; height: 48px; margin-bottom: 4px;"
+                  style="color: var(--success-color); margin-bottom: 4px;"
                 ></ha-icon>
                 <div>Keine Wetterwarnungen vorhanden.</div>
               </div>
