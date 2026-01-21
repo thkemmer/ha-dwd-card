@@ -11,7 +11,7 @@ interface DWDCardConfig {
   current_warning_entity: string; // The current warning level entity
   prewarning_entity?: string; // Optional: The prewarning level entity
   show_current_warnings_headline?: boolean; // Optional: Show section headlines
-  compact_warning_headline?: boolean; // Optional: Use shorter warning name instead of headline
+  compact_warning_headline?: boolean; // Optional: Use shorter warning name instead of the verbose headline
   show_last_update_footer?: boolean; // Optional: Show last update time in footer
   hide_empty?: boolean; // Optional: Hide card if no warnings
   tap_action?: ActionConfig; // Action to perform on tap

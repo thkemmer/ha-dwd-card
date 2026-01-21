@@ -90,7 +90,7 @@
     <div class="nav-bar">
         <strong>Components:</strong>
         <a href="#compact-card">Compact Card (ha-dwd-card)</a>
-        <a href="#details-card">Details Card (ha-dwd-details-card)</a>
+        <a href="#details-card-section">Details Card (ha-dwd-details-card)</a>
     </div>
 
     <!-- Compact Card Section -->
@@ -116,8 +116,8 @@
                 Show Footer
             </label>
             <label>
-                <input type="checkbox" id="show_headlines" checked onchange="updateCompactConfig()">
-                Show Headlines
+                <input type="checkbox" id="show_current_warnings_headline" checked onchange="updateCompactConfig()">
+                Show current warnings headline
             </label>
             <label>
                 <input type="checkbox" id="hide_empty_compact" onchange="updateCompactConfig()">
@@ -131,7 +131,7 @@
     </div>
 
     <!-- Details Card Section -->
-    <div id="details-card" class="component-section">
+    <div id="details-card-section" class="component-section">
         <h2>Details Card (ha-dwd-details-card)</h2>
         <p>A comprehensive view showing full warning details, instructions, and parameters.</p>
 
@@ -334,7 +334,7 @@
                 type: 'custom:ha-dwd-card',
                 current_warning_entity: 'sensor.dwd_current',
                 prewarning_entity: 'sensor.dwd_pre',
-                show_current_warnings_headline: document.getElementById('show_headlines').checked,
+                show_current_warnings_headline: document.getElementById('show_current_warnings_headline').checked,
                 compact_warning_headline: document.getElementById('compact_headline').checked,
                 show_last_update_footer: document.getElementById('show_footer').checked,
                 hide_empty: document.getElementById('hide_empty_compact').checked
