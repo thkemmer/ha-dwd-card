@@ -82,18 +82,19 @@ export class HaDwdDetailsCard extends LitElement {
         </div>
 
         <div class="body">
-          <div class="level-info">
-            <ha-icon icon="mdi:information-outline" class="inline-icon"></ha-icon>
-            <span>${levelText} ${isPrewarning ? '(Vorabinformation)' : ''}</span>
+          <div class="section">
+            <div class="level-info">
+              <ha-icon icon="mdi:alert" class="inline-icon"></ha-icon>
+              <span>${levelText} ${isPrewarning ? '(Vorabinformation)' : ''}</span>
+            </div>
+            ${warning.description
+              ? html`<div class="description">${warning.description}</div>`
+              : ''}
           </div>
-
-          ${warning.description
-            ? html`<div class="description">${warning.description}</div>`
-            : ''}
 
           ${warning.instruction
             ? html`
-                <div class="instruction">
+                <div class="section">
                   <div class="instruction-title">
                     <ha-icon icon="mdi:alert-circle-outline" class="inline-icon"></ha-icon>
                     Handlungsempfehlungen
@@ -193,16 +194,21 @@ export class HaDwdDetailsCard extends LitElement {
       gap: 4px;
     }
     .body {
-      padding: 16px;
+      padding: 0 16px 16px 16px;
       display: flex;
       flex-direction: column;
       gap: 16px;
+    }
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
     .level-info {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-weight: 500;
+      font-weight: 700;
       color: var(--primary-text-color);
       font-size: 0.95rem;
     }
@@ -216,18 +222,11 @@ export class HaDwdDetailsCard extends LitElement {
       line-height: 1.5;
       color: var(--primary-text-color);
     }
-    .instruction {
-      border: 1px solid var(--divider-color);
-      border-radius: 8px;
-      padding: 16px;
-      background-color: var(--secondary-background-color);
-    }
     .instruction-title {
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 8px;
       color: var(--primary-text-color);
     }
     .instruction-text {
