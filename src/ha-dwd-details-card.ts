@@ -62,23 +62,6 @@ export class HaDwdDetailsCard extends LitElement {
     return `${day}.${month}.${year} ${hours}:${minutes}`;
   }
 
-  private renderParameterGrid(parameters: Record<string, string> | undefined): TemplateResult {
-    if (!parameters) return html``;
-    
-    return html`
-      <div class="parameter-grid">
-        ${Object.entries(parameters).map(
-          ([key, value]) => html`
-            <div class="parameter-item">
-              <span class="param-key">${key}:</span>
-              <span class="param-value">${value}</span>
-            </div>
-          `
-        )}
-      </div>
-    `;
-  }
-
   private renderWarningCard(warning: Warning, isPrewarning: boolean): TemplateResult {
     const icon = getWarningIcon(warning.type);
     
@@ -100,8 +83,6 @@ export class HaDwdDetailsCard extends LitElement {
             <ha-icon icon="mdi:clock-outline" class="inline-icon"></ha-icon>
             <span>${this.formatTime(warning.start)} - ${this.formatTime(warning.end)}</span>
           </div>
-
-          ${this.renderParameterGrid(warning.parameters)}
 
           ${warning.description
             ? html`<div class="description">${warning.description}</div>`
@@ -223,22 +204,6 @@ export class HaDwdDetailsCard extends LitElement {
     .inline-icon {
       --mdc-icon-size: 20px;
       color: var(--secondary-text-color);
-    }
-    .parameter-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
-      background: var(--secondary-background-color);
-      padding: 12px;
-      border-radius: 8px;
-    }
-    .parameter-item {
-      font-size: 0.9rem;
-    }
-    .param-key {
-      color: var(--secondary-text-color);
-      margin-right: 4px;
-      font-weight: 500;
     }
     .description {
       white-space: pre-line;

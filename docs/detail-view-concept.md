@@ -42,17 +42,10 @@ Each warning block will contain:
     *   Prominent start and end time display.
     *   Visual indicator if currently active vs. future.
 
-3.  **Parameters (Grid View):**
-    *   A structured grid displaying the `parameters` attribute (key-value pairs).
-    *   *Example:*
-        *   Wind Direction: South-West
-        *   Gusts: ~110 km/h
-        *   Snowfall: > 15cm
-
-4.  **Description:**
+3.  **Description:**
     *   Full text body (`warning_X_description`).
 
-5.  **Instructions (Actionable):**
+4.  **Instructions (Actionable):**
     *   Distinct section (e.g., bordered box) for `warning_X_instruction`.
     *   Essential for safety advice (e.g., "Secure loose objects", "Avoid forests").
 
