@@ -36,11 +36,11 @@ Each warning block will contain:
     *   Full-width colored bar matching the warning severity (Yellow/Orange/Red/Violet).
     *   Large Icon (left).
     *   **Headline:** Bold, large text (e.g., "Amtliche UNWETTERWARNUNG vor ORKANARTIGEN BÖEN").
-    *   **Level:** Textual severity (e.g., "Level 3 - Unwetter").
+    *   **Timeline:** Prominent start and end time display.
 
-2.  **Timeline:**
-    *   Prominent start and end time display.
-    *   Visual indicator if currently active vs. future.
+2.  **Level Info:**
+    *   Textual severity (e.g., "Warnstufe 3").
+    *   Visual indicator if pre-warning.
 
 3.  **Description:**
     *   Full text body (`warning_X_description`).

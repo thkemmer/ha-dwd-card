@@ -74,14 +74,17 @@ export class HaDwdDetailsCard extends LitElement {
           <ha-icon icon="${icon}" class="header-icon" style="color: ${warning.color};"></ha-icon>
           <div class="header-content">
             <div class="headline" style="color: ${warning.color};">${warning.headline}</div>
-            <div class="level-badge">${levelText} ${isPrewarning ? '(Vorabinformation)' : ''}</div>
+            <div class="time-range">
+              <ha-icon icon="mdi:clock-outline" class="inline-icon"></ha-icon>
+              <span>${this.formatTime(warning.start)} - ${this.formatTime(warning.end)}</span>
+            </div>
           </div>
         </div>
 
         <div class="body">
-          <div class="timeline">
-            <ha-icon icon="mdi:clock-outline" class="inline-icon"></ha-icon>
-            <span>${this.formatTime(warning.start)} - ${this.formatTime(warning.end)}</span>
+          <div class="level-info">
+            <ha-icon icon="mdi:information-outline" class="inline-icon"></ha-icon>
+            <span>${levelText} ${isPrewarning ? '(Vorabinformation)' : ''}</span>
           </div>
 
           ${warning.description
@@ -167,7 +170,6 @@ export class HaDwdDetailsCard extends LitElement {
       align-items: flex-start;
       gap: 16px;
       background: var(--ha-card-background, var(--card-background-color, #fff));
-      border-bottom: 1px solid var(--divider-color);
     }
     .header-icon {
       --mdc-icon-size: 32px;
@@ -183,9 +185,12 @@ export class HaDwdDetailsCard extends LitElement {
       line-height: 1.2;
       margin-bottom: 4px;
     }
-    .level-badge {
+    .time-range {
       font-size: 0.9rem;
       color: var(--secondary-text-color);
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     .body {
       padding: 16px;
@@ -193,7 +198,7 @@ export class HaDwdDetailsCard extends LitElement {
       flex-direction: column;
       gap: 16px;
     }
-    .timeline {
+    .level-info {
       display: flex;
       align-items: center;
       gap: 8px;
