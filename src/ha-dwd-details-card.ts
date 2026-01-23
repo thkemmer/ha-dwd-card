@@ -169,7 +169,7 @@ export class HaDwdDetailsCard extends LitElement {
       padding: 16px;
       display: flex;
       align-items: flex-start;
-      gap: 16px;
+      column-gap: 8px;
       background: var(--ha-card-background, var(--card-background-color, #fff));
     }
     .header-icon {
