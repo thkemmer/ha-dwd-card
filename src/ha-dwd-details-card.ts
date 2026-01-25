@@ -96,8 +96,8 @@ export class HaDwdDetailsCard extends LitElement {
             ? html`
                 <div class="section">
                   <div class="instruction-title">
-                    <ha-icon icon="mdi:alert-circle-outline" class="inline-icon"></ha-icon>
-                    Handlungsempfehlungen
+                    <ha-icon icon="mdi:information-outline" class="inline-icon"></ha-icon>
+                    Empfehlungen
                   </div>
                   <div class="instruction-text">${warning.instruction}</div>
                 </div>
@@ -145,6 +145,7 @@ export class HaDwdDetailsCard extends LitElement {
           Stand: ${lastUpdate ? this.formatTime(lastUpdate) : 'Unbekannt'}
           <br>
           ${currentData.warnings.length > 0 ? this.hass.states[currentEntity]?.attributes['region_name'] : ''}
+          <div class="attribution">Quelle: Deutscher Wetterdienst</div>
         </div>
       </div>
     `;
@@ -257,6 +258,12 @@ export class HaDwdDetailsCard extends LitElement {
       color: var(--secondary-text-color);
       margin-top: 8px;
       padding: 8px;
+    }
+    .attribution {
+      text-align: right;
+      margin-top: 4px;
+      font-size: 0.75rem;
+      opacity: 0.8;
     }
   `;
 }
