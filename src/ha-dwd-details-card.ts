@@ -9,6 +9,7 @@ interface DWDDetailsCardConfig {
   current_warning_entity: string;
   prewarning_entity?: string;
   hide_empty?: boolean;
+  show_dwd_attribution?: boolean;
 }
 
 @customElement('ha-dwd-details-card')
@@ -28,6 +29,7 @@ export class HaDwdDetailsCard extends LitElement {
       type: 'custom:ha-dwd-details-card',
       current_warning_entity: 'sensor.dwd_weather_warnings__aktuelle_warnstufe',
       prewarning_entity: 'sensor.dwd_weather_warnings__vorwarnstufe',
+      show_dwd_attribution: true,
     };
   }
 
@@ -145,7 +147,7 @@ export class HaDwdDetailsCard extends LitElement {
           Stand: ${lastUpdate ? this.formatTime(lastUpdate) : 'Unbekannt'}
           <br>
           ${currentData.warnings.length > 0 ? this.hass.states[currentEntity]?.attributes['region_name'] : ''}
-          <div class="attribution">Quelle: Deutscher Wetterdienst</div>
+          ${this.config.show_dwd_attribution !== false ? html`<div class="attribution">${this.hass.states[currentEntity]?.attributes['attribution']}</div>` : ''}
         </div>
       </div>
     `;
