@@ -81,6 +81,14 @@ The tests cover:
 
 Every push and pull request to the `main` branch automatically triggers a test run and linting check via GitHub Actions to ensure code quality and prevent regressions.
 
+## Local Preview
+
+You can run a local preview of the card with mock data to quickly test configuration changes and different warning scenarios:
+
+1.  Build the project: `npm run build`
+2.  Start the local server: `npm start`
+3.  Open [http://localhost:8000/demo/](http://localhost:8000/demo/) in your browser.
+
 ## Development
 
 1.  Clone this repository.

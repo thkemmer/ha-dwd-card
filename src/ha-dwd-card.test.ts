@@ -53,6 +53,14 @@ describe('HaDwdCard', () => {
       expect(element.getCardSize()).toBe(2);
     });
 
+    it('returns 0 when no warnings exist and hide_empty is true', async () => {
+      element.setConfig({ ...mockConfig, hide_empty: true });
+      element.hass = createMockHass({ warning_count: 0 });
+      await element.updateComplete;
+
+      expect(element.getCardSize()).toBe(0);
+    });
+
     it('calculates size for 1 active warning', async () => {
       element.hass = createMockHass({ warning_count: 1 });
       await element.updateComplete;

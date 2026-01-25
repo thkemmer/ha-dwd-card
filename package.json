@@ -7,10 +7,11 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "test": "vitest run",
+    "test": "NODE_OPTIONS='--no-deprecation' vitest run",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "start": "echo 'Local preview: http://localhost:8000/demo/' && python3 -m http.server 8000"
   },
   "author": "Mact",
   "license": "MIT",
