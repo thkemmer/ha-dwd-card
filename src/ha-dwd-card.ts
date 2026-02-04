@@ -348,13 +348,7 @@ export class HaDwdCardEditor extends LitElement {
     const target = ev.target as any;
     const configValue = configKey || (target.configValue as keyof DWDCardConfig);
 
-    if (
-      this._config[configValue] === target.value ||
-      (String(configValue).includes('show_') &&
-        this._config[configValue] === target.checked) ||
-      (String(configValue).includes('compact_') &&
-        this._config[configValue] === target.checked)
-    ) {
+    if (!configValue) {
       return;
     }
 
@@ -368,12 +362,14 @@ export class HaDwdCardEditor extends LitElement {
       newValue = target.value;
     }
 
-    if (configValue) {
-      this._config = {
-        ...this._config,
-        [configValue]: newValue,
-      };
+    if (this._config[configValue] === newValue) {
+      return;
     }
+
+    this._config = {
+      ...this._config,
+      [configValue]: newValue,
+    };
 
     const event = new CustomEvent('config-changed', {
       detail: { config: this._config },
