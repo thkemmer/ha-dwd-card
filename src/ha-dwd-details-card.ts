@@ -11,7 +11,7 @@ const EDITOR_ELEMENT_NAME = `ha-dwd-details-card-editor${DEV_SUFFIX}`;
 // Register the card in Home Assistant's card picker
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: `custom:${CUSTOM_ELEMENT_NAME}`,
+  type: CUSTOM_ELEMENT_NAME,
   name: `DWD Warnwetter Details Card${__DEV__ ? ' (Dev)' : ''}`,
   preview: true,
   description: 'Displays detailed DWD weather warnings including instructions and recommendations.',

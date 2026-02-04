@@ -501,7 +501,7 @@ export class HaDwdCardEditor extends LitElement {
 // Register the card in Home Assistant's card picker
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: `custom:${CUSTOM_ELEMENT_NAME}`,
+  type: CUSTOM_ELEMENT_NAME,
   name: `DWD Warnwetter Card${__DEV__ ? ' (Dev)' : ''}`,
   preview: true,
   description: 'Displays current DWD weather warnings in a compact list.',
