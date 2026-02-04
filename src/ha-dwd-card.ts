@@ -257,16 +257,6 @@ export class HaDwdCard extends LitElement {
     const currentData = getDWDData(this.hass, currentEntity);
     const prewarningData = getDWDData(this.hass, prewarningEntity);
 
-    if (!this.hass.states[currentEntity]) {
-      return html`
-        <ha-card>
-          <div style="padding: 16px; color: red;">
-            Entity not found: ${currentEntity}
-          </div>
-        </ha-card>
-      `;
-    }
-
     const currentCount = currentData.warningCount;
     const prewarningCount = prewarningData.warningCount;
     const lastUpdate = currentData.lastUpdate;
