@@ -12,7 +12,7 @@ export default {
     dir: 'dist',
     entryFileNames: isDev ? 'ha-dwd-card-dev.js' : 'ha-dwd-card.js',
     format: 'es',
-    sourcemap: true,
+    sourcemap: isDev,
   },
   onwarn(warning, warn) {
     if (warning.code === 'THIS_IS_UNDEFINED') return;
