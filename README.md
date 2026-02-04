@@ -91,7 +91,7 @@ You can run a local preview of the card with mock data to quickly test configura
 
 ## Development
 
-1.  Clone this repository.
-2.  Run `npm install`.
-3.  Run `npm run watch` to start the development build.
-4.  The built file will be in `dist/ha-dwd-card.js`.
+1.  Clone this repository and run `npm install`.
+2.  **Production build:** `npm run build` (outputs `dist/ha-dwd-card.js`).
+3.  **Development build:** `npm run build:dev` (outputs `dist/ha-dwd-card-dev.js` with `-dev` tag suffixes).
+4.  **Watch mode:** `npm run watch` or `npm run watch:dev`.
