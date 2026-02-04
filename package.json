@@ -6,7 +6,9 @@
   "main": "dist/ha-dwd-card.js",
   "scripts": {
     "build": "rollup -c",
+    "build:dev": "DEV=true rollup -c",
     "watch": "rollup -c -w",
+    "watch:dev": "DEV=true rollup -c -w",
     "test": "NODE_OPTIONS='--no-deprecation' vitest run",
     "lint": "eslint .",
     "format": "prettier --write .",

@@ -4,11 +4,15 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { getWarningIcon } from './warning-icons';
 import { getDWDData, getPrewarningEntityId, Warning } from './dwd-data';
 
+const DEV_SUFFIX = __DEV__ ? '-dev' : '';
+const CUSTOM_ELEMENT_NAME = `ha-dwd-details-card${DEV_SUFFIX}`;
+const EDITOR_ELEMENT_NAME = `ha-dwd-details-card-editor${DEV_SUFFIX}`;
+
 // Register the card in Home Assistant's card picker
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: 'custom:ha-dwd-details-card',
-  name: 'DWD Warnwetter Details Card',
+  type: `custom:${CUSTOM_ELEMENT_NAME}`,
+  name: `DWD Warnwetter Details Card${__DEV__ ? ' (Dev)' : ''}`,
   preview: true,
   description: 'Displays detailed DWD weather warnings including instructions and recommendations.',
 });
@@ -21,7 +25,7 @@ interface DWDDetailsCardConfig {
   show_dwd_attribution?: boolean;
 }
 
-@customElement('ha-dwd-details-card')
+@customElement(CUSTOM_ELEMENT_NAME)
 export class HaDwdDetailsCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private config!: DWDDetailsCardConfig;
@@ -35,7 +39,7 @@ export class HaDwdDetailsCard extends LitElement {
 
   public static getStubConfig(): object {
     return {
-      type: 'custom:ha-dwd-details-card',
+      type: `custom:${CUSTOM_ELEMENT_NAME}`,
       current_warning_entity: 'sensor.dwd_weather_warnings__aktuelle_warnstufe',
       prewarning_entity: 'sensor.dwd_weather_warnings__vorwarnstufe',
       show_dwd_attribution: true,
@@ -43,7 +47,7 @@ export class HaDwdDetailsCard extends LitElement {
   }
 
   public static getConfigElement(): HTMLElement {
-    return document.createElement('ha-dwd-details-card-editor');
+    return document.createElement(EDITOR_ELEMENT_NAME);
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
@@ -283,7 +287,7 @@ export class HaDwdDetailsCard extends LitElement {
   `;
 }
 
-@customElement('ha-dwd-details-card-editor')
+@customElement(EDITOR_ELEMENT_NAME)
 export class HaDwdDetailsCardEditor extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private _config!: DWDDetailsCardConfig;

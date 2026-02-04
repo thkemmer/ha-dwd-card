@@ -4,23 +4,13 @@ import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
 import replace from '@rollup/plugin-replace';
 
-const dev = process.env.ROLLUP_WATCH;
-
-const serveopts = {
-  contentBase: ['./dist'],
-  host: '0.0.0.0',
-  port: 5000,
-  allowCrossOrigin: true,
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-  },
-};
+const isDev = process.env.DEV === 'true';
 
 export default {
-  input: 'src/ha-dwd-card.ts',
+  input: 'src/index.ts',
   output: {
     dir: 'dist',
-    entryFileNames: 'ha-dwd-card.js',
+    entryFileNames: isDev ? 'ha-dwd-card-dev.js' : 'ha-dwd-card.js',
     format: 'es',
     sourcemap: true,
   },
@@ -32,7 +22,7 @@ export default {
     replace({
       preventAssignment: true,
       values: {
-        '__DEV__': 'false'
+        '__DEV__': isDev ? 'true' : 'false'
       }
     }),
     resolve({
@@ -40,6 +30,6 @@ export default {
     }),
     json(),
     typescript(),
-    !dev && terser(),
+    !isDev && terser(),
   ],
 };

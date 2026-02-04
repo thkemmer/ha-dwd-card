@@ -72,7 +72,7 @@ describe('HaDwdDetailsCard', () => {
     await element.updateComplete;
 
     const noWarnings = element.shadowRoot?.querySelector('.no-warnings');
-    expect(noWarnings).to.exist;
+    expect(noWarnings).not.toBeNull();
     expect(noWarnings?.textContent).to.contain('Keine Wetterwarnungen vorhanden.');
   });
 });

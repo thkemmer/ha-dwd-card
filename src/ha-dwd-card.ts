@@ -3,7 +3,6 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, handleAction, ActionConfig } from 'custom-card-helpers';
 import { getWarningIcon } from './warning-icons';
 import { getDWDData, getPrewarningEntityId, Warning } from './dwd-data';
-import './ha-dwd-details-card'; // Register the details card
 
 // Interface for the card configuration
 interface DWDCardConfig {
@@ -19,7 +18,11 @@ interface DWDCardConfig {
   double_tap_action?: ActionConfig; // Action to perform on double tap
 }
 
-@customElement('ha-dwd-card')
+const DEV_SUFFIX = __DEV__ ? '-dev' : '';
+const CUSTOM_ELEMENT_NAME = `ha-dwd-card${DEV_SUFFIX}`;
+const EDITOR_ELEMENT_NAME = `ha-dwd-card-editor${DEV_SUFFIX}`;
+
+@customElement(CUSTOM_ELEMENT_NAME)
 export class HaDwdCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private config!: DWDCardConfig;
@@ -36,7 +39,7 @@ export class HaDwdCard extends LitElement {
 
   public static getStubConfig(): object {
     return {
-      type: 'custom:ha-dwd-card',
+      type: `custom:${CUSTOM_ELEMENT_NAME}`,
       current_warning_entity: 'sensor.dwd_weather_warnings__aktuelle_warnstufe',
       prewarning_entity: 'sensor.dwd_weather_warnings__vorwarnstufe',
       show_current_warnings_headline: false,
@@ -48,7 +51,7 @@ export class HaDwdCard extends LitElement {
   }
 
   public static getConfigElement(): HTMLElement {
-    return document.createElement('ha-dwd-card-editor');
+    return document.createElement(EDITOR_ELEMENT_NAME);
   }
 
   public getLayoutOptions() {
@@ -328,7 +331,7 @@ export class HaDwdCard extends LitElement {
 
 // --- Editor Class ---
 
-@customElement('ha-dwd-card-editor')
+@customElement(EDITOR_ELEMENT_NAME)
 export class HaDwdCardEditor extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private _config!: DWDCardConfig;
@@ -502,8 +505,8 @@ export class HaDwdCardEditor extends LitElement {
 // Register the card in Home Assistant's card picker
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: 'custom:ha-dwd-card',
-  name: 'DWD Warnwetter Card',
+  type: `custom:${CUSTOM_ELEMENT_NAME}`,
+  name: `DWD Warnwetter Card${__DEV__ ? ' (Dev)' : ''}`,
   preview: true,
   description: 'Displays current DWD weather warnings in a compact list.',
 });
