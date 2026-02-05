@@ -4,6 +4,19 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { getWarningIcon } from './warning-icons';
 import { getDWDData, getPrewarningEntityId, Warning } from './dwd-data';
 
+const DEV_SUFFIX = __DEV__ ? '-dev' : '';
+const CUSTOM_ELEMENT_NAME = `ha-dwd-details-card${DEV_SUFFIX}`;
+const EDITOR_ELEMENT_NAME = `ha-dwd-details-card-editor${DEV_SUFFIX}`;
+
+// Register the card in Home Assistant's card picker
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: CUSTOM_ELEMENT_NAME,
+  name: `DWD Warnwetter Details Card${__DEV__ ? ' (Dev)' : ''}`,
+  preview: true,
+  description: 'Displays detailed DWD weather warnings including instructions and recommendations.',
+});
+
 interface DWDDetailsCardConfig {
   type: string;
   current_warning_entity: string;
@@ -12,7 +25,7 @@ interface DWDDetailsCardConfig {
   show_dwd_attribution?: boolean;
 }
 
-@customElement('ha-dwd-details-card')
+@customElement(CUSTOM_ELEMENT_NAME)
 export class HaDwdDetailsCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private config!: DWDDetailsCardConfig;
@@ -26,11 +39,15 @@ export class HaDwdDetailsCard extends LitElement {
 
   public static getStubConfig(): object {
     return {
-      type: 'custom:ha-dwd-details-card',
+      type: `custom:${CUSTOM_ELEMENT_NAME}`,
       current_warning_entity: 'sensor.dwd_weather_warnings__aktuelle_warnstufe',
       prewarning_entity: 'sensor.dwd_weather_warnings__vorwarnstufe',
       show_dwd_attribution: true,
     };
+  }
+
+  public static getConfigElement(): HTMLElement {
+    return document.createElement(EDITOR_ELEMENT_NAME);
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
@@ -266,6 +283,120 @@ export class HaDwdDetailsCard extends LitElement {
       margin-top: 4px;
       font-size: 0.75rem;
       opacity: 0.8;
+    }
+  `;
+}
+
+@customElement(EDITOR_ELEMENT_NAME)
+export class HaDwdDetailsCardEditor extends LitElement {
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @state() private _config!: DWDDetailsCardConfig;
+
+  public setConfig(config: DWDDetailsCardConfig): void {
+    this._config = config;
+  }
+
+  private _valueChanged(ev: CustomEvent, configKey?: keyof DWDDetailsCardConfig): void {
+    if (!this._config || !this.hass) {
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const target = ev.target as any;
+    const configValue = configKey || (target.configValue as keyof DWDDetailsCardConfig);
+
+    if (!configValue) {
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let newValue: any;
+    if (ev.detail && ev.detail.value !== undefined) {
+      newValue = ev.detail.value;
+    } else if (target.checked !== undefined) {
+      newValue = target.checked;
+    } else {
+      newValue = target.value;
+    }
+
+    if (this._config[configValue] === newValue) {
+      return;
+    }
+
+    this._config = {
+      ...this._config,
+      [configValue]: newValue,
+    };
+
+    const event = new CustomEvent('config-changed', {
+      detail: { config: this._config },
+      bubbles: true,
+      composed: true,
+    });
+    this.dispatchEvent(event);
+  }
+
+  render() {
+    if (!this.hass || !this._config) {
+      return html``;
+    }
+
+    return html`
+      <div class="card-config">
+        <ha-selector
+          .hass=${this.hass}
+          .selector=${{ entity: { integration: 'dwd_weather_warnings', domain: 'sensor' } }}
+          .value=${this._config.current_warning_entity}
+          .label=${'Current Warning Entity'}
+          .configValue=${'current_warning_entity'}
+          @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'current_warning_entity')}
+        ></ha-selector>
+
+        <ha-selector
+          .hass=${this.hass}
+          .selector=${{ entity: { integration: 'dwd_weather_warnings', domain: 'sensor' } }}
+          .value=${this._config.prewarning_entity}
+          .label=${'Pre-warning Entity (Optional)'}
+          .configValue=${'prewarning_entity'}
+          @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'prewarning_entity')}
+        ></ha-selector>
+
+        <div class="switches">
+          <ha-formfield label="Hide if Empty">
+            <ha-switch
+              .checked=${this._config.hide_empty === true}
+              .configValue=${'hide_empty'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
+          <ha-formfield label="Show DWD Attribution">
+            <ha-switch
+              .checked=${this._config.show_dwd_attribution !== false}
+              .configValue=${'show_dwd_attribution'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+        </div>
+      </div>
+    `;
+  }
+
+  static styles = css`
+    .card-config {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .switches {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    ha-entity-picker,
+    ha-selector,
+    ha-textfield {
+      display: block;
+      width: 100%;
     }
   `;
 }

@@ -3,7 +3,6 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, handleAction, ActionConfig } from 'custom-card-helpers';
 import { getWarningIcon } from './warning-icons';
 import { getDWDData, getPrewarningEntityId, Warning } from './dwd-data';
-import './ha-dwd-details-card'; // Register the details card
 
 // Interface for the card configuration
 interface DWDCardConfig {
@@ -19,7 +18,11 @@ interface DWDCardConfig {
   double_tap_action?: ActionConfig; // Action to perform on double tap
 }
 
-@customElement('ha-dwd-card')
+const DEV_SUFFIX = __DEV__ ? '-dev' : '';
+const CUSTOM_ELEMENT_NAME = `ha-dwd-card${DEV_SUFFIX}`;
+const EDITOR_ELEMENT_NAME = `ha-dwd-card-editor${DEV_SUFFIX}`;
+
+@customElement(CUSTOM_ELEMENT_NAME)
 export class HaDwdCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private config!: DWDCardConfig;
@@ -36,7 +39,7 @@ export class HaDwdCard extends LitElement {
 
   public static getStubConfig(): object {
     return {
-      type: 'custom:ha-dwd-card',
+      type: `custom:${CUSTOM_ELEMENT_NAME}`,
       current_warning_entity: 'sensor.dwd_weather_warnings__aktuelle_warnstufe',
       prewarning_entity: 'sensor.dwd_weather_warnings__vorwarnstufe',
       show_current_warnings_headline: false,
@@ -48,7 +51,7 @@ export class HaDwdCard extends LitElement {
   }
 
   public static getConfigElement(): HTMLElement {
-    return document.createElement('ha-dwd-card-editor');
+    return document.createElement(EDITOR_ELEMENT_NAME);
   }
 
   public getLayoutOptions() {
@@ -254,16 +257,6 @@ export class HaDwdCard extends LitElement {
     const currentData = getDWDData(this.hass, currentEntity);
     const prewarningData = getDWDData(this.hass, prewarningEntity);
 
-    if (!this.hass.states[currentEntity]) {
-      return html`
-        <ha-card>
-          <div style="padding: 16px; color: red;">
-            Entity not found: ${currentEntity}
-          </div>
-        </ha-card>
-      `;
-    }
-
     const currentCount = currentData.warningCount;
     const prewarningCount = prewarningData.warningCount;
     const lastUpdate = currentData.lastUpdate;
@@ -328,7 +321,7 @@ export class HaDwdCard extends LitElement {
 
 // --- Editor Class ---
 
-@customElement('ha-dwd-card-editor')
+@customElement(EDITOR_ELEMENT_NAME)
 export class HaDwdCardEditor extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private _config!: DWDCardConfig;
@@ -337,21 +330,15 @@ export class HaDwdCardEditor extends LitElement {
     this._config = config;
   }
 
-  private _valueChanged(ev: CustomEvent): void {
+  private _valueChanged(ev: CustomEvent, configKey?: keyof DWDCardConfig): void {
     if (!this._config || !this.hass) {
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const target = ev.target as any;
-    const configValue = target.configValue as keyof DWDCardConfig;
+    const configValue = configKey || (target.configValue as keyof DWDCardConfig);
 
-    if (
-      this._config[configValue] === target.value ||
-      (String(configValue).includes('show_') &&
-        this._config[configValue] === target.checked) ||
-      (String(configValue).includes('compact_') &&
-        this._config[configValue] === target.checked)
-    ) {
+    if (!configValue) {
       return;
     }
 
@@ -365,12 +352,14 @@ export class HaDwdCardEditor extends LitElement {
       newValue = target.value;
     }
 
-    if (configValue) {
-      this._config = {
-        ...this._config,
-        [configValue]: newValue,
-      };
+    if (this._config[configValue] === newValue) {
+      return;
     }
+
+    this._config = {
+      ...this._config,
+      [configValue]: newValue,
+    };
 
     const event = new CustomEvent('config-changed', {
       detail: { config: this._config },
@@ -387,23 +376,23 @@ export class HaDwdCardEditor extends LitElement {
 
     return html`
       <div class="card-config">
-        <ha-entity-picker
-          label="Current Warning Entity"
+        <ha-selector
           .hass=${this.hass}
+          .selector=${{ entity: { integration: 'dwd_weather_warnings', domain: 'sensor' } }}
           .value=${this._config.current_warning_entity}
+          .label=${'Current Warning Entity'}
           .configValue=${'current_warning_entity'}
-          @value-changed=${this._valueChanged}
-          allow-custom-entity
-        ></ha-entity-picker>
+          @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'current_warning_entity')}
+        ></ha-selector>
 
-        <ha-entity-picker
-          label="Pre-warning Entity (Optional)"
+        <ha-selector
           .hass=${this.hass}
+          .selector=${{ entity: { integration: 'dwd_weather_warnings', domain: 'sensor' } }}
           .value=${this._config.prewarning_entity}
+          .label=${'Pre-warning Entity (Optional)'}
           .configValue=${'prewarning_entity'}
-          @value-changed=${this._valueChanged}
-          allow-custom-entity
-        ></ha-entity-picker>
+          @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'prewarning_entity')}
+        ></ha-selector>
 
         <div class="switches">
           <ha-formfield label="Show Section Headlines">
@@ -429,6 +418,14 @@ export class HaDwdCardEditor extends LitElement {
               @change=${this._valueChanged}
             ></ha-switch>
           </ha-formfield>
+
+          <ha-formfield label="Hide if Empty">
+            <ha-switch
+              .checked=${this._config.hide_empty === true}
+              .configValue=${'hide_empty'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
         </div>
 
         <div class="actions">
@@ -438,7 +435,7 @@ export class HaDwdCardEditor extends LitElement {
             .value=${this._config.tap_action}
             .label=${'Tap Action'}
             .configValue=${'tap_action'}
-            @value-changed=${this._valueChanged}
+            @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'tap_action')}
           ></ha-selector>
 
           <ha-selector
@@ -447,7 +444,7 @@ export class HaDwdCardEditor extends LitElement {
             .value=${this._config.hold_action}
             .label=${'Hold Action'}
             .configValue=${'hold_action'}
-            @value-changed=${this._valueChanged}
+            @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'hold_action')}
           ></ha-selector>
 
           <ha-selector
@@ -456,7 +453,7 @@ export class HaDwdCardEditor extends LitElement {
             .value=${this._config.double_tap_action}
             .label=${'Double Tap Action'}
             .configValue=${'double_tap_action'}
-            @value-changed=${this._valueChanged}
+            @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'double_tap_action')}
           ></ha-selector>
         </div>
       </div>
@@ -490,3 +487,12 @@ export class HaDwdCardEditor extends LitElement {
     }
   `;
 }
+
+// Register the card in Home Assistant's card picker
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: CUSTOM_ELEMENT_NAME,
+  name: `DWD Warnwetter Card${__DEV__ ? ' (Dev)' : ''}`,
+  preview: true,
+  description: 'Displays current DWD weather warnings in a compact list.',
+});

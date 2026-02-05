@@ -6,7 +6,9 @@
   "main": "dist/ha-dwd-card.js",
   "scripts": {
     "build": "rollup -c",
+    "build:dev": "DEV=true rollup -c",
     "watch": "rollup -c -w",
+    "watch:dev": "DEV=true rollup -c -w",
     "test": "NODE_OPTIONS='--no-deprecation' vitest run",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -23,6 +25,7 @@
     "@open-wc/testing": "^4.0.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^6.0.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@typescript-eslint/eslint-plugin": "^8.52.0",
