@@ -22,11 +22,11 @@ export default {
     replace({
       preventAssignment: true,
       values: {
-        '__DEV__': isDev ? 'true' : 'false'
-      }
+        __DEV__: isDev ? 'true' : 'false',
+      },
     }),
     resolve({
-      dedupe: ['lit']
+      dedupe: ['lit'],
     }),
     json(),
     typescript(),

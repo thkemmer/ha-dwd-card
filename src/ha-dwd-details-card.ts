@@ -14,7 +14,8 @@ window.customCards.push({
   type: CUSTOM_ELEMENT_NAME,
   name: `DWD Warnwetter Details Card${__DEV__ ? ' (Dev)' : ''}`,
   preview: true,
-  description: 'Displays detailed DWD weather warnings including instructions and recommendations.',
+  description:
+    'Displays detailed DWD weather warnings including instructions and recommendations.',
 });
 
 interface DWDDetailsCardConfig {
@@ -32,7 +33,9 @@ export class HaDwdDetailsCard extends LitElement {
 
   public setConfig(config: DWDDetailsCardConfig): void {
     if (!config.current_warning_entity) {
-      throw new Error('Please define a DWD Warning entity (current_warning_entity)');
+      throw new Error(
+        'Please define a DWD Warning entity (current_warning_entity)'
+      );
     }
     this.config = config;
   }
@@ -50,6 +53,16 @@ export class HaDwdDetailsCard extends LitElement {
     return document.createElement(EDITOR_ELEMENT_NAME);
   }
 
+  public getCardSize(): number {
+    if (!this.config || !this.hass) {
+      return 1;
+    }
+    const currentEntity = this.config.current_warning_entity;
+    const data = getDWDData(this.hass, currentEntity);
+    // Base size + approx 2 units per warning in detail view
+    return 1 + data.warningCount * 2;
+  }
+
   protected shouldUpdate(changedProps: PropertyValues): boolean {
     if (changedProps.has('config')) return true;
 
@@ -58,7 +71,10 @@ export class HaDwdDetailsCard extends LitElement {
 
     const entitiesToCheck = [
       this.config.current_warning_entity,
-      getPrewarningEntityId(this.config.current_warning_entity, this.config.prewarning_entity),
+      getPrewarningEntityId(
+        this.config.current_warning_entity,
+        this.config.prewarning_entity
+      ),
     ];
 
     for (const entity of entitiesToCheck) {
@@ -81,21 +97,33 @@ export class HaDwdDetailsCard extends LitElement {
     return `${day}.${month}.${year} ${hours}:${minutes}`;
   }
 
-  private renderWarningCard(warning: Warning, isPrewarning: boolean): TemplateResult {
+  private renderWarningCard(
+    warning: Warning,
+    isPrewarning: boolean
+  ): TemplateResult {
     const icon = getWarningIcon(warning.type);
-    
+
     // Determine level text
     const levelText = warning.level ? `Warnstufe ${warning.level}` : '';
 
     return html`
       <ha-card class="warning-card">
         <div class="header">
-          <ha-icon icon="${icon}" class="header-icon" style="color: ${warning.color};"></ha-icon>
+          <ha-icon
+            icon="${icon}"
+            class="header-icon"
+            style="color: ${warning.color};"
+          ></ha-icon>
           <div class="header-content">
-            <div class="headline" style="color: ${warning.color};">${warning.headline}</div>
+            <div class="headline" style="color: ${warning.color};">
+              ${warning.headline}
+            </div>
             <div class="time-range">
               <ha-icon icon="mdi:clock-outline" class="inline-icon"></ha-icon>
-              <span>${this.formatTime(warning.start)} - ${this.formatTime(warning.end)}</span>
+              <span
+                >${this.formatTime(warning.start)} -
+                ${this.formatTime(warning.end)}</span
+              >
             </div>
           </div>
         </div>
@@ -104,7 +132,9 @@ export class HaDwdDetailsCard extends LitElement {
           <div class="section">
             <div class="level-info">
               <ha-icon icon="mdi:alert" class="inline-icon"></ha-icon>
-              <span>${levelText} ${isPrewarning ? '(Vorabinformation)' : ''}</span>
+              <span
+                >${levelText} ${isPrewarning ? '(Vorabinformation)' : ''}</span
+              >
             </div>
             ${warning.description
               ? html`<div class="description">${warning.description}</div>`
@@ -115,7 +145,10 @@ export class HaDwdDetailsCard extends LitElement {
             ? html`
                 <div class="section">
                   <div class="instruction-title">
-                    <ha-icon icon="mdi:information-outline" class="inline-icon"></ha-icon>
+                    <ha-icon
+                      icon="mdi:information-outline"
+                      class="inline-icon"
+                    ></ha-icon>
                     Empfehlungen
                   </div>
                   <div class="instruction-text">${warning.instruction}</div>
@@ -138,33 +171,42 @@ export class HaDwdDetailsCard extends LitElement {
 
     const currentData = getDWDData(this.hass, currentEntity);
     const prewarningData = getDWDData(this.hass, prewarningEntity);
-    
+
     const allWarnings = [
-        ...currentData.warnings.map(w => ({...w, isPre: false})),
-        ...prewarningData.warnings.map(w => ({...w, isPre: true}))
+      ...currentData.warnings.map((w) => ({ ...w, isPre: false })),
+      ...prewarningData.warnings.map((w) => ({ ...w, isPre: true })),
     ];
 
     if (allWarnings.length === 0) {
-        if (this.config.hide_empty) return html``;
-        return html`
-            <ha-card class="no-warnings">
-                <ha-icon icon="mdi:check-circle-outline" style="color: var(--success-color); width: 48px; height: 48px; margin-bottom: 4px;"></ha-icon>
-                <div class="text">Keine Wetterwarnungen vorhanden.</div>
-            </ha-card>
-        `;
+      if (this.config.hide_empty) return html``;
+      return html`
+        <ha-card class="no-warnings">
+          <ha-icon
+            icon="mdi:check-circle-outline"
+            style="color: var(--success-color); width: 48px; height: 48px; margin-bottom: 4px;"
+          ></ha-icon>
+          <div class="text">Keine Wetterwarnungen vorhanden.</div>
+        </ha-card>
+      `;
     }
 
     const lastUpdate = currentData.lastUpdate || prewarningData.lastUpdate;
 
     return html`
       <div class="container">
-        ${allWarnings.map(w => this.renderWarningCard(w, w.isPre))}
-        
+        ${allWarnings.map((w) => this.renderWarningCard(w, w.isPre))}
+
         <div class="footer">
           Stand: ${lastUpdate ? this.formatTime(lastUpdate) : 'Unbekannt'}
-          <br>
-          ${currentData.warnings.length > 0 ? this.hass.states[currentEntity]?.attributes['region_name'] : ''}
-          ${this.config.show_dwd_attribution !== false ? html`<div class="attribution">${this.hass.states[currentEntity]?.attributes['attribution']}</div>` : ''}
+          <br />
+          ${currentData.warnings.length > 0
+            ? this.hass.states[currentEntity]?.attributes['region_name']
+            : ''}
+          ${this.config.show_dwd_attribution !== false
+            ? html`<div class="attribution">
+                ${this.hass.states[currentEntity]?.attributes['attribution']}
+              </div>`
+            : ''}
         </div>
       </div>
     `;
@@ -296,13 +338,17 @@ export class HaDwdDetailsCardEditor extends LitElement {
     this._config = config;
   }
 
-  private _valueChanged(ev: CustomEvent, configKey?: keyof DWDDetailsCardConfig): void {
+  private _valueChanged(
+    ev: CustomEvent,
+    configKey?: keyof DWDDetailsCardConfig
+  ): void {
     if (!this._config || !this.hass) {
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const target = ev.target as any;
-    const configValue = configKey || (target.configValue as keyof DWDDetailsCardConfig);
+    const configValue =
+      configKey || (target.configValue as keyof DWDDetailsCardConfig);
 
     if (!configValue) {
       return;
@@ -344,20 +390,26 @@ export class HaDwdDetailsCardEditor extends LitElement {
       <div class="card-config">
         <ha-selector
           .hass=${this.hass}
-          .selector=${{ entity: { integration: 'dwd_weather_warnings', domain: 'sensor' } }}
+          .selector=${{
+            entity: { integration: 'dwd_weather_warnings', domain: 'sensor' },
+          }}
           .value=${this._config.current_warning_entity}
           .label=${'Current Warning Entity'}
           .configValue=${'current_warning_entity'}
-          @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'current_warning_entity')}
+          @value-changed=${(ev: CustomEvent) =>
+            this._valueChanged(ev, 'current_warning_entity')}
         ></ha-selector>
 
         <ha-selector
           .hass=${this.hass}
-          .selector=${{ entity: { integration: 'dwd_weather_warnings', domain: 'sensor' } }}
+          .selector=${{
+            entity: { integration: 'dwd_weather_warnings', domain: 'sensor' },
+          }}
           .value=${this._config.prewarning_entity}
           .label=${'Pre-warning Entity (Optional)'}
           .configValue=${'prewarning_entity'}
-          @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'prewarning_entity')}
+          @value-changed=${(ev: CustomEvent) =>
+            this._valueChanged(ev, 'prewarning_entity')}
         ></ha-selector>
 
         <div class="switches">

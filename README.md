@@ -1,6 +1,8 @@
 # DWD Weather Warnings Card
 
 ![CI Status](https://github.com/thkemmer/ha-dwd-card/actions/workflows/ci.yml/badge.svg)
+![GitHub Release](https://img.shields.io/github/v/release/thkemmer/ha-dwd-card)
+![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/mact/a8884faae96966dc2e18557437ce8ab3/raw/coverage.json)
 
 A custom Home Assistant lovelace card to display Deutscher Wetterdienst (DWD) weather warnings with a modern, clean design. The goal is to have a very compatct view for small displays:
 
@@ -15,6 +17,10 @@ You can install the releases via HACS directly in Home Assistant:
 - **Official Colors:** Uses the severity colors defined by the DWD integration.
 - **Pre-Warnings:** Separately lists pre-warnings.
 - **Visual Editor:** Fully supported!
+
+## Prerequisites
+
+This card requires the official [Deutscher Wetterdienst (DWD) Weather Warnings](https://www.home-assistant.io/integrations/dwd_weather_warnings/) integration to be installed and configured in your Home Assistant instance. This integration provides the warning entities that this card displays.
 
 ## Installation
 
@@ -37,6 +43,8 @@ Click the button above or:
     - Type: JavaScript Module
 
 ## Configuration
+
+The card uses entities provided by the DWD integration. You can find them in your Home Assistant entities list (usually starting with `sensor.dwd_weather_warnings_`).
 
 ### YAML
 

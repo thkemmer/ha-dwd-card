@@ -21,8 +21,7 @@ const createMockHass = (attributes = {}) =>
         state: 'ok',
       },
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }) as any;
+  }) as unknown as HomeAssistant;
 
 const mockConfig = {
   type: 'custom:ha-dwd-card',
@@ -91,5 +90,19 @@ describe('HaDwdCard', () => {
       const el = await fixture<HaDwdCard>(html`<ha-dwd-card></ha-dwd-card>`);
       expect(el.getCardSize()).toBe(1);
     });
+  });
+});
+
+describe('HaDwdCardEditor', () => {
+  it('sets config correctly', async () => {
+    const editor = await fixture(
+      html`<ha-dwd-card-editor></ha-dwd-card-editor>`
+    );
+    const config = {
+      type: 'custom:ha-dwd-card',
+      current_warning_entity: 'sensor.dwd_current',
+    };
+    (editor as unknown as { setConfig: (c: any) => void }).setConfig(config);
+    expect((editor as unknown as { _config: any })._config).to.equal(config);
   });
 });

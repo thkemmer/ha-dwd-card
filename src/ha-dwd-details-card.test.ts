@@ -31,7 +31,7 @@ describe('HaDwdDetailsCard', () => {
           },
         },
       },
-    } as any;
+    } as unknown as HomeAssistant;
 
     element = await fixture(html`<ha-dwd-details-card></ha-dwd-details-card>`);
     element.hass = hass;
@@ -45,13 +45,13 @@ describe('HaDwdDetailsCard', () => {
 
   it('renders a warning card with correct content', () => {
     const headline = element.shadowRoot?.querySelector('.headline');
-    expect(headline?.textContent).to.equal('Test Headline');
-    
+    expect(headline?.textContent?.trim()).to.equal('Test Headline');
+
     const description = element.shadowRoot?.querySelector('.description');
-    expect(description?.textContent).to.equal('Test Description');
+    expect(description?.textContent?.trim()).to.equal('Test Description');
 
     const instruction = element.shadowRoot?.querySelector('.instruction-text');
-    expect(instruction?.textContent).to.equal('Test Instruction');
+    expect(instruction?.textContent?.trim()).to.equal('Test Instruction');
   });
 
   it('renders "Keine aktiven Warnungen" when no warnings are present', async () => {
@@ -67,12 +67,28 @@ describe('HaDwdDetailsCard', () => {
           },
         },
       },
-    } as any;
+    } as unknown as HomeAssistant;
     element.hass = newHass;
     await element.updateComplete;
 
     const noWarnings = element.shadowRoot?.querySelector('.no-warnings');
     expect(noWarnings).not.toBeNull();
-    expect(noWarnings?.textContent).to.contain('Keine Wetterwarnungen vorhanden.');
+    expect(noWarnings?.textContent).to.contain(
+      'Keine Wetterwarnungen vorhanden.'
+    );
+  });
+});
+
+describe('HaDwdDetailsCardEditor', () => {
+  it('sets config correctly', async () => {
+    const editor = await fixture(
+      html`<ha-dwd-details-card-editor></ha-dwd-details-card-editor>`
+    );
+    const config = {
+      type: 'custom:ha-dwd-details-card',
+      current_warning_entity: 'sensor.dwd_current',
+    };
+    (editor as unknown as { setConfig: (c: any) => void }).setConfig(config);
+    expect((editor as unknown as { _config: any })._config).to.equal(config);
   });
 });

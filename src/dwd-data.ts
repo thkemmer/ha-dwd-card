@@ -32,7 +32,7 @@ export function getDWDData(hass: HomeAssistant, entityId: string): DWDData {
   for (let i = 1; i <= warningCount; i++) {
     const prefix = `warning_${i}_`;
     const attrs = state.attributes;
-    
+
     warnings.push({
       headline: attrs[`${prefix}headline`] || '',
       name: attrs[`${prefix}name`],
@@ -43,18 +43,21 @@ export function getDWDData(hass: HomeAssistant, entityId: string): DWDData {
       level: attrs[`${prefix}level`],
       description: attrs[`${prefix}description`],
       instruction: attrs[`${prefix}instruction`],
-      parameters: attrs[`${prefix}parameters`]
+      parameters: attrs[`${prefix}parameters`],
     });
   }
 
   return {
     warnings,
     warningCount,
-    lastUpdate
+    lastUpdate,
   };
 }
 
-export function getPrewarningEntityId(currentEntity: string, configuredPrewarning?: string): string {
+export function getPrewarningEntityId(
+  currentEntity: string,
+  configuredPrewarning?: string
+): string {
   if (configuredPrewarning) {
     return configuredPrewarning;
   }

@@ -54,7 +54,7 @@ export class HaDwdCard extends LitElement {
     return document.createElement(EDITOR_ELEMENT_NAME);
   }
 
-  public getLayoutOptions() {
+  public getLayoutOptions(): object {
     const compact = this.config?.compact_warning_headline ?? false;
     const currentSize = this.getCardSize ? this.getCardSize() : 2;
     return {
@@ -330,13 +330,17 @@ export class HaDwdCardEditor extends LitElement {
     this._config = config;
   }
 
-  private _valueChanged(ev: CustomEvent, configKey?: keyof DWDCardConfig): void {
+  private _valueChanged(
+    ev: CustomEvent,
+    configKey?: keyof DWDCardConfig
+  ): void {
     if (!this._config || !this.hass) {
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const target = ev.target as any;
-    const configValue = configKey || (target.configValue as keyof DWDCardConfig);
+    const configValue =
+      configKey || (target.configValue as keyof DWDCardConfig);
 
     if (!configValue) {
       return;
@@ -378,20 +382,26 @@ export class HaDwdCardEditor extends LitElement {
       <div class="card-config">
         <ha-selector
           .hass=${this.hass}
-          .selector=${{ entity: { integration: 'dwd_weather_warnings', domain: 'sensor' } }}
+          .selector=${{
+            entity: { integration: 'dwd_weather_warnings', domain: 'sensor' },
+          }}
           .value=${this._config.current_warning_entity}
           .label=${'Current Warning Entity'}
           .configValue=${'current_warning_entity'}
-          @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'current_warning_entity')}
+          @value-changed=${(ev: CustomEvent) =>
+            this._valueChanged(ev, 'current_warning_entity')}
         ></ha-selector>
 
         <ha-selector
           .hass=${this.hass}
-          .selector=${{ entity: { integration: 'dwd_weather_warnings', domain: 'sensor' } }}
+          .selector=${{
+            entity: { integration: 'dwd_weather_warnings', domain: 'sensor' },
+          }}
           .value=${this._config.prewarning_entity}
           .label=${'Pre-warning Entity (Optional)'}
           .configValue=${'prewarning_entity'}
-          @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'prewarning_entity')}
+          @value-changed=${(ev: CustomEvent) =>
+            this._valueChanged(ev, 'prewarning_entity')}
         ></ha-selector>
 
         <div class="switches">
@@ -435,7 +445,8 @@ export class HaDwdCardEditor extends LitElement {
             .value=${this._config.tap_action}
             .label=${'Tap Action'}
             .configValue=${'tap_action'}
-            @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'tap_action')}
+            @value-changed=${(ev: CustomEvent) =>
+              this._valueChanged(ev, 'tap_action')}
           ></ha-selector>
 
           <ha-selector
@@ -444,7 +455,8 @@ export class HaDwdCardEditor extends LitElement {
             .value=${this._config.hold_action}
             .label=${'Hold Action'}
             .configValue=${'hold_action'}
-            @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'hold_action')}
+            @value-changed=${(ev: CustomEvent) =>
+              this._valueChanged(ev, 'hold_action')}
           ></ha-selector>
 
           <ha-selector
@@ -453,7 +465,8 @@ export class HaDwdCardEditor extends LitElement {
             .value=${this._config.double_tap_action}
             .label=${'Double Tap Action'}
             .configValue=${'double_tap_action'}
-            @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'double_tap_action')}
+            @value-changed=${(ev: CustomEvent) =>
+              this._valueChanged(ev, 'double_tap_action')}
           ></ha-selector>
         </div>
       </div>
