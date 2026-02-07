@@ -77,6 +77,71 @@ describe('HaDwdDetailsCard', () => {
       'Keine Wetterwarnungen vorhanden.'
     );
   });
+
+  it('hides card when no warnings and hide_empty is true', async () => {
+    element.setConfig({
+      type: 'custom:ha-dwd-details-card',
+      current_warning_entity: 'sensor.dwd_current',
+      hide_empty: true,
+    });
+    const newHass = {
+      ...hass,
+      states: {
+        ...hass.states,
+        'sensor.dwd_current': {
+          attributes: { warning_count: 0 },
+        },
+        'sensor.dwd_pre': {
+          attributes: { warning_count: 0 },
+        },
+      },
+    } as unknown as HomeAssistant;
+    element.hass = newHass;
+    await element.updateComplete;
+
+    expect(element.shadowRoot?.querySelector('.container')).toBeNull();
+    expect(element.shadowRoot?.querySelector('.no-warnings')).toBeNull();
+  });
+
+  describe('shouldUpdate', () => {
+    it('returns true when config changes', () => {
+      const changedProps = new Map([['config', {}]]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((element as any).shouldUpdate(changedProps)).toBe(true);
+    });
+
+    it('returns true when monitored entities change', () => {
+      const oldHass = { ...hass };
+      const newHass = {
+        ...hass,
+        states: {
+          ...hass.states,
+          'sensor.dwd_current': { state: 'new' },
+        },
+      } as unknown as HomeAssistant;
+
+      element.hass = newHass;
+      const changedProps = new Map([['hass', oldHass]]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((element as any).shouldUpdate(changedProps)).toBe(true);
+    });
+
+    it('returns false when irrelevant state changes', () => {
+      const oldHass = { ...hass };
+      const newHass = {
+        ...hass,
+        states: {
+          ...hass.states,
+          'light.kitchen': { state: 'on' },
+        },
+      } as unknown as HomeAssistant;
+
+      element.hass = newHass;
+      const changedProps = new Map([['hass', oldHass]]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((element as any).shouldUpdate(changedProps)).toBe(false);
+    });
+  });
 });
 
 describe('HaDwdDetailsCardEditor', () => {
@@ -90,5 +155,34 @@ describe('HaDwdDetailsCardEditor', () => {
     };
     (editor as unknown as { setConfig: (c: any) => void }).setConfig(config);
     expect((editor as unknown as { _config: any })._config).to.equal(config);
+  });
+
+  it('fires config-changed event when value changes', async () => {
+    const editor = await fixture(
+      html`<ha-dwd-details-card-editor></ha-dwd-details-card-editor>`
+    );
+    const config = {
+      type: 'custom:ha-dwd-details-card',
+      current_warning_entity: 'sensor.dwd_current',
+    };
+    (editor as any).hass = { states: {} };
+    (editor as any).setConfig(config);
+
+    const eventSpy = new Promise((resolve) => {
+      editor.addEventListener('config-changed', (ev) => resolve(ev));
+    });
+
+    const ev = new CustomEvent('change', {
+      bubbles: true,
+      composed: true,
+    });
+    Object.defineProperty(ev, 'target', {
+      value: { configValue: 'hide_empty', checked: true },
+    });
+
+    (editor as any)._valueChanged(ev);
+
+    const caughtEvent = (await eventSpy) as CustomEvent;
+    expect(caughtEvent.detail.config.hide_empty).toBe(true);
   });
 });

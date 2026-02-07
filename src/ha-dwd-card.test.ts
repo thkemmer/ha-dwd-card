@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { fixture, html } from '@open-wc/testing';
+import { HomeAssistant } from 'custom-card-helpers';
 import { HaDwdCard } from './ha-dwd-card';
 import './ha-dwd-card'; // Register the component
 
@@ -39,8 +40,47 @@ describe('HaDwdCard', () => {
     element.setConfig(mockConfig);
   });
 
-  it('renders without crashing', () => {
-    expect(element).toBeInstanceOf(HTMLElement);
+  it('renders headlines and warnings correctly', async () => {
+    element.hass = createMockHass({
+      warning_count: 1,
+      warning_1_headline: 'Extreme Storm',
+      warning_1_color: '#ff0000',
+    });
+    await element.updateComplete;
+
+    const sectionTitle = element.shadowRoot?.querySelector('.section-title');
+    expect(sectionTitle?.textContent).to.contain('Aktuelle Warnungen (1)');
+
+    const headline = element.shadowRoot?.querySelector('.headline');
+    expect(headline?.textContent).to.equal('Extreme Storm');
+  });
+
+  it('hides current warning headline when disabled', async () => {
+    element.setConfig({ ...mockConfig, show_current_warnings_headline: false });
+    element.hass = createMockHass({ warning_count: 1 });
+    await element.updateComplete;
+
+    const sectionTitle = element.shadowRoot?.querySelector('.section-title');
+    expect(sectionTitle).toBeNull();
+  });
+
+  it('shows pre-warnings correctly', async () => {
+    const hass = createMockHass({ warning_count: 0 });
+    hass.states['sensor.dwd_prewarning'] = {
+      attributes: {
+        warning_count: 1,
+        warning_1_headline: 'Pre Storm',
+      },
+      state: 'ok',
+    } as any;
+    element.hass = hass;
+    await element.updateComplete;
+
+    const sectionTitle = element.shadowRoot?.querySelector('.section-title');
+    expect(sectionTitle?.textContent).to.contain('Vorabinformationen');
+
+    const headline = element.shadowRoot?.querySelector('.headline');
+    expect(headline?.textContent).to.equal('Pre Storm');
   });
 
   describe('getCardSize', () => {
@@ -91,6 +131,44 @@ describe('HaDwdCard', () => {
       expect(el.getCardSize()).toBe(1);
     });
   });
+
+  describe('shouldUpdate', () => {
+    it('returns true when config changes', () => {
+      const changedProps = new Map([['config', mockConfig]]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((element as any).shouldUpdate(changedProps)).toBe(true);
+    });
+
+    it('returns true when monitored entities change', () => {
+      const oldHass = createMockHass();
+      const newHass = createMockHass();
+      newHass.states['sensor.dwd_current'] = {
+        ...newHass.states['sensor.dwd_current'],
+        state: 'warning',
+      } as any;
+
+      element.hass = newHass;
+      const changedProps = new Map([['hass', oldHass]]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((element as any).shouldUpdate(changedProps)).toBe(true);
+    });
+
+    it('returns false when irrelevant state changes', () => {
+      const oldHass = createMockHass();
+      const newHass = {
+        ...oldHass,
+        states: {
+          ...oldHass.states,
+          'light.kitchen': { state: 'on' },
+        },
+      } as unknown as HomeAssistant;
+
+      element.hass = newHass;
+      const changedProps = new Map([['hass', oldHass]]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((element as any).shouldUpdate(changedProps)).toBe(false);
+    });
+  });
 });
 
 describe('HaDwdCardEditor', () => {
@@ -104,5 +182,36 @@ describe('HaDwdCardEditor', () => {
     };
     (editor as unknown as { setConfig: (c: any) => void }).setConfig(config);
     expect((editor as unknown as { _config: any })._config).to.equal(config);
+  });
+
+  it('fires config-changed event when value changes', async () => {
+    const editor = await fixture(
+      html`<ha-dwd-card-editor></ha-dwd-card-editor>`
+    );
+    const config = {
+      type: 'custom:ha-dwd-card',
+      current_warning_entity: 'sensor.dwd_current',
+    };
+    (editor as any).hass = { states: {} };
+    (editor as any).setConfig(config);
+
+    const eventSpy = new Promise((resolve) => {
+      editor.addEventListener('config-changed', (ev) => resolve(ev));
+    });
+
+    // Simulate a change in a switch
+    const ev = new CustomEvent('change', {
+      bubbles: true,
+      composed: true,
+    });
+    // We need to mock the target
+    Object.defineProperty(ev, 'target', {
+      value: { configValue: 'show_current_warnings_headline', checked: true },
+    });
+
+    (editor as any)._valueChanged(ev);
+
+    const caughtEvent = (await eventSpy) as CustomEvent;
+    expect(caughtEvent.detail.config.show_current_warnings_headline).toBe(true);
   });
 });
