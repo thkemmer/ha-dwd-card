@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { fixture, html } from '@open-wc/testing';
+import { HomeAssistant } from 'custom-card-helpers';
 import { HaDwdCard } from './ha-dwd-card';
 import './ha-dwd-card'; // Register the component
 
