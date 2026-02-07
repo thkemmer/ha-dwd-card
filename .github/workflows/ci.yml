@@ -32,8 +32,8 @@ jobs:
         run: npm run lint
         continue-on-error: true
 
-      - name: Run Tests
-        run: npm run test
+      - name: Run Tests & Coverage
+        run: npm run test:coverage -- --coverage.thresholds.lines=50
 
       - name: Build Check
         run: npm run build
