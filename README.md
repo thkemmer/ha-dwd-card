@@ -2,7 +2,7 @@
 
 ![CI Status](https://github.com/thkemmer/ha-dwd-card/actions/workflows/ci.yml/badge.svg)
 ![GitHub Release](https://img.shields.io/github/v/release/thkemmer/ha-dwd-card)
-![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/mact/a8884faae96966dc2e18557437ce8ab3/raw/ha-dwd-card-coverage.json)
+![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/thkemmer/a8884faae96966dc2e18557437ce8ab3/raw/25ce2a08d702a69822250500adf11f9324f40b40/coverage.json)
 
 A custom Home Assistant lovelace card to display Deutscher Wetterdienst (DWD) weather warnings with a modern, clean design. The goal is to have a very compatct view for small displays:
 
