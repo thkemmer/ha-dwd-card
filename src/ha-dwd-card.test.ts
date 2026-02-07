@@ -21,8 +21,7 @@ const createMockHass = (attributes = {}) =>
         state: 'ok',
       },
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }) as any;
+  }) as unknown as any;
 
 const mockConfig = {
   type: 'custom:ha-dwd-card',

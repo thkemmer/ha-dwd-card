@@ -31,7 +31,7 @@ describe('HaDwdDetailsCard', () => {
           },
         },
       },
-    } as any;
+    } as unknown as HomeAssistant;
 
     element = await fixture(html`<ha-dwd-details-card></ha-dwd-details-card>`);
     element.hass = hass;
@@ -46,7 +46,7 @@ describe('HaDwdDetailsCard', () => {
   it('renders a warning card with correct content', () => {
     const headline = element.shadowRoot?.querySelector('.headline');
     expect(headline?.textContent).to.equal('Test Headline');
-    
+
     const description = element.shadowRoot?.querySelector('.description');
     expect(description?.textContent).to.equal('Test Description');
 
@@ -67,12 +67,14 @@ describe('HaDwdDetailsCard', () => {
           },
         },
       },
-    } as any;
+    } as unknown as HomeAssistant;
     element.hass = newHass;
     await element.updateComplete;
 
     const noWarnings = element.shadowRoot?.querySelector('.no-warnings');
     expect(noWarnings).not.toBeNull();
-    expect(noWarnings?.textContent).to.contain('Keine Wetterwarnungen vorhanden.');
+    expect(noWarnings?.textContent).to.contain(
+      'Keine Wetterwarnungen vorhanden.'
+    );
   });
 });
