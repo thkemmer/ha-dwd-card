@@ -35,5 +35,11 @@ jobs:
       - name: Run Tests & Coverage
         run: npm run test:coverage -- --coverage.thresholds.lines=50
 
+      - name: Update Coverage Gist
+        uses: schnerring/gha-vitest-coverage-gist@v1
+        with:
+          gist-id: a8884faae96966dc2e18557437ce8ab3
+          gist-token: ${{ secrets.GIST_TOKEN }}
+
       - name: Build Check
         run: npm run build
