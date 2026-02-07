@@ -16,6 +16,10 @@ You can install the releases via HACS directly in Home Assistant:
 - **Pre-Warnings:** Separately lists pre-warnings.
 - **Visual Editor:** Fully supported!
 
+## Prerequisites
+
+This card requires the official [Deutscher Wetterdienst (DWD) Weather Warnings](https://www.home-assistant.io/integrations/dwd_weather_warnings/) integration to be installed and configured in your Home Assistant instance. This integration provides the warning entities that this card displays.
+
 ## Installation
 
 ### HACS (Recommended)
@@ -37,6 +41,8 @@ Click the button above or:
     - Type: JavaScript Module
 
 ## Configuration
+
+The card uses entities provided by the DWD integration. You can find them in your Home Assistant entities list (usually starting with `sensor.dwd_weather_warnings_`).
 
 ### YAML
 
