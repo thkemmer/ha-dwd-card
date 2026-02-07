@@ -36,10 +36,13 @@ jobs:
         run: npm run test:coverage -- --coverage.thresholds.lines=50
 
       - name: Update Coverage Gist
-        uses: schnerring/gha-vitest-coverage-gist@v1
-        with:
-          gist-id: a8884faae96966dc2e18557437ce8ab3
-          gist-token: ${{ secrets.GIST_TOKEN }}
+        run: |
+          PERCENTAGE=$(jq -r .total.lines.pct coverage/coverage-summary.json)
+          curl -X PATCH \
+            -H "Authorization: token ${{ secrets.GIST_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/gists/a8884faae96966dc2e18557437ce8ab3 \
+            -d "{\"files\":{\"coverage.json\":{\"content\":\"{\\\"schemaVersion\\\": 1, \\\"label\\\": \\\"coverage\\\", \\\"message\\\": \\\"$PERCENTAGE%\\\", \\\"color\\\": \\\"orange\\\"}\"}}}"
 
       - name: Build Check
         run: npm run build
