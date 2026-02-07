@@ -21,7 +21,7 @@ export interface DWDData {
 
 export function getDWDData(hass: HomeAssistant, entityId: string): DWDData {
   const state = hass.states[entityId];
-  if (!state) {
+  if (!state || !state.attributes) {
     return { warnings: [], warningCount: 0 };
   }
 
