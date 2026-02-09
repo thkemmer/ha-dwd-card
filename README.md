@@ -3,24 +3,30 @@
 ![CI Status](https://github.com/thkemmer/ha-dwd-card/actions/workflows/ci.yml/badge.svg)
 ![GitHub Release](https://img.shields.io/github/v/release/thkemmer/ha-dwd-card)
 ![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/thkemmer/a8884faae96966dc2e18557437ce8ab3/raw/25ce2a08d702a69822250500adf11f9324f40b40/coverage.json)
+![License](https://img.shields.io/github/license/thkemmer/ha-dwd-card)
 
-A custom Home Assistant lovelace card to display Deutscher Wetterdienst (DWD) weather warnings with a modern, clean design. The goal is to have a very compatct view for small displays:
+A custom Home Assistant lovelace card to display Deutscher Wetterdienst (DWD) weather warnings with a modern, clean design. This project provides two different cards to suit your needs: a compact overview card and a detailed information card.
 
-<img src="assets/preview-card.png" alt="Screenshot" height="250">
+| **Standard Card** | **Details Card** |
+| :---: | :---: |
+| ![Standard Card](assets/ha-dwd-card_preview.png) | ![Details Card](assets/ha-dwd-details-card_preview.png) |
+| *Compact overview for small displays* | *Detailed information and instructions* |
 
 You can install the releases via HACS directly in Home Assistant:
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=thkemmer&repository=ha-dwd-card&category=plugin)
 
 ## Features
 
-- **Dynamic Icons:** Automatically selects the correct icon based on the warning type (e.g., Ice, Wind, Storm, it's incomplete though and will be extended over time).
-- **Official Colors:** Uses the severity colors defined by the DWD integration.
-- **Pre-Warnings:** Separately lists pre-warnings.
-- **Visual Editor:** Fully supported!
+- **Dynamic Icons:** Automatically selects the correct icon based on the warning type (Ice, Wind, Storm, etc.).
+- **Official Colors:** Uses the severity colors defined by the DWD.
+- **Pre-Warnings:** Support for separate pre-warning entities.
+- **Visual Editor:** Full support for the Home Assistant dashboard editor.
+- **Modern UI:** Clean, responsive design that integrates well with Home Assistant.
+- **Action Support:** Support for standard tap, hold, and double-tap actions (Standard Card).
 
 ## Prerequisites
 
-This card requires the official [Deutscher Wetterdienst (DWD) Weather Warnings](https://www.home-assistant.io/integrations/dwd_weather_warnings/) integration to be installed and configured in your Home Assistant instance. This integration provides the warning entities that this card displays.
+This card requires the official [Deutscher Wetterdienst (DWD) Weather Warnings](https://www.home-assistant.io/integrations/dwd_weather_warnings/) integration to be installed and configured in your Home Assistant instance.
 
 ## Installation
 
@@ -44,54 +50,67 @@ Click the button above or:
 
 ## Configuration
 
-The card uses entities provided by the DWD integration. You can find them in your Home Assistant entities list (usually starting with `sensor.dwd_weather_warnings_`).
+Both cards provide a visual editor for easy configuration.
 
-### YAML
+### Visual Editor
 
+| **Standard Card Editor** | **Details Card Editor** |
+| :---: | :---: |
+| ![Standard Card Editor](assets/ha-dwd-card_editor.png) | ![Details Card Editor](assets/ha-dwd-details-card_editor.png) |
+
+### Standard Card (`custom:ha-dwd-card`)
+
+Ideal for overview dashboards where space is limited.
+
+| Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `current_warning_entity` | string | **Required** | The entity ID of the current warning level sensor. |
+| `prewarning_entity` | string | Optional | The entity ID of the pre-warning level sensor. Auto-derived if omitted. |
+| `show_current_warnings_headline` | boolean | `false` | Show section headlines (e.g., "Aktuelle Warnungen"). |
+| `compact_warning_headline` | boolean | `false` | Use shorter warning name instead of verbose headline. |
+| `show_last_update_footer` | boolean | `true` | Show the last update timestamp. |
+| `hide_empty` | boolean | `false` | Hide the card if no warnings are active. |
+| `tap_action` | ActionConfig | `more-info` | Action to perform on tap. |
+| `hold_action` | ActionConfig | - | Action to perform on hold. |
+| `double_tap_action` | ActionConfig | - | Action to perform on double tap. |
+
+### Details Card (`custom:ha-dwd-details-card`)
+
+Ideal for dedicated weather dashboards or as a "more-info" card.
+
+| Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `current_warning_entity` | string | **Required** | The entity ID of the current warning level sensor. |
+| `prewarning_entity` | string | Optional | The entity ID of the pre-warning level sensor. |
+| `hide_empty` | boolean | `false` | Hide the card if no warnings are active. |
+| `show_dwd_attribution` | boolean | `true` | Show the official DWD attribution text. |
+
+## YAML Examples
+
+### Standard Card
 ```yaml
 type: custom:ha-dwd-card
 current_warning_entity: sensor.dwd_weather_warnings_berlin_current_warning_level
-# Optional: explicitly define the pre-warning entity
-# prewarning_entity: sensor.dwd_weather_warnings_berlin_prewarning_level
-# Optional: Show section headlines (default: false)
 show_current_warnings_headline: true
-# Optional: Use shorter warning name instead of headline (default: false)
 compact_warning_headline: true
 ```
 
-**Note:** If `prewarning_entity` is not provided, the card automatically attempts to find the corresponding `_prewarning_level` entity based on the `current_warning_entity` you provide. Ensure your DWD integration naming convention is standard.
+### Details Card
+```yaml
+type: custom:ha-dwd-details-card
+current_warning_entity: sensor.dwd_weather_warnings_berlin_current_warning_level
+show_dwd_attribution: true
+```
 
 ## Testing
 
-This project uses [Vitest](https://vitest.dev/) for unit testing. Vitest is a fast, modern testing framework with native TypeScript support and an environment that mimics the browser (JSDOM), making it ideal for testing Lit-based web components.
-
-### Running Tests
-
-To run the tests once:
+This project uses [Vitest](https://vitest.dev/) for unit testing.
 
 ```bash
 npm run test
 ```
 
-To run tests in watch mode (useful during development):
-
-```bash
-npx vitest
-```
-
-The tests cover:
-
-- **Component Rendering:** Ensuring the card loads correctly in different states.
-- **Logic Verification:** Specifically testing the `getCardSize()` method to ensure correct dashboard layout.
-- **Mocking:** Tests use a mocked Home Assistant (`hass`) object to simulate various warning scenarios.
-
-### Continuous Integration (CI)
-
-Every push and pull request to the `main` branch automatically triggers a test run and linting check via GitHub Actions to ensure code quality and prevent regressions.
-
 ## Local Preview
-
-You can run a local preview of the card with mock data to quickly test configuration changes and different warning scenarios:
 
 1.  Build the project: `npm run build`
 2.  Start the local server: `npm start`
@@ -100,6 +119,6 @@ You can run a local preview of the card with mock data to quickly test configura
 ## Development
 
 1.  Clone this repository and run `npm install`.
-2.  **Production build:** `npm run build` (outputs `dist/ha-dwd-card.js`).
-3.  **Development build:** `npm run build:dev` (outputs `dist/ha-dwd-card-dev.js` with `-dev` tag suffixes).
-4.  **Watch mode:** `npm run watch` or `npm run watch:dev`.
+2.  **Production build:** `npm run build`
+3.  **Development build:** `npm run build:dev`
+4.  **Watch mode:** `npm run watch`
