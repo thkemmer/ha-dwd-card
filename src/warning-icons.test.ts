@@ -12,6 +12,11 @@ describe('getWarningIcon', () => {
     expect(getWarningIcon(59)).toBe('mdi:weather-fog');
   });
 
+  it('returns the correct icon for warning type 88 (Tauwetter)', () => {
+    expect(getWarningIcon(88)).toBe('mdi:snowflake-melt');
+    expect(getWarningIcon('88')).toBe('mdi:snowflake-melt');
+  });
+
   it('returns the fallback icon for a non-existing mapping', () => {
     // 999 is likely not defined
     expect(getWarningIcon(999)).toBe('mdi:alert-circle-outline');
