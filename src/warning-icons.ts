@@ -55,6 +55,7 @@ export const WARNING_ICONS: Record<string, string> = {
   '84': 'mdi:car-traction-control', // Glätte
   '85': 'mdi:car-traction-control', // Glatteis (Rain freezing on ground)
   '87': 'mdi:car-traction-control', // Glatteis
+  '88': 'mdi:snowflake-melt', // Tauwetter
 
   // --- Heat (Hitze) ---
   '247': 'mdi:weather-sunny-alert', // Starke Wärmebelastung
