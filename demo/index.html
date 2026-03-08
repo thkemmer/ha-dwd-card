@@ -109,6 +109,7 @@
       <strong>Components:</strong>
       <a href="#compact-card">Compact Card (ha-dwd-card)</a>
       <a href="#details-card-section">Details Card (ha-dwd-details-card)</a>
+      <a href="#pollen-card-section">Pollen Card (ha-dwd-pollen-card)</a>
     </div>
 
     <!-- Compact Card Section -->
@@ -210,6 +211,41 @@
       </div>
     </div>
 
+    <!-- Pollen Card Section -->
+    <div id="pollen-card-section" class="component-section">
+      <h2>Pollen Card (ha-dwd-pollen-card)</h2>
+      <p>A simple card showing active pollen risks for today.</p>
+
+      <div class="controls">
+        <strong>Scenarios:</strong>
+        <button onclick="setScenario('pollen_none', 'pollen')">
+          No Pollen
+        </button>
+        <button onclick="setScenario('pollen_mixed', 'pollen')">
+          Mixed Risks
+        </button>
+        <button onclick="setScenario('pollen_high', 'pollen')">
+          High Risks
+        </button>
+      </div>
+
+      <div class="controls">
+        <strong>Config:</strong>
+        <label>
+          <input
+            type="checkbox"
+            id="hide_empty_pollen"
+            onchange="updatePollenConfig()"
+          />
+          Hide Empty
+        </label>
+      </div>
+
+      <div class="preview-container">
+        <ha-dwd-pollen-card id="pollen-card"></ha-dwd-pollen-card>
+      </div>
+    </div>
+
     <script>
       // --- Mock HA Components ---
       class HaCard extends HTMLElement {
@@ -242,6 +278,16 @@
         constructor() {
           super();
           this.attachShadow({ mode: 'open' });
+          this._icon = null;
+        }
+
+        get icon() {
+          return this._icon;
+        }
+
+        set icon(value) {
+          this._icon = value;
+          this.render();
         }
 
         connectedCallback() {
@@ -253,10 +299,10 @@
         }
 
         render() {
-          const icon = this.getAttribute('icon');
+          const icon = this._icon || this.getAttribute('icon');
           const style = this.getAttribute('style') || '';
           if (icon) {
-            const mdiClass = icon.replace(':', '-');
+            const mdiClass = icon.replace('mdi:', 'mdi-');
             this.shadowRoot.innerHTML = `
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
                         <style>
@@ -264,9 +310,11 @@
                                 display: inline-flex;
                                 align-items: center;
                                 justify-content: center;
+                                width: 24px;
+                                height: 24px;
                             }
                             .mdi {
-                                font-size: inherit;
+                                font-size: 24px;
                             }
                         </style>
                         <span class="mdi ${mdiClass}" style="${style}"></span>
@@ -369,15 +417,45 @@
             },
           },
         },
+        // Pollen Scenarios
+        pollen_none: {
+          birke: { state: '0.0', attributes: { state_today_desc: 'keine Belastung' } },
+          graser: { state: '0.0', attributes: { state_today_desc: 'keine Belastung' } }
+        },
+        pollen_mixed: {
+          birke: { state: '1.0', attributes: { state_today_desc: 'geringe Belastung' } },
+          graser: { state: '0.5', attributes: { state_today_desc: 'keine bis geringe Belastung' } },
+          hasel: { state: '0.0', attributes: { state_today_desc: 'keine Belastung' } }
+        },
+        pollen_high: {
+          birke: { state: '3.0', attributes: { state_today_desc: 'hohe Belastung' } },
+          ambrosia: { state: '2.5', attributes: { state_today_desc: 'mittlere bis hohe Belastung' } }
+        }
       };
 
       // --- Setup ---
       const card = document.getElementById('card');
       const detailsCard = document.getElementById('details-card');
+      const pollenCard = document.getElementById('pollen-card');
 
       window.setScenario = function (name, target) {
         console.log('setScenario called with:', name, target);
         const data = SCENARIOS[name];
+        
+        if (target === 'pollen') {
+           const hass = {
+             states: {
+               'sensor.pollenflug_birke_123': data.birke || {state: '0.0', attributes: {}},
+               'sensor.pollenflug_graser_123': data.graser || {state: '0.0', attributes: {}},
+               'sensor.pollenflug_ambrosia_123': data.ambrosia || {state: '0.0', attributes: {}},
+               'sensor.pollenflug_hasel_123': data.hasel || {state: '0.0', attributes: {}},
+             }
+           };
+           const p = document.getElementById('pollen-card');
+           if (p) p.hass = hass;
+           return;
+        }
+
         const hass = {
           states: {
             'sensor.dwd_current': data.current,
@@ -423,16 +501,34 @@
         }
       };
 
+      window.updatePollenConfig = function () {
+        const el = document.getElementById('pollen-card');
+        if (el && typeof el.setConfig === 'function') {
+          el.setConfig({
+            type: 'custom:ha-dwd-pollen-card',
+            entities: [
+              'sensor.pollenflug_birke_123',
+              'sensor.pollenflug_graser_123',
+              'sensor.pollenflug_ambrosia_123',
+              'sensor.pollenflug_hasel_123'
+            ],
+            hide_empty: document.getElementById('hide_empty_pollen').checked,
+          });
+        }
+      };
+
       // Load module
       import('../dist/ha-dwd-card.js').then(() => {
         console.log('Cards loaded');
 
         // Wait for upgrade
-        customElements.whenDefined('ha-dwd-details-card').then(() => {
+        customElements.whenDefined('ha-dwd-pollen-card').then(() => {
           updateCompactConfig();
           updateDetailsConfig();
+          updatePollenConfig();
           setScenario('warnings_mixed', 'compact');
           setScenario('warnings_mixed', 'details');
+          setScenario('pollen_mixed', 'pollen');
         });
       });
     </script>
