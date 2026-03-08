@@ -28,6 +28,22 @@ You can install the releases via HACS directly in Home Assistant:
 
 This card requires the official [Deutscher Wetterdienst (DWD) Weather Warnings](https://www.home-assistant.io/integrations/dwd_weather_warnings/) integration to be installed and configured in your Home Assistant instance.
 
+### Pollen Card (`ha-dwd-pollen-card`)
+
+A compact card that shows today's pollen exposure risks. It only displays active risks (levels above 0) and color-codes both the icons and the card header to match the DWD risk level.
+
+**Prerequisite:** Requires the [DWD Pollenflug Integration](https://github.com/mampfes/hacs_dwd_pollenflug) by @mampfes.
+
+```yaml
+type: custom:ha-dwd-pollen-card
+title: "Pollenflug Heute" # Optional
+hide_empty: true # Optional: Hides the card if no pollen is active
+entities:
+  - sensor.pollenflug_birke_123
+  - sensor.pollenflug_graser_123
+  - sensor.pollenflug_roggen_123
+```
+
 ## Installation
 
 ### HACS (Recommended)
