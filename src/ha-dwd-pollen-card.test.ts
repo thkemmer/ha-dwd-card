@@ -82,4 +82,104 @@ describe('HaDwdPollenCard', () => {
     const header = element.shadowRoot?.querySelector('ha-card');
     expect(header?.getAttribute('header')).to.equal('Custom Title');
   });
+
+  describe('static methods', () => {
+    it('getStubConfig returns default config', () => {
+      const stubConfig = HaDwdPollenCard.getStubConfig() as any;
+      expect(stubConfig.type).to.contain('ha-dwd-pollen-card');
+      expect(stubConfig.entities).to.be.an('array');
+      expect(stubConfig.title).to.equal('Pollenflug');
+    });
+
+    it('getConfigElement returns editor element', () => {
+      const editor = HaDwdPollenCard.getConfigElement();
+      expect(editor.tagName.toLowerCase()).to.contain('ha-dwd-pollen-card-editor');
+    });
+  });
+});
+
+describe('HaDwdPollenCardEditor', () => {
+  it('sets config correctly', async () => {
+    const editor = await fixture(
+      html`<ha-dwd-pollen-card-editor></ha-dwd-pollen-card-editor>`
+    );
+    const config = {
+      type: 'custom:ha-dwd-pollen-card',
+      entities: ['sensor.pollen_birke'],
+    };
+    (editor as any).setConfig(config);
+    expect((editor as any)._config).to.deep.equal(config);
+  });
+
+  it('renders editor fields', async () => {
+    const editor = await fixture(
+      html`<ha-dwd-pollen-card-editor></ha-dwd-pollen-card-editor>`
+    );
+    (editor as any).hass = { states: {} };
+    (editor as any).setConfig({
+      type: 'custom:ha-dwd-pollen-card',
+      entities: [],
+    });
+    await (editor as any).updateComplete;
+
+    expect(editor.shadowRoot?.querySelector('ha-textfield')).to.not.be.null;
+    expect(editor.shadowRoot?.querySelector('ha-selector')).to.not.be.null;
+    expect(editor.shadowRoot?.querySelector('ha-switch')).to.not.be.null;
+  });
+
+  it('fires config-changed event when title changes', async () => {
+    const editor = await fixture(
+      html`<ha-dwd-pollen-card-editor></ha-dwd-pollen-card-editor>`
+    );
+    const config = {
+      type: 'custom:ha-dwd-pollen-card',
+      entities: [],
+    };
+    (editor as any).hass = { states: {} };
+    (editor as any).setConfig(config);
+
+    const eventSpy = new Promise((resolve) => {
+      editor.addEventListener('config-changed', (ev) => resolve(ev));
+    });
+
+    const ev = new CustomEvent('input', {
+      bubbles: true,
+      composed: true,
+    });
+    Object.defineProperty(ev, 'target', {
+      value: { configValue: 'title', value: 'New Title' },
+    });
+
+    (editor as any)._valueChanged(ev);
+
+    const caughtEvent = (await eventSpy) as CustomEvent;
+    expect(caughtEvent.detail.config.title).to.equal('New Title');
+  });
+
+  it('fires config-changed event when entities change', async () => {
+    const editor = await fixture(
+      html`<ha-dwd-pollen-card-editor></ha-dwd-pollen-card-editor>`
+    );
+    const config = {
+      type: 'custom:ha-dwd-pollen-card',
+      entities: [],
+    };
+    (editor as any).hass = { states: {} };
+    (editor as any).setConfig(config);
+
+    const eventSpy = new Promise((resolve) => {
+      editor.addEventListener('config-changed', (ev) => resolve(ev));
+    });
+
+    const ev = new CustomEvent('value-changed', {
+      detail: { value: ['sensor.pollen_new'] },
+      bubbles: true,
+      composed: true,
+    });
+
+    (editor as any)._valueChanged(ev, 'entities');
+
+    const caughtEvent = (await eventSpy) as CustomEvent;
+    expect(caughtEvent.detail.config.entities).to.deep.equal(['sensor.pollen_new']);
+  });
 });

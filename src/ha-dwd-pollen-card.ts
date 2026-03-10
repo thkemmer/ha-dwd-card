@@ -13,6 +13,7 @@ interface PollenCardConfig {
 
 const DEV_SUFFIX = __DEV__ ? '-dev' : '';
 const CUSTOM_ELEMENT_NAME = `ha-dwd-pollen-card${DEV_SUFFIX}`;
+const EDITOR_ELEMENT_NAME = `ha-dwd-pollen-card-editor${DEV_SUFFIX}`;
 
 @customElement(CUSTOM_ELEMENT_NAME)
 export class HaDwdPollenCard extends LitElement {
@@ -24,6 +25,19 @@ export class HaDwdPollenCard extends LitElement {
       throw new Error('Please define a list of pollen entities');
     }
     this.config = config;
+  }
+
+  public static getStubConfig(): object {
+    return {
+      type: `custom:${CUSTOM_ELEMENT_NAME}`,
+      entities: [],
+      title: 'Pollenflug',
+      hide_empty: false,
+    };
+  }
+
+  public static getConfigElement(): HTMLElement {
+    return document.createElement(EDITOR_ELEMENT_NAME);
   }
 
   protected render() {
@@ -115,3 +129,125 @@ export class HaDwdPollenCard extends LitElement {
     `;
   }
 }
+
+// --- Editor Class ---
+
+@customElement(EDITOR_ELEMENT_NAME)
+export class HaDwdPollenCardEditor extends LitElement {
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  @state() private _config!: PollenCardConfig;
+
+  public setConfig(config: PollenCardConfig): void {
+    this._config = config;
+  }
+
+  private _valueChanged(ev: CustomEvent, configKey?: keyof PollenCardConfig): void {
+    if (!this._config || !this.hass) {
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const target = ev.target as any;
+    const configValue = configKey || (target.configValue as keyof PollenCardConfig);
+
+    if (!configValue) {
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let newValue: any;
+    if (ev.detail && ev.detail.value !== undefined) {
+      newValue = ev.detail.value;
+    } else if (target.checked !== undefined) {
+      newValue = target.checked;
+    } else {
+      newValue = target.value;
+    }
+
+    if (this._config[configValue] === newValue) {
+      return;
+    }
+
+    this._config = {
+      ...this._config,
+      [configValue]: newValue,
+    };
+
+    const event = new CustomEvent('config-changed', {
+      detail: { config: this._config },
+      bubbles: true,
+      composed: true,
+    });
+    this.dispatchEvent(event);
+  }
+
+  render() {
+    if (!this.hass || !this._config) {
+      return html``;
+    }
+
+    return html`
+      <div class="card-config">
+        <ha-textfield
+          .label=${'Title (Optional)'}
+          .value=${this._config.title || ''}
+          .configValue=${'title'}
+          @input=${this._valueChanged}
+        ></ha-textfield>
+
+        <ha-selector
+          .hass=${this.hass}
+          .selector=${{
+            entity: {
+              multiple: true,
+              filter: {
+                integration: 'dwd_weather_warnings',
+                domain: 'sensor',
+              },
+            },
+          }}
+          .value=${this._config.entities}
+          .label=${'Pollen Entities'}
+          .configValue=${'entities'}
+          @value-changed=${(ev: CustomEvent) => this._valueChanged(ev, 'entities')}
+        ></ha-selector>
+
+        <div class="switches">
+          <ha-formfield label="Hide card if no pollen exposure">
+            <ha-switch
+              .checked=${this._config.hide_empty === true}
+              .configValue=${'hide_empty'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+        </div>
+      </div>
+    `;
+  }
+
+  static styles = css`
+    .card-config {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .switches {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    ha-textfield,
+    ha-selector {
+      display: block;
+      width: 100%;
+    }
+  `;
+}
+
+// Register the card in Home Assistant's card picker
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: CUSTOM_ELEMENT_NAME,
+  name: `DWD Pollenflug Card${__DEV__ ? ' (Dev)' : ''}`,
+  preview: true,
+  description: 'Displays current pollen exposure from DWD.',
+});
