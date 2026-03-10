@@ -200,7 +200,6 @@ export class HaDwdPollenCardEditor extends LitElement {
             entity: {
               multiple: true,
               filter: {
-                integration: 'dwd_weather_warnings',
                 domain: 'sensor',
               },
             },
