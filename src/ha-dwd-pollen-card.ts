@@ -55,15 +55,8 @@ export class HaDwdPollenCard extends LitElement {
       return html``;
     }
 
-    // Determine highest risk for header color
-    const maxRisk = pollenData.length > 0 
-      ? Math.max(...pollenData.map(p => p.state))
-      : 0;
-    const headerColor = getPollenColor(maxRisk);
-
     return html`
       <ha-card>
-        <div class="header-color-bar" style="background-color: ${headerColor}"></div>
         ${this.config.show_title !== false
           ? html`
               <div class="card-header">
@@ -98,34 +91,26 @@ export class HaDwdPollenCard extends LitElement {
       :host {
         display: block;
       }
-      .header-color-bar {
-        height: 4px;
-        width: 100%;
-        margin-top: -4px;
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
-      }
       .card-header {
         margin: 4px;
         margin-left: 12px;
-        padding: 8px 16px 4px 4px;
         font-weight: 500;
         color: var(--primary-text-color);
         font-size: 14px;
       }
       .card-content {
-        padding: 16px;
+        padding: 4px 12px 12px 12px;
       }
       .pollen-row {
         display: flex;
         align-items: center;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
       }
       .pollen-row:last-child {
         margin-bottom: 0;
       }
       ha-icon {
-        margin-right: 16px;
+        margin-right: 12px;
         --mdc-icon-size: 24px;
       }
       .pollen-info {
@@ -134,14 +119,16 @@ export class HaDwdPollenCard extends LitElement {
       }
       .pollen-name {
         font-weight: bold;
+        font-size: 14px;
       }
       .pollen-desc {
-        font-size: 0.9em;
+        font-size: 12px;
         color: var(--secondary-text-color);
       }
       .no-pollen {
         color: var(--secondary-text-color);
         text-align: center;
+        padding: 4px;
       }
     `;
   }
