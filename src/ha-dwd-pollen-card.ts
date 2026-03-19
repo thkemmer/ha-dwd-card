@@ -60,8 +60,11 @@ export class HaDwdPollenCard extends LitElement {
     const headerColor = getPollenColor(maxRisk);
 
     return html`
-      <ha-card header=${this.config.title || 'Pollenflug'}>
+      <ha-card>
         <div class="header-color-bar" style="background-color: ${headerColor}"></div>
+        <div class="card-header">
+          ${this.config.title || 'Pollenflug'}
+        </div>
         <div class="card-content">
           ${pollenData.length === 0
             ? html`<div class="no-pollen">Keine Belastung</div>`
@@ -95,6 +98,11 @@ export class HaDwdPollenCard extends LitElement {
         margin-top: -4px;
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
+      }
+      .card-header {
+        padding: 8px 16px 4px 16px;
+        font-weight: 500;
+        color: var(--primary-text-color);
       }
       .card-content {
         padding: 16px;

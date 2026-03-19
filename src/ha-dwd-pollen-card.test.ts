@@ -79,8 +79,8 @@ describe('HaDwdPollenCard', () => {
     });
     await element.updateComplete;
 
-    const header = element.shadowRoot?.querySelector('ha-card');
-    expect(header?.getAttribute('header')).to.equal('Custom Title');
+    const header = element.shadowRoot?.querySelector('.card-header');
+    expect(header?.textContent?.trim()).to.equal('Custom Title');
   });
 
   describe('static methods', () => {
