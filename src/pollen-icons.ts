@@ -5,12 +5,12 @@ export const getPollenIcon = (typeId: string): string => {
   const icons: Record<string, string> = {
     birke: 'mdi:tree-outline',
     graser: 'mdi:grass',
-    roggen: 'mdi:wheat',
-    hasel: 'mdi:nature',
-    erle: 'mdi:tree',
-    esche: 'mdi:tree-variant',
+    roggen: 'mdi:barley',
+    hasel: 'mdi:sprout',
+    erle: 'mdi:nature',
+    esche: 'mdi:tree',
     beifuss: 'mdi:flower',
-    ambrosia: 'mdi:sprout',
+    ambrosia: 'mdi:flower-pollen',
   };
 
   return icons[typeId] || 'mdi:flower-pollen';

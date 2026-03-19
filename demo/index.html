@@ -227,6 +227,9 @@
         <button onclick="setScenario('pollen_high', 'pollen')">
           High Risks
         </button>
+        <button onclick="setScenario('pollen_all', 'pollen')">
+          All Risks
+        </button>
       </div>
 
       <div class="controls">
@@ -430,6 +433,16 @@
         pollen_high: {
           birke: { state: '3.0', attributes: { state_today_desc: 'hohe Belastung' } },
           ambrosia: { state: '2.5', attributes: { state_today_desc: 'mittlere bis hohe Belastung' } }
+        },
+        pollen_all: {
+          birke: { state: '3.0', attributes: { state_today_desc: 'hohe Belastung' } },
+          graser: { state: '2.5', attributes: { state_today_desc: 'mittlere bis hohe Belastung' } },
+          roggen: { state: '2.0', attributes: { state_today_desc: 'mittlere Belastung' } },
+          hasel: { state: '1.5', attributes: { state_today_desc: 'geringe bis mittlere Belastung' } },
+          erle: { state: '1.0', attributes: { state_today_desc: 'geringe Belastung' } },
+          esche: { state: '3.0', attributes: { state_today_desc: 'hohe Belastung' } },
+          beifuss: { state: '2.0', attributes: { state_today_desc: 'mittlere Belastung' } },
+          ambrosia: { state: '2.5', attributes: { state_today_desc: 'mittlere bis hohe Belastung' } }
         }
       };
 
@@ -447,8 +460,12 @@
              states: {
                'sensor.pollenflug_birke_123': data.birke || {state: '0.0', attributes: {}},
                'sensor.pollenflug_graser_123': data.graser || {state: '0.0', attributes: {}},
-               'sensor.pollenflug_ambrosia_123': data.ambrosia || {state: '0.0', attributes: {}},
+               'sensor.pollenflug_roggen_123': data.roggen || {state: '0.0', attributes: {}},
                'sensor.pollenflug_hasel_123': data.hasel || {state: '0.0', attributes: {}},
+               'sensor.pollenflug_erle_123': data.erle || {state: '0.0', attributes: {}},
+               'sensor.pollenflug_esche_123': data.esche || {state: '0.0', attributes: {}},
+               'sensor.pollenflug_beifuss_123': data.beifuss || {state: '0.0', attributes: {}},
+               'sensor.pollenflug_ambrosia_123': data.ambrosia || {state: '0.0', attributes: {}},
              }
            };
            const p = document.getElementById('pollen-card');
@@ -509,8 +526,12 @@
             entities: [
               'sensor.pollenflug_birke_123',
               'sensor.pollenflug_graser_123',
-              'sensor.pollenflug_ambrosia_123',
-              'sensor.pollenflug_hasel_123'
+              'sensor.pollenflug_roggen_123',
+              'sensor.pollenflug_hasel_123',
+              'sensor.pollenflug_erle_123',
+              'sensor.pollenflug_esche_123',
+              'sensor.pollenflug_beifuss_123',
+              'sensor.pollenflug_ambrosia_123'
             ],
             hide_empty: document.getElementById('hide_empty_pollen').checked,
           });
