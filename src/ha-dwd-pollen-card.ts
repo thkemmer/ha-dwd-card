@@ -8,6 +8,7 @@ interface PollenCardConfig {
   type: string;
   entities: string[];
   title?: string;
+  show_title?: boolean;
   hide_empty?: boolean;
 }
 
@@ -32,6 +33,7 @@ export class HaDwdPollenCard extends LitElement {
       type: `custom:${CUSTOM_ELEMENT_NAME}`,
       entities: [],
       title: 'Pollenflug',
+      show_title: true,
       hide_empty: false,
     };
   }
@@ -62,9 +64,13 @@ export class HaDwdPollenCard extends LitElement {
     return html`
       <ha-card>
         <div class="header-color-bar" style="background-color: ${headerColor}"></div>
-        <div class="card-header">
-          ${this.config.title || 'Pollenflug'}
-        </div>
+        ${this.config.show_title !== false
+          ? html`
+              <div class="card-header">
+                ${this.config.title || 'Pollenflug'}
+              </div>
+            `
+          : ''}
         <div class="card-content">
           ${pollenData.length === 0
             ? html`<div class="no-pollen">Keine Belastung</div>`
@@ -100,9 +106,12 @@ export class HaDwdPollenCard extends LitElement {
         border-top-right-radius: 4px;
       }
       .card-header {
-        padding: 8px 16px 4px 16px;
+        margin: 4px;
+        margin-left: 12px;
+        padding: 8px 16px 4px 4px;
         font-weight: 500;
         color: var(--primary-text-color);
+        font-size: 14px;
       }
       .card-content {
         padding: 16px;
@@ -219,6 +228,14 @@ export class HaDwdPollenCardEditor extends LitElement {
         ></ha-selector>
 
         <div class="switches">
+          <ha-formfield label="Show Card Title">
+            <ha-switch
+              .checked=${this._config.show_title !== false}
+              .configValue=${'show_title'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
           <ha-formfield label="Hide card if no pollen exposure">
             <ha-switch
               .checked=${this._config.hide_empty === true}

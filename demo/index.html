@@ -237,6 +237,15 @@
         <label>
           <input
             type="checkbox"
+            id="show_pollen_title"
+            checked
+            onchange="updatePollenConfig()"
+          />
+          Show Title
+        </label>
+        <label>
+          <input
+            type="checkbox"
             id="hide_empty_pollen"
             onchange="updatePollenConfig()"
           />
@@ -533,6 +542,7 @@
               'sensor.pollenflug_beifuss_123',
               'sensor.pollenflug_ambrosia_123'
             ],
+            show_title: document.getElementById('show_pollen_title').checked,
             hide_empty: document.getElementById('hide_empty_pollen').checked,
           });
         }

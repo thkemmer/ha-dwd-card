@@ -83,6 +83,17 @@ describe('HaDwdPollenCard', () => {
     expect(header?.textContent?.trim()).to.equal('Custom Title');
   });
 
+  it('does not render the header when show_title is false', async () => {
+    element.setConfig({ ...mockConfig, show_title: false });
+    element.hass = createMockHass({
+      'sensor.pollen_birke': { state: '1.0', attributes: {} },
+    });
+    await element.updateComplete;
+
+    const header = element.shadowRoot?.querySelector('.card-header');
+    expect(header).toBeNull();
+  });
+
   describe('static methods', () => {
     it('getStubConfig returns default config', () => {
       const stubConfig = HaDwdPollenCard.getStubConfig() as any;
