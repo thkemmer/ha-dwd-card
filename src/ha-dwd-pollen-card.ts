@@ -91,15 +91,17 @@ export class HaDwdPollenCard extends LitElement {
       :host {
         display: block;
       }
+      ha-card {
+        padding: 8px;
+      }
       .card-header {
-        margin: 4px;
-        margin-left: 12px;
+        margin: 0 0 8px 8px;
         font-weight: 500;
         color: var(--primary-text-color);
         font-size: 14px;
       }
       .card-content {
-        padding: 4px 12px 12px 12px;
+        padding: 0;
       }
       .pollen-row {
         display: flex;
