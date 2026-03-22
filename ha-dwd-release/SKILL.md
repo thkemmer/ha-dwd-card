@@ -27,9 +27,9 @@ Automate the release to ensure consistency:
   *Pattern:* `v1.x.x` (e.g., `v1.1.0`)
 - **GitHub Release:** Create a release via the GitHub CLI or Web UI.
   *Best Practice:*
-  - Use "Generate release notes" for the automated changelog.
-  - Add a human-readable summary of the key features/fixes at the top.
-  - Ensure the `release.yml` workflow triggers and attaches the `dist/ha-dwd-card.js` asset.
+  - **Release Title:** Must communicate **user-facing value** (e.g., "v1.1.0 - New Pollen Forecast Card"). Avoid technical jargon or internal process updates (like "Guidelines" or "Refactoring") in the title.
+  - **Changelog:** Use "Generate release notes" for the automated changelog, but add a brief, human-readable summary of the key features/fixes at the top.
+  - **Asset Check:** Ensure the `release.yml` workflow triggers and attaches the `dist/ha-dwd-card.js` asset.
 
 ## 3. Post-Release & HACS Sync
 
