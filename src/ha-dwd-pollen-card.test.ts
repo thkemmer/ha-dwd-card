@@ -158,8 +158,11 @@ describe('HaDwdPollenCardEditor', () => {
     });
     await (editor as any).updateComplete;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(editor.shadowRoot?.querySelector('ha-textfield')).to.not.be.null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(editor.shadowRoot?.querySelector('ha-selector')).to.not.be.null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     expect(editor.shadowRoot?.querySelector('ha-switch')).to.not.be.null;
   });
 

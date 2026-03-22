@@ -1,7 +1,7 @@
-import { LitElement, html, css, PropertyValues } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant } from 'custom-card-helpers';
-import { getPollenData, PollenInfo, getPollenColor } from './pollen-data';
+import { getPollenData, PollenInfo } from './pollen-data';
 import { getPollenIcon } from './pollen-icons';
 
 interface PollenCardConfig {
