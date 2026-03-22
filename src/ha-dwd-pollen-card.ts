@@ -10,6 +10,7 @@ interface PollenCardConfig {
   title?: string;
   show_title?: boolean;
   hide_empty?: boolean;
+  sort_by_level?: boolean;
 }
 
 const DEV_SUFFIX = __DEV__ ? '-dev' : '';
@@ -35,6 +36,7 @@ export class HaDwdPollenCard extends LitElement {
       title: 'Pollenflug',
       show_title: true,
       hide_empty: false,
+      sort_by_level: true,
     };
   }
 
@@ -47,9 +49,15 @@ export class HaDwdPollenCard extends LitElement {
       return html``;
     }
 
-    const pollenData: PollenInfo[] = this.config.entities
+    let pollenData: PollenInfo[] = this.config.entities
       .map((entityId) => getPollenData(this.hass, entityId))
       .filter((data): data is PollenInfo => data !== null && data.state > 0);
+
+    // Default to true if not specified
+    const sortByLevel = this.config.sort_by_level !== false;
+    if (sortByLevel) {
+      pollenData = [...pollenData].sort((a, b) => b.state - a.state);
+    }
 
     if (pollenData.length === 0 && this.config.hide_empty) {
       return html``;
@@ -71,7 +79,7 @@ export class HaDwdPollenCard extends LitElement {
                 (pollen) => html`
                   <div class="pollen-row">
                     <ha-icon
-                      .icon=${getPollenIcon(pollen.typeId)}
+                      icon="${getPollenIcon(pollen.typeId)}"
                       style="color: ${pollen.color}"
                     ></ha-icon>
                     <div class="pollen-info">
@@ -86,54 +94,52 @@ export class HaDwdPollenCard extends LitElement {
     `;
   }
 
-  static get styles() {
-    return css`
-      :host {
-        display: block;
-      }
-      ha-card {
-        padding: 8px;
-      }
-      .card-header {
-        margin: 0 0 8px 8px;
-        font-weight: 500;
-        color: var(--primary-text-color);
-        font-size: 14px;
-      }
-      .card-content {
-        padding: 0;
-      }
-      .pollen-row {
-        display: flex;
-        align-items: center;
-        margin-bottom: 8px;
-      }
-      .pollen-row:last-child {
-        margin-bottom: 0;
-      }
-      ha-icon {
-        margin-right: 12px;
-        --mdc-icon-size: 24px;
-      }
-      .pollen-info {
-        display: flex;
-        flex-direction: column;
-      }
-      .pollen-name {
-        font-weight: bold;
-        font-size: 14px;
-      }
-      .pollen-desc {
-        font-size: 12px;
-        color: var(--secondary-text-color);
-      }
-      .no-pollen {
-        color: var(--secondary-text-color);
-        text-align: center;
-        padding: 4px;
-      }
-    `;
-  }
+  static styles = css`
+    :host {
+      display: block;
+    }
+    ha-card {
+      padding: 8px;
+    }
+    .card-header {
+      margin: 0 0 8px 8px;
+      font-weight: 500;
+      color: var(--primary-text-color);
+      font-size: 14px;
+    }
+    .card-content {
+      padding: 0;
+    }
+    .pollen-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .pollen-row:last-child {
+      margin-bottom: 0;
+    }
+    ha-icon {
+      margin-right: 12px;
+      --mdc-icon-size: 24px;
+    }
+    .pollen-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .pollen-name {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .pollen-desc {
+      font-size: 12px;
+      color: var(--secondary-text-color);
+    }
+    .no-pollen {
+      color: var(--secondary-text-color);
+      text-align: center;
+      padding: 4px;
+    }
+  `;
 }
 
 // --- Editor Class ---
@@ -229,6 +235,14 @@ export class HaDwdPollenCardEditor extends LitElement {
             <ha-switch
               .checked=${this._config.hide_empty === true}
               .configValue=${'hide_empty'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
+          <ha-formfield label="Sort by Exposure Level">
+            <ha-switch
+              .checked=${this._config.sort_by_level !== false}
+              .configValue=${'sort_by_level'}
               @change=${this._valueChanged}
             ></ha-switch>
           </ha-formfield>

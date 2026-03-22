@@ -47,7 +47,7 @@ export const getPollenData = (
 
   // Extract type from entity_id: sensor.pollenflug_birke_123 -> birke
   const parts = entityId.split('.');
-  const nameParts = parts[1]?.split('_') || [];
+  const nameParts = (parts[1] && parts[1].split('_')) || [];
   const typeId = nameParts[1] || 'unknown';
   
   const name = POLLEN_TYPE_MAP[typeId] || typeId.charAt(0).toUpperCase() + typeId.slice(1);

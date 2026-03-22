@@ -251,6 +251,15 @@
           />
           Hide Empty
         </label>
+        <label>
+          <input
+            type="checkbox"
+            id="sort_by_level_pollen"
+            checked
+            onchange="updatePollenConfig()"
+          />
+          Sort by Level
+        </label>
       </div>
 
       <div class="preview-container">
@@ -544,6 +553,7 @@
             ],
             show_title: document.getElementById('show_pollen_title').checked,
             hide_empty: document.getElementById('hide_empty_pollen').checked,
+            sort_by_level: document.getElementById('sort_by_level_pollen').checked,
           });
         }
       };

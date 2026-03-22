@@ -46,6 +46,31 @@ describe('HaDwdPollenCard', () => {
     
     const desc = element.shadowRoot?.querySelector('.pollen-desc');
     expect(desc?.textContent).to.equal('mittlere Belastung');
+
+    const icon = element.shadowRoot?.querySelector('ha-icon');
+    expect(icon?.getAttribute('icon')).to.equal('mdi:tree-outline');
+  });
+
+  it('orders pollen by exposure level when sort_by_level is true', async () => {
+    element.setConfig({ ...mockConfig, sort_by_level: true });
+    const hass = {
+      'sensor.pollen_birke': {
+        state: '1.0',
+        attributes: { state_today_desc: 'low' },
+      },
+      'sensor.pollen_graser': {
+        state: '3.0',
+        attributes: { state_today_desc: 'high' },
+      },
+    };
+    element.hass = createMockHass(hass);
+    await element.updateComplete;
+
+    const names = Array.from(element.shadowRoot?.querySelectorAll('.pollen-name') || []).map(
+      (el) => el.textContent
+    );
+    // Gräser (3.0) should be before Birke (1.0)
+    expect(names).to.deep.equal(['Gräser', 'Birke']);
   });
 
   it('shows "Keine Belastung" when no pollen is active and hide_empty is false', async () => {
