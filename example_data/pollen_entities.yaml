@@ -1,0 +1,48 @@
+# Mock data for DWD Pollenflug sensors (sensor.pollenflug_<type>_<region>)
+# Risk levels (0-3):
+# 0: None, 0.5: None-Low, 1: Low, 1.5: Low-Med, 2: Med, 2.5: Med-High, 3: High
+
+# Example 1: No Pollen
+pollen_none:
+  entity_id: sensor.pollenflug_birke_123
+  state: "0.0"
+  attributes:
+    state_today_desc: "keine Belastung"
+    unit_of_measurement: "index"
+    friendly_name: "DWD Pollenflug Birke"
+
+# Example 2: Low Risk (Birch)
+pollen_low:
+  entity_id: sensor.pollenflug_birke_123
+  state: "1.0"
+  attributes:
+    state_today_desc: "geringe Belastung"
+    unit_of_measurement: "index"
+    friendly_name: "DWD Pollenflug Birke"
+
+# Example 3: Medium Risk (Grasses)
+pollen_medium:
+  entity_id: sensor.pollenflug_graser_123
+  state: "2.0"
+  attributes:
+    state_today_desc: "mittlere Belastung"
+    unit_of_measurement: "index"
+    friendly_name: "DWD Pollenflug Gräser"
+
+# Example 4: High Risk (Ambrosia)
+pollen_high:
+  entity_id: sensor.pollenflug_ambrosia_123
+  state: "3.0"
+  attributes:
+    state_today_desc: "hohe Belastung"
+    unit_of_measurement: "index"
+    friendly_name: "DWD Pollenflug Ambrosia"
+
+# Example 5: Mixed Risk (Rye)
+pollen_mixed:
+  entity_id: sensor.pollenflug_roggen_123
+  state: "1.5"
+  attributes:
+    state_today_desc: "geringe bis mittlere Belastung"
+    unit_of_measurement: "index"
+    friendly_name: "DWD Pollenflug Roggen"

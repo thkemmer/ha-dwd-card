@@ -28,6 +28,8 @@ You can install the releases via HACS directly in Home Assistant:
 
 This card requires the official [Deutscher Wetterdienst (DWD) Weather Warnings](https://www.home-assistant.io/integrations/dwd_weather_warnings/) integration to be installed and configured in your Home Assistant instance.
 
+For the **Pollen Card**, the [DWD Pollenflug Integration](https://github.com/mampfes/hacs_dwd_pollenflug) by @mampfes is required.
+
 ## Installation
 
 ### HACS (Recommended)
@@ -100,6 +102,35 @@ compact_warning_headline: true
 type: custom:ha-dwd-details-card
 current_warning_entity: sensor.dwd_weather_warnings_berlin_current_warning_level
 show_dwd_attribution: true
+```
+
+## Pollen Forecast
+
+A dedicated section for displaying pollen exposure levels.
+
+### Pollen Card (`custom:ha-dwd-pollen-card`)
+
+A compact card that shows today's pollen exposure risks. It only displays active risks (levels above 0) and color-codes both the icons and the card header to match the DWD risk level.
+
+| Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `entities` | array | **Required** | List of sensor entity IDs from the DWD Pollen integration. |
+| `title` | string | `Pollenflug` | The title displayed in the card header. |
+| `show_title` | boolean | `true` | Show or hide the card header. |
+| `hide_empty` | boolean | `false` | Hide the card if no pollen exposure is currently active. |
+| `sort_by_level` | boolean | `true` | Automatically sort the entries by exposure intensity (descending). |
+
+### YAML Example
+
+```yaml
+type: custom:ha-dwd-pollen-card
+title: "Pollenflug Heute"
+hide_empty: true
+sort_by_level: true
+entities:
+  - sensor.pollenflug_birke_123
+  - sensor.pollenflug_graser_123
+  - sensor.pollenflug_roggen_123
 ```
 
 ## Testing
