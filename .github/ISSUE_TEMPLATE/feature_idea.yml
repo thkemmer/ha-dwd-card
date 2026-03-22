@@ -1,0 +1,54 @@
+name: "💡 Feature Idea / Brainstorming"
+about: Share a new idea and start brainstorming.
+title: "[IDEA] "
+labels: ["idea", "brainstorming"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Welcome to the Ideation Phase! 🚀
+        Please use this template to describe your idea. Let's brainstorm how to fit this into our current architecture.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is your idea? Explain the problem it solves or the value it adds.
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-story
+    attributes:
+      label: User Story
+      description: As a user, I want to [action] so that [benefit].
+      placeholder: "Example: As a user, I want to see the pollen exposure forecast for the next 3 days so that I can plan my outdoor activities."
+    validations:
+      required: false
+
+  - type: textarea
+    id: ui-ux
+    attributes:
+      label: UI / UX Thoughts
+      description: How should this look in Home Assistant? Are there any specific icons, colors, or layout ideas?
+    validations:
+      required: false
+
+  - type: textarea
+    id: technical-thoughts
+    attributes:
+      label: Initial Technical Thoughts (Agentic Brainstorming)
+      description: How could we implement this? Which entities are involved? Is it a new card or an addition to an existing one?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: criteria
+    attributes:
+      label: Readiness for Phase 1 (Discovery)
+      options:
+        - label: "Requirements are mostly clear"
+        - label: "Home Assistant integration is available for testing"
+        - label: "Initial UX concept exists"
