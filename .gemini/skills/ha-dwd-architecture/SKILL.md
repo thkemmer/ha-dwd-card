@@ -12,6 +12,10 @@ Every UI-related change must pass through this validation before completion:
 1.  **Stage 0: Immediate Verification:** Run `npm test` and `npm run build` after EVERY source code change, no matter how small or "visual only" it is. Never assume a change is safe without verification.
 2.  **Stage 1: Local Demo:** Verify the UI in `demo/index.html` via `npm start`. All scenarios and config options must be showcased.
 3.  **Stage 2: Real Hardware/HA:** Build a dev version (`npm run build:dev`) and verify it on a real Home Assistant instance to ensure CSS/API compatibility and visual editor availability.
+4.  **Stage 3: Documentation Proofing:** Before finishing a task, ensure the following are updated and synchronized:
+    - **README.md:** Update configuration tables, features list, and provide YAML examples.
+    - **ROADMAP.md:** Move completed items from "Planned" to "Done".
+    - **Source Sync:** Verify that all `@property` and `interface` options found in the source code are accurately reflected in the documentation.
 
 ## 2. Component Structure & Registration
 - **Card Registration:** Always register the card in `window.customCards` at the **top of the file** (after imports/constants, before the class definition). This ensures HA discovers the card immediately during module load.

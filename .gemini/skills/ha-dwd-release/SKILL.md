@@ -17,9 +17,14 @@ Before initiating a release, all quality gates must be passed:
   *Command:* `npm test && npm run lint`
 - **Clean Build:** Ensure the project compiles into a clean `dist/` directory.
   *Command:* `npm run clean && npm run build`
+- **Documentation Sync:** Verify that 'Stage 3: Documentation Proofing' from the `ha-dwd-architecture` protocol is complete:
+  - `README.md` reflects all current config options and YAML examples.
+  - `docs/ROADMAP.md` is updated.
+  - Source code `@property` and `interface` definitions match the documentation.
 - **Version Bump:** Synchronize the version in `package.json` with the target release tag.
 
 ## 2. Publication Phase
+... rest of methods unchanged ...
 
 Automate the release to ensure consistency:
 
