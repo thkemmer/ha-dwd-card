@@ -8,9 +8,10 @@ description: Holistic architecture and implementation guidelines. Mandatory for 
 This document is the **mandatory reference** for every development task in this project. It ensures technical consistency and operational reliability.
 
 ## 1. MANDATORY: Development Workflow (Validation Chain)
-Every UI-related change must pass through this two-stage validation before completion:
-1.  **Stage 1: Local Demo:** Verify the UI in `demo/index.html` via `npm start`. All scenarios and config options must be showcased.
-2.  **Stage 2: Real Hardware/HA:** Build a dev version (`npm run build:dev`) and verify it on a real Home Assistant instance to ensure CSS/API compatibility and visual editor availability.
+Every UI-related change must pass through this validation before completion:
+1.  **Stage 0: Immediate Verification:** Run `npm test` and `npm run build` after EVERY source code change, no matter how small or "visual only" it is. Never assume a change is safe without verification.
+2.  **Stage 1: Local Demo:** Verify the UI in `demo/index.html` via `npm start`. All scenarios and config options must be showcased.
+3.  **Stage 2: Real Hardware/HA:** Build a dev version (`npm run build:dev`) and verify it on a real Home Assistant instance to ensure CSS/API compatibility and visual editor availability.
 
 ## 2. Component Structure & Registration
 - **Card Registration:** Always register the card in `window.customCards` at the **top of the file** (after imports/constants, before the class definition). This ensures HA discovers the card immediately during module load.

@@ -89,7 +89,17 @@ export class HaDwdPollenDetailsCard extends LitElement {
         <div class="card-content">
           ${pollenData.length === 0
             ? html`<div class="no-pollen">Keine Belastung</div>`
-            : pollenData.map((pollen) => this.renderPollenRow(pollen))}
+            : html`
+                <div class="forecast-header">
+                  <div class="header-name">Pflanze</div>
+                  <div class="header-days">
+                    <div class="day-label">Heute</div>
+                    <div class="day-label">Morgen</div>
+                    <div class="day-label">Übermorgen</div>
+                  </div>
+                </div>
+                ${pollenData.map((pollen) => this.renderPollenRow(pollen))}
+              `}
         </div>
       </ha-card>
     `;
@@ -103,12 +113,10 @@ export class HaDwdPollenDetailsCard extends LitElement {
         <div class="pollen-title">${pollen.name}</div>
         <div class="forecast-container">
           <div class="forecast-day">
-            <div class="day-label">Heute</div>
             <ha-icon icon="${icon}" style="color: ${pollen.color}"></ha-icon>
             <div class="day-desc">${pollen.description}</div>
           </div>
           <div class="forecast-day">
-            <div class="day-label">Morgen</div>
             <ha-icon
               icon="${icon}"
               style="color: ${pollen.tomorrow?.color || 'var(--disabled-text-color)'}"
@@ -118,7 +126,6 @@ export class HaDwdPollenDetailsCard extends LitElement {
             </div>
           </div>
           <div class="forecast-day">
-            <div class="day-label">Übermorgen</div>
             <ha-icon
               icon="${icon}"
               style="color: ${pollen.in2Days?.color || 'var(--disabled-text-color)'}"
@@ -137,10 +144,10 @@ export class HaDwdPollenDetailsCard extends LitElement {
       display: block;
     }
     ha-card {
-      padding: 16px;
+      padding: 12px;
     }
     .card-header {
-      margin-bottom: 16px;
+      margin-bottom: 8px;
       font-weight: 500;
       color: var(--primary-text-color);
       font-size: 16px;
@@ -149,48 +156,79 @@ export class HaDwdPollenDetailsCard extends LitElement {
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 24px;
     }
-    .pollen-row {
+    .forecast-header {
       display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: 8px;
-      padding-bottom: 16px;
+      padding-bottom: 4px;
+      margin-bottom: 4px;
       border-bottom: 1px solid var(--divider-color);
     }
-    .pollen-row:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-    .pollen-title {
+    .header-name {
+      flex: 0 0 80px;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--secondary-text-color);
       font-weight: bold;
-      font-size: 14px;
-      color: var(--primary-text-color);
     }
-    .forecast-container {
+    .header-days {
+      flex: 1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      text-align: center;
-    }
-    .forecast-day {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       gap: 4px;
     }
     .day-label {
       font-size: 10px;
       text-transform: uppercase;
       color: var(--secondary-text-color);
+      text-align: center;
+      font-weight: bold;
+    }
+    .pollen-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--divider-color);
+    }
+    .pollen-row:last-child {
+      border-bottom: none;
+    }
+    .pollen-title {
+      flex: 0 0 80px;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--primary-text-color);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .forecast-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+    .forecast-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      text-align: center;
     }
     ha-icon {
       --mdc-icon-size: 28px;
     }
     .day-desc {
-      font-size: 11px;
-      line-height: 1.2;
+      font-size: 9px;
+      line-height: 1.1;
       color: var(--secondary-text-color);
+      word-break: break-word;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .no-pollen {
       color: var(--secondary-text-color);
@@ -325,12 +363,3 @@ export class HaDwdPollenDetailsCardEditor extends LitElement {
     }
   `;
 }
-
-// Register the card in Home Assistant's card picker
-window.customCards = window.customCards || [];
-window.customCards.push({
-  type: CUSTOM_ELEMENT_NAME,
-  name: `DWD Pollenflug Details Card${__DEV__ ? ' (Dev)' : ''}`,
-  preview: true,
-  description: 'Displays detailed pollen exposure forecast (3 days).',
-});
