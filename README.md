@@ -9,7 +9,7 @@ A custom Home Assistant lovelace card to display Deutscher Wetterdienst (DWD) we
 
 | **Weather Card** | **Weather Details** | **Pollen Card** | **Pollen Details** |
 | :---: | :---: | :---: | :---: |
-| ![Standard Card](assets/ha-dwd-card_preview.png) | ![Details Card](assets/ha-dwd-details-card_preview.png) | ![Pollen Card](assets/preview-card.png) | *(Preview coming soon)* |
+| ![Standard Card](assets/ha-dwd-card_preview.png) | ![Details Card](assets/ha-dwd-details-card_preview.png) | ![Pollen Card](assets/ha-dwd-pollen-card_preview.png) | ![Pollen Details](assets/ha-dwd-pollen-details-card_preview.png) |
 | *Compact weather overview* | *Weather instructions* | *Compact pollen risks* | *3-day pollen forecast* |
 
 
@@ -57,9 +57,11 @@ Both cards provide a visual editor for easy configuration.
 
 ### Visual Editor
 
-| **Standard Card Editor** | **Details Card Editor** |
+| **Weather Card Editor** | **Weather Details Editor** |
 | :---: | :---: |
 | ![Standard Card Editor](assets/ha-dwd-card_editor.png) | ![Details Card Editor](assets/ha-dwd-details-card_editor.png) |
+| **Pollen Card Editor** | **Pollen Details Editor** |
+| ![Pollen Card Editor](assets/ha-dwd-pollen-card_editor.png) | ![Pollen Details Editor](assets/ha-dwd-pollen-details-card_editor.png) |
 
 ### Standard Card (`custom:ha-dwd-card`)
 
