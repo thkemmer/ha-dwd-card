@@ -1,31 +1,28 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { HomeAssistant, handleAction, ActionConfig } from 'custom-card-helpers';
+import { HomeAssistant } from 'custom-card-helpers';
 import { getPollenData, PollenInfo } from './pollen-data';
 import { getPollenIcon } from './pollen-icons';
 
-interface PollenCardConfig {
+interface PollenDetailsCardConfig {
   type: string;
   entities: string[];
   title?: string;
   show_title?: boolean;
   hide_empty?: boolean;
   sort_by_level?: boolean;
-  tap_action?: ActionConfig;
-  hold_action?: ActionConfig;
-  double_tap_action?: ActionConfig;
 }
 
 const DEV_SUFFIX = __DEV__ ? '-dev' : '';
-const CUSTOM_ELEMENT_NAME = `ha-dwd-pollen-card${DEV_SUFFIX}`;
-const EDITOR_ELEMENT_NAME = `ha-dwd-pollen-card-editor${DEV_SUFFIX}`;
+const CUSTOM_ELEMENT_NAME = `ha-dwd-pollen-details-card${DEV_SUFFIX}`;
+const EDITOR_ELEMENT_NAME = `ha-dwd-pollen-details-card-editor${DEV_SUFFIX}`;
 
 @customElement(CUSTOM_ELEMENT_NAME)
-export class HaDwdPollenCard extends LitElement {
+export class HaDwdPollenDetailsCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
-  @state() private config!: PollenCardConfig;
+  @state() private config!: PollenDetailsCardConfig;
 
-  public setConfig(config: PollenCardConfig): void {
+  public setConfig(config: PollenDetailsCardConfig): void {
     if (!config.entities || !Array.isArray(config.entities)) {
       throw new Error('Please define a list of pollen entities');
     }
@@ -36,11 +33,10 @@ export class HaDwdPollenCard extends LitElement {
     return {
       type: `custom:${CUSTOM_ELEMENT_NAME}`,
       entities: [],
-      title: 'Pollenflug',
+      title: 'Pollenflug Vorhersage',
       show_title: true,
       hide_empty: false,
       sort_by_level: true,
-      tap_action: { action: 'more-info' },
     };
   }
 
@@ -48,22 +44,21 @@ export class HaDwdPollenCard extends LitElement {
     return document.createElement(EDITOR_ELEMENT_NAME);
   }
 
-  private _handleAction(): void {
-    if (this.config && this.hass) {
-      handleAction(this, this.hass, this.config, 'tap');
-    }
-  }
-
-  protected render() {
+  protected render(): TemplateResult {
     if (!this.config || !this.hass) {
       return html``;
     }
 
     let pollenData: PollenInfo[] = this.config.entities
       .map((entityId) => getPollenData(this.hass, entityId))
-      .filter((data): data is PollenInfo => data !== null && data.state > 0);
+      .filter((data): data is PollenInfo => data !== null);
 
-    // Default to true if not specified
+    // Filter out if hide_empty is true and today is 0
+    if (this.config.hide_empty) {
+      pollenData = pollenData.filter((p) => p.state > 0);
+    }
+
+    // Sort by level if enabled
     const sortByLevel = this.config.sort_by_level !== false;
     if (sortByLevel) {
       pollenData = [...pollenData].sort((a, b) => b.state - a.state);
@@ -73,40 +68,58 @@ export class HaDwdPollenCard extends LitElement {
       return html``;
     }
 
-    const isClickable =
-      this.config.tap_action && this.config.tap_action.action !== 'none';
-
     return html`
-      <ha-card
-        @click=${this._handleAction}
-        class=${isClickable ? 'clickable' : ''}
-      >
+      <ha-card>
         ${this.config.show_title !== false
           ? html`
               <div class="card-header">
-                ${this.config.title || 'Pollenflug'}
+                ${this.config.title || 'Pollenflug Vorhersage'}
               </div>
             `
           : ''}
         <div class="card-content">
           ${pollenData.length === 0
             ? html`<div class="no-pollen">Keine Belastung</div>`
-            : pollenData.map(
-                (pollen) => html`
-                  <div class="pollen-row">
-                    <ha-icon
-                      icon="${getPollenIcon(pollen.typeId)}"
-                      style="color: ${pollen.color}"
-                    ></ha-icon>
-                    <div class="pollen-info">
-                      <div class="pollen-name">${pollen.name}</div>
-                      <div class="pollen-desc">${pollen.description}</div>
-                    </div>
-                  </div>
-                `
-              )}
+            : pollenData.map((pollen) => this.renderPollenRow(pollen))}
         </div>
       </ha-card>
+    `;
+  }
+
+  private renderPollenRow(pollen: PollenInfo): TemplateResult {
+    const icon = getPollenIcon(pollen.typeId);
+
+    return html`
+      <div class="pollen-row">
+        <div class="pollen-title">${pollen.name}</div>
+        <div class="forecast-container">
+          <div class="forecast-day">
+            <div class="day-label">Heute</div>
+            <ha-icon icon="${icon}" style="color: ${pollen.color}"></ha-icon>
+            <div class="day-desc">${pollen.description}</div>
+          </div>
+          <div class="forecast-day">
+            <div class="day-label">Morgen</div>
+            <ha-icon
+              icon="${icon}"
+              style="color: ${pollen.tomorrow?.color || 'var(--disabled-text-color)'}"
+            ></ha-icon>
+            <div class="day-desc">
+              ${pollen.tomorrow?.description || 'Keine Daten'}
+            </div>
+          </div>
+          <div class="forecast-day">
+            <div class="day-label">Übermorgen</div>
+            <ha-icon
+              icon="${icon}"
+              style="color: ${pollen.in2Days?.color || 'var(--disabled-text-color)'}"
+            ></ha-icon>
+            <div class="day-desc">
+              ${pollen.in2Days?.description || 'Keine Daten'}
+            </div>
+          </div>
+        </div>
+      </div>
     `;
   }
 
@@ -115,70 +128,85 @@ export class HaDwdPollenCard extends LitElement {
       display: block;
     }
     ha-card {
-      padding: 8px;
-    }
-    ha-card.clickable {
-      cursor: pointer;
+      padding: 16px;
     }
     .card-header {
-      margin: 0 0 8px 8px;
+      margin-bottom: 16px;
       font-weight: 500;
       color: var(--primary-text-color);
-      font-size: 14px;
+      font-size: 16px;
     }
     .card-content {
       padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
     }
     .pollen-row {
       display: flex;
-      align-items: center;
-      margin-bottom: 8px;
+      flex-direction: column;
+      gap: 8px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--divider-color);
     }
     .pollen-row:last-child {
-      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
     }
-    ha-icon {
-      margin-right: 12px;
-      --mdc-icon-size: 24px;
-    }
-    .pollen-info {
-      display: flex;
-      flex-direction: column;
-    }
-    .pollen-name {
+    .pollen-title {
       font-weight: bold;
       font-size: 14px;
+      color: var(--primary-text-color);
     }
-    .pollen-desc {
-      font-size: 12px;
+    .forecast-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      text-align: center;
+    }
+    .forecast-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .day-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--secondary-text-color);
+    }
+    ha-icon {
+      --mdc-icon-size: 28px;
+    }
+    .day-desc {
+      font-size: 11px;
+      line-height: 1.2;
       color: var(--secondary-text-color);
     }
     .no-pollen {
       color: var(--secondary-text-color);
       text-align: center;
-      padding: 4px;
+      padding: 8px;
     }
   `;
 }
 
-// --- Editor Class ---
-
 @customElement(EDITOR_ELEMENT_NAME)
-export class HaDwdPollenCardEditor extends LitElement {
+export class HaDwdPollenDetailsCardEditor extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
-  @state() private _config!: PollenCardConfig;
+  @state() private _config!: PollenDetailsCardConfig;
 
-  public setConfig(config: PollenCardConfig): void {
+  public setConfig(config: PollenDetailsCardConfig): void {
     this._config = config;
   }
 
-  private _valueChanged(ev: CustomEvent, configKey?: keyof PollenCardConfig): void {
+  private _valueChanged(ev: CustomEvent, configKey?: keyof PollenDetailsCardConfig): void {
     if (!this._config || !this.hass) {
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const target = ev.target as any;
-    const configValue = configKey || (target.configValue as keyof PollenCardConfig);
+    const configValue = configKey || (target.configValue as keyof PollenDetailsCardConfig);
 
     if (!configValue) {
       return;
@@ -266,38 +294,6 @@ export class HaDwdPollenCardEditor extends LitElement {
             ></ha-switch>
           </ha-formfield>
         </div>
-
-        <div class="actions">
-          <ha-selector
-            .hass=${this.hass}
-            .selector=${{ ui_action: {} }}
-            .value=${this._config.tap_action}
-            .label=${'Tap Action'}
-            .configValue=${'tap_action'}
-            @value-changed=${(ev: CustomEvent) =>
-              this._valueChanged(ev, 'tap_action')}
-          ></ha-selector>
-
-          <ha-selector
-            .hass=${this.hass}
-            .selector=${{ ui_action: {} }}
-            .value=${this._config.hold_action}
-            .label=${'Hold Action'}
-            .configValue=${'hold_action'}
-            @value-changed=${(ev: CustomEvent) =>
-              this._valueChanged(ev, 'hold_action')}
-          ></ha-selector>
-
-          <ha-selector
-            .hass=${this.hass}
-            .selector=${{ ui_action: {} }}
-            .value=${this._config.double_tap_action}
-            .label=${'Double Tap Action'}
-            .configValue=${'double_tap_action'}
-            @value-changed=${(ev: CustomEvent) =>
-              this._valueChanged(ev, 'double_tap_action')}
-          ></ha-selector>
-        </div>
       </div>
     `;
   }
@@ -313,14 +309,6 @@ export class HaDwdPollenCardEditor extends LitElement {
       flex-direction: column;
       gap: 12px;
     }
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 8px;
-      padding-top: 12px;
-      border-top: 1px solid var(--divider-color);
-    }
     ha-textfield,
     ha-selector {
       display: block;
@@ -333,7 +321,7 @@ export class HaDwdPollenCardEditor extends LitElement {
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: CUSTOM_ELEMENT_NAME,
-  name: `DWD Pollenflug Card${__DEV__ ? ' (Dev)' : ''}`,
+  name: `DWD Pollenflug Details Card${__DEV__ ? ' (Dev)' : ''}`,
   preview: true,
-  description: 'Displays current pollen exposure from DWD.',
+  description: 'Displays detailed pollen exposure forecast (3 days).',
 });

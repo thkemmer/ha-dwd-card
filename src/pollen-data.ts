@@ -1,11 +1,19 @@
 import { HomeAssistant } from 'custom-card-helpers';
 
+export interface PollenForecast {
+  state: number;
+  description: string;
+  color: string;
+}
+
 export interface PollenInfo {
   typeId: string;
   name: string;
   state: number;
   description: string;
   color: string;
+  tomorrow?: PollenForecast;
+  in2Days?: PollenForecast;
 }
 
 const POLLEN_TYPE_MAP: Record<string, string> = {
@@ -49,15 +57,38 @@ export const getPollenData = (
   const parts = entityId.split('.');
   const nameParts = (parts[1] && parts[1].split('_')) || [];
   const typeId = nameParts[1] || 'unknown';
-  
-  const name = POLLEN_TYPE_MAP[typeId] || typeId.charAt(0).toUpperCase() + typeId.slice(1);
+
+  const name =
+    POLLEN_TYPE_MAP[typeId] ||
+    typeId.charAt(0).toUpperCase() + typeId.slice(1);
   const description = stateObj.attributes.state_today_desc || 'Keine Daten';
 
-  return {
+  const pollenInfo: PollenInfo = {
     typeId,
     name,
     state: stateValue,
     description,
     color: getPollenColor(stateValue),
   };
+
+  // Add forecast if available
+  const tomorrowState = parseFloat(stateObj.attributes.state_tomorrow);
+  if (!isNaN(tomorrowState)) {
+    pollenInfo.tomorrow = {
+      state: tomorrowState,
+      description: stateObj.attributes.state_tomorrow_desc || 'Keine Daten',
+      color: getPollenColor(tomorrowState),
+    };
+  }
+
+  const in2DaysState = parseFloat(stateObj.attributes.state_in_2_days);
+  if (!isNaN(in2DaysState)) {
+    pollenInfo.in2Days = {
+      state: in2DaysState,
+      description: stateObj.attributes.state_in_2_days_desc || 'Keine Daten',
+      color: getPollenColor(in2DaysState),
+    };
+  }
+
+  return pollenInfo;
 };

@@ -8,6 +8,10 @@ pollen_none:
   state: "0.0"
   attributes:
     state_today_desc: "keine Belastung"
+    state_tomorrow: "0.0"
+    state_tomorrow_desc: "keine Belastung"
+    state_in_2_days: "0.0"
+    state_in_2_days_desc: "keine Belastung"
     unit_of_measurement: "index"
     friendly_name: "DWD Pollenflug Birke"
 
@@ -17,6 +21,10 @@ pollen_low:
   state: "1.0"
   attributes:
     state_today_desc: "geringe Belastung"
+    state_tomorrow: "1.5"
+    state_tomorrow_desc: "geringe bis mittlere Belastung"
+    state_in_2_days: "2.0"
+    state_in_2_days_desc: "mittlere Belastung"
     unit_of_measurement: "index"
     friendly_name: "DWD Pollenflug Birke"
 
@@ -26,6 +34,10 @@ pollen_medium:
   state: "2.0"
   attributes:
     state_today_desc: "mittlere Belastung"
+    state_tomorrow: "1.0"
+    state_tomorrow_desc: "geringe Belastung"
+    state_in_2_days: "0.5"
+    state_in_2_days_desc: "keine bis geringe Belastung"
     unit_of_measurement: "index"
     friendly_name: "DWD Pollenflug Gräser"
 
@@ -35,6 +47,10 @@ pollen_high:
   state: "3.0"
   attributes:
     state_today_desc: "hohe Belastung"
+    state_tomorrow: "3.0"
+    state_tomorrow_desc: "hohe Belastung"
+    state_in_2_days: "3.0"
+    state_in_2_days_desc: "hohe Belastung"
     unit_of_measurement: "index"
     friendly_name: "DWD Pollenflug Ambrosia"
 
@@ -44,5 +60,9 @@ pollen_mixed:
   state: "1.5"
   attributes:
     state_today_desc: "geringe bis mittlere Belastung"
+    state_tomorrow: "1.0"
+    state_tomorrow_desc: "geringe Belastung"
+    state_in_2_days: "0.0"
+    state_in_2_days_desc: "keine Belastung"
     unit_of_measurement: "index"
     friendly_name: "DWD Pollenflug Roggen"

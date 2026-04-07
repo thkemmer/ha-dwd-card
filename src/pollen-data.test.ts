@@ -60,5 +60,35 @@ describe('pollen-data', () => {
       expect(result?.typeId).toBe('ambrosia');
       expect(result?.name).toBe('Ambrosia');
     });
+
+    it('parses forecast data correctly', () => {
+      const hass = {
+        states: {
+          'sensor.pollenflug_birke_123': {
+            state: '1.0',
+            attributes: {
+              state_today_desc: 'geringe Belastung',
+              state_tomorrow: '2.0',
+              state_tomorrow_desc: 'mittlere Belastung',
+              state_in_2_days: '3.0',
+              state_in_2_days_desc: 'hohe Belastung',
+            },
+          },
+        },
+      } as unknown as HomeAssistant;
+
+      const result = getPollenData(hass, 'sensor.pollenflug_birke_123');
+      expect(result).not.toBeNull();
+      expect(result?.tomorrow).toEqual({
+        state: 2.0,
+        description: 'mittlere Belastung',
+        color: '#ff9800',
+      });
+      expect(result?.in2Days).toEqual({
+        state: 3.0,
+        description: 'hohe Belastung',
+        color: '#ff0000',
+      });
+    });
   });
 });

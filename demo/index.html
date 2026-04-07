@@ -110,6 +110,9 @@
       <a href="#compact-card">Compact Card (ha-dwd-card)</a>
       <a href="#details-card-section">Details Card (ha-dwd-details-card)</a>
       <a href="#pollen-card-section">Pollen Card (ha-dwd-pollen-card)</a>
+      <a href="#pollen-details-card-section"
+        >Pollen Details Card (ha-dwd-pollen-details-card)</a
+      >
     </div>
 
     <!-- Compact Card Section -->
@@ -264,6 +267,64 @@
 
       <div class="preview-container">
         <ha-dwd-pollen-card id="pollen-card"></ha-dwd-pollen-card>
+      </div>
+    </div>
+
+    <!-- Pollen Details Card Section -->
+    <div id="pollen-details-card-section" class="component-section">
+      <h2>Pollen Details Card (ha-dwd-pollen-details-card)</h2>
+      <p>A detailed view showing a 3-day pollen exposure forecast.</p>
+
+      <div class="controls">
+        <strong>Scenarios:</strong>
+        <button onclick="setScenario('pollen_none', 'pollen-details')">
+          No Pollen
+        </button>
+        <button onclick="setScenario('pollen_mixed', 'pollen-details')">
+          Mixed Risks
+        </button>
+        <button onclick="setScenario('pollen_high', 'pollen-details')">
+          High Risks
+        </button>
+        <button onclick="setScenario('pollen_all', 'pollen-details')">
+          All Risks
+        </button>
+      </div>
+
+      <div class="controls">
+        <strong>Config:</strong>
+        <label>
+          <input
+            type="checkbox"
+            id="show_pollen_details_title"
+            checked
+            onchange="updatePollenDetailsConfig()"
+          />
+          Show Title
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            id="hide_empty_pollen_details"
+            onchange="updatePollenDetailsConfig()"
+          />
+          Hide Empty
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            id="sort_by_level_pollen_details"
+            checked
+            onchange="updatePollenDetailsConfig()"
+          />
+          Sort by Level
+        </label>
+      </div>
+
+      <div class="preview-container">
+        <ha-dwd-pollen-details-card
+          id="pollen-details-card"
+        ></ha-dwd-pollen-details-card>
       </div>
     </div>
 
@@ -440,55 +501,178 @@
         },
         // Pollen Scenarios
         pollen_none: {
-          birke: { state: '0.0', attributes: { state_today_desc: 'keine Belastung' } },
-          graser: { state: '0.0', attributes: { state_today_desc: 'keine Belastung' } }
+          birke: {
+            state: '0.0',
+            attributes: { state_today_desc: 'keine Belastung' },
+          },
+          graser: {
+            state: '0.0',
+            attributes: { state_today_desc: 'keine Belastung' },
+          },
         },
         pollen_mixed: {
-          birke: { state: '1.0', attributes: { state_today_desc: 'geringe Belastung' } },
-          graser: { state: '0.5', attributes: { state_today_desc: 'keine bis geringe Belastung' } },
-          hasel: { state: '0.0', attributes: { state_today_desc: 'keine Belastung' } }
+          birke: {
+            state: '1.0',
+            attributes: { state_today_desc: 'geringe Belastung' },
+          },
+          graser: {
+            state: '0.5',
+            attributes: { state_today_desc: 'keine bis geringe Belastung' },
+          },
+          hasel: {
+            state: '0.0',
+            attributes: { state_today_desc: 'keine Belastung' },
+          },
         },
         pollen_high: {
-          birke: { state: '3.0', attributes: { state_today_desc: 'hohe Belastung' } },
-          ambrosia: { state: '2.5', attributes: { state_today_desc: 'mittlere bis hohe Belastung' } }
+          birke: {
+            state: '3.0',
+            attributes: { state_today_desc: 'hohe Belastung' },
+          },
+          ambrosia: {
+            state: '2.5',
+            attributes: { state_today_desc: 'mittlere bis hohe Belastung' },
+          },
         },
         pollen_all: {
-          birke: { state: '3.0', attributes: { state_today_desc: 'hohe Belastung' } },
-          graser: { state: '2.5', attributes: { state_today_desc: 'mittlere bis hohe Belastung' } },
-          roggen: { state: '2.0', attributes: { state_today_desc: 'mittlere Belastung' } },
-          hasel: { state: '1.5', attributes: { state_today_desc: 'geringe bis mittlere Belastung' } },
-          erle: { state: '1.0', attributes: { state_today_desc: 'geringe Belastung' } },
-          esche: { state: '3.0', attributes: { state_today_desc: 'hohe Belastung' } },
-          beifuss: { state: '2.0', attributes: { state_today_desc: 'mittlere Belastung' } },
-          ambrosia: { state: '2.5', attributes: { state_today_desc: 'mittlere bis hohe Belastung' } }
-        }
+          birke: {
+            state: '3.0',
+            attributes: {
+              state_today_desc: 'hohe Belastung',
+              state_tomorrow: '3.0',
+              state_tomorrow_desc: 'hohe Belastung',
+              state_in_2_days: '2.5',
+              state_in_2_days_desc: 'mittlere bis hohe Belastung',
+            },
+          },
+          graser: {
+            state: '2.5',
+            attributes: {
+              state_today_desc: 'mittlere bis hohe Belastung',
+              state_tomorrow: '2.0',
+              state_tomorrow_desc: 'mittlere Belastung',
+              state_in_2_days: '1.5',
+              state_in_2_days_desc: 'geringe bis mittlere Belastung',
+            },
+          },
+          roggen: {
+            state: '2.0',
+            attributes: {
+              state_today_desc: 'mittlere Belastung',
+              state_tomorrow: '1.5',
+              state_tomorrow_desc: 'geringe bis mittlere Belastung',
+              state_in_2_days: '1.0',
+              state_in_2_days_desc: 'geringe Belastung',
+            },
+          },
+          hasel: {
+            state: '1.5',
+            attributes: {
+              state_today_desc: 'geringe bis mittlere Belastung',
+              state_tomorrow: '1.0',
+              state_tomorrow_desc: 'geringe Belastung',
+              state_in_2_days: '0.5',
+              state_in_2_days_desc: 'keine bis geringe Belastung',
+            },
+          },
+          erle: {
+            state: '1.0',
+            attributes: {
+              state_today_desc: 'geringe Belastung',
+              state_tomorrow: '0.5',
+              state_tomorrow_desc: 'keine bis geringe Belastung',
+              state_in_2_days: '0.0',
+              state_in_2_days_desc: 'keine Belastung',
+            },
+          },
+          esche: {
+            state: '3.0',
+            attributes: {
+              state_today_desc: 'hohe Belastung',
+              state_tomorrow: '3.0',
+              state_tomorrow_desc: 'hohe Belastung',
+              state_in_2_days: '3.0',
+              state_in_2_days_desc: 'hohe Belastung',
+            },
+          },
+          beifuss: {
+            state: '2.0',
+            attributes: {
+              state_today_desc: 'mittlere Belastung',
+              state_tomorrow: '1.5',
+              state_tomorrow_desc: 'geringe bis mittlere Belastung',
+              state_in_2_days: '1.0',
+              state_in_2_days_desc: 'geringe Belastung',
+            },
+          },
+          ambrosia: {
+            state: '2.5',
+            attributes: {
+              state_today_desc: 'mittlere bis hohe Belastung',
+              state_tomorrow: '2.5',
+              state_tomorrow_desc: 'mittlere bis hohe Belastung',
+              state_in_2_days: '2.5',
+              state_in_2_days_desc: 'mittlere bis hohe Belastung',
+            },
+          },
+        },
       };
 
       // --- Setup ---
       const card = document.getElementById('card');
       const detailsCard = document.getElementById('details-card');
       const pollenCard = document.getElementById('pollen-card');
+      const pollenDetailsCard = document.getElementById('pollen-details-card');
 
       window.setScenario = function (name, target) {
         console.log('setScenario called with:', name, target);
         const data = SCENARIOS[name];
-        
-        if (target === 'pollen') {
-           const hass = {
-             states: {
-               'sensor.pollenflug_birke_123': data.birke || {state: '0.0', attributes: {}},
-               'sensor.pollenflug_graser_123': data.graser || {state: '0.0', attributes: {}},
-               'sensor.pollenflug_roggen_123': data.roggen || {state: '0.0', attributes: {}},
-               'sensor.pollenflug_hasel_123': data.hasel || {state: '0.0', attributes: {}},
-               'sensor.pollenflug_erle_123': data.erle || {state: '0.0', attributes: {}},
-               'sensor.pollenflug_esche_123': data.esche || {state: '0.0', attributes: {}},
-               'sensor.pollenflug_beifuss_123': data.beifuss || {state: '0.0', attributes: {}},
-               'sensor.pollenflug_ambrosia_123': data.ambrosia || {state: '0.0', attributes: {}},
-             }
-           };
-           const p = document.getElementById('pollen-card');
-           if (p) p.hass = hass;
-           return;
+
+        if (target === 'pollen' || target === 'pollen-details') {
+          const hass = {
+            states: {
+              'sensor.pollenflug_birke_123': data.birke || {
+                state: '0.0',
+                attributes: {},
+              },
+              'sensor.pollenflug_graser_123': data.graser || {
+                state: '0.0',
+                attributes: {},
+              },
+              'sensor.pollenflug_roggen_123': data.roggen || {
+                state: '0.0',
+                attributes: {},
+              },
+              'sensor.pollenflug_hasel_123': data.hasel || {
+                state: '0.0',
+                attributes: {},
+              },
+              'sensor.pollenflug_erle_123': data.erle || {
+                state: '0.0',
+                attributes: {},
+              },
+              'sensor.pollenflug_esche_123': data.esche || {
+                state: '0.0',
+                attributes: {},
+              },
+              'sensor.pollenflug_beifuss_123': data.beifuss || {
+                state: '0.0',
+                attributes: {},
+              },
+              'sensor.pollenflug_ambrosia_123': data.ambrosia || {
+                state: '0.0',
+                attributes: {},
+              },
+            },
+          };
+          if (target === 'pollen') {
+            const p = document.getElementById('pollen-card');
+            if (p) p.hass = hass;
+          } else {
+            const pd = document.getElementById('pollen-details-card');
+            if (pd) pd.hass = hass;
+          }
+          return;
         }
 
         const hass = {
@@ -549,11 +733,38 @@
               'sensor.pollenflug_erle_123',
               'sensor.pollenflug_esche_123',
               'sensor.pollenflug_beifuss_123',
-              'sensor.pollenflug_ambrosia_123'
+              'sensor.pollenflug_ambrosia_123',
             ],
             show_title: document.getElementById('show_pollen_title').checked,
             hide_empty: document.getElementById('hide_empty_pollen').checked,
-            sort_by_level: document.getElementById('sort_by_level_pollen').checked,
+            sort_by_level: document.getElementById('sort_by_level_pollen')
+              .checked,
+          });
+        }
+      };
+
+      window.updatePollenDetailsConfig = function () {
+        const el = document.getElementById('pollen-details-card');
+        if (el && typeof el.setConfig === 'function') {
+          el.setConfig({
+            type: 'custom:ha-dwd-pollen-details-card',
+            entities: [
+              'sensor.pollenflug_birke_123',
+              'sensor.pollenflug_graser_123',
+              'sensor.pollenflug_roggen_123',
+              'sensor.pollenflug_hasel_123',
+              'sensor.pollenflug_erle_123',
+              'sensor.pollenflug_esche_123',
+              'sensor.pollenflug_beifuss_123',
+              'sensor.pollenflug_ambrosia_123',
+            ],
+            show_title: document.getElementById('show_pollen_details_title')
+              .checked,
+            hide_empty: document.getElementById('hide_empty_pollen_details')
+              .checked,
+            sort_by_level: document.getElementById(
+              'sort_by_level_pollen_details'
+            ).checked,
           });
         }
       };
@@ -567,9 +778,11 @@
           updateCompactConfig();
           updateDetailsConfig();
           updatePollenConfig();
+          updatePollenDetailsConfig();
           setScenario('warnings_mixed', 'compact');
           setScenario('warnings_mixed', 'details');
           setScenario('pollen_mixed', 'pollen');
+          setScenario('pollen_all', 'pollen-details');
         });
       });
     </script>
