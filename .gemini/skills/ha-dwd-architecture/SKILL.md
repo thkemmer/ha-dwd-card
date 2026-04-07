@@ -1,47 +1,44 @@
 ---
 name: ha-dwd-architecture
-description: Technical architecture guidelines for the HA DWD Card project. Covers naming conventions, data structures, and implementation patterns for Home Assistant custom cards.
+description: Holistic architecture and implementation guidelines. Mandatory for every feature development task. Covers naming, data structures, UI patterns, and the two-stage validation workflow.
 ---
 
-# HA DWD Card Technical Architecture
+# HA DWD Card: Architecture & Implementation Protocol
 
-This document defines the technical standards and patterns to ensure consistency across the project.
+This document is the **mandatory reference** for every development task in this project. It ensures technical consistency and operational reliability.
 
-## 1. Component Naming & Structure
-- **Class Names:** Use PascalCase with the prefix `HaDwd` (e.g., `HaDwdCard`, `HaDwdPollenCard`).
+## 1. MANDATORY: Development Workflow (Validation Chain)
+Every UI-related change must pass through this two-stage validation before completion:
+1.  **Stage 1: Local Demo:** Verify the UI in `demo/index.html` via `npm start`. All scenarios and config options must be showcased.
+2.  **Stage 2: Real Hardware/HA:** Build a dev version (`npm run build:dev`) and verify it on a real Home Assistant instance to ensure CSS/API compatibility and visual editor availability.
+
+## 2. Component Structure & Registration
+- **Card Registration:** Always register the card in `window.customCards` at the **top of the file** (after imports/constants, before the class definition). This ensures HA discovers the card immediately during module load.
+- **Class Names:** Use PascalCase with the prefix `HaDwd` (e.g., `HaDwdCard`).
 - **Custom Elements:** Use kebab-case with the prefix `ha-dwd-` (e.g., `ha-dwd-card`).
-- **Dev Suffixing:** Always use the `DEV_SUFFIX` constant for element names to allow side-by-side installation of dev versions:
+- **Dev Suffixing:** Always use the `DEV_SUFFIX` constant for element names:
   ```typescript
   const DEV_SUFFIX = __DEV__ ? '-dev' : '';
   customElements.define(`ha-dwd-component${DEV_SUFFIX}`, HaDwdComponent);
   ```
 
-## 2. Data Management & Parsing
-- **Centralized Logic:** All logic for parsing Home Assistant entity states and attributes must reside in `src/dwd-data.ts` (for weather warnings) or `src/pollen-data.ts`.
-- **Interfaces:** Use TypeScript interfaces (defined in `src/types.d.ts`) to ensure type safety across the data pipeline.
-- **YAML Mocks:** When adding support for new entities or attributes, create a representative YAML file in `example_data/`.
+## 3. Data Management & Parsing
+- **Centralized Logic:** All parsing logic must reside in `src/dwd-data.ts` or `src/pollen-data.ts`.
+- **YAML Mocks:** Create representative YAML files in `example_data/` for any new entity types or attributes.
 
-## 3. UI Implementation Patterns (LitElement)
-- **Attribute Binding:** Always use attribute binding (`icon="${icon}"`) instead of property binding (`.icon="${icon}"`) for `ha-icon` elements to ensure full compatibility.
-- **CSS Variable Usage:** Prefer Home Assistant's built-in CSS variables (e.g., `--primary-text-color`, `--secondary-text-color`, `--card-background-color`) for theming.
-- **Performance:** 
-  - Minimize re-renders by using `@property` only for external configuration.
-  - Implement `getLayoutOptions()` to support the Home Assistant dashboard grid system.
+## 4. UI Implementation Patterns (LitElement)
+- **Attribute Binding:** Always use attribute binding (`icon="${icon}"`) instead of property binding for `ha-icon`.
+- **Theming:** Strictly use Home Assistant CSS variables (e.g., `--primary-text-color`).
+- **Layout:** Implement `getLayoutOptions()` for dashboard grid support.
 
-## 4. Visual Editor Standards
-- **Component Decomposition:** Every card should have a corresponding editor component in the same file or a separate file if it exceeds 500 lines.
-- **User Experience:** The editor must provide intuitive controls (switches, dropdowns) for all configuration options defined in the YAML schema.
+## 5. Visual Editor Standards
+- **Sync Requirement:** Every new configuration option *must* be added to the corresponding editor component.
+- **Location:** The editor can be in the same file or a separate file if it exceeds 500 lines.
 
-## 5. Testing Patterns
-- **Vitest:** All business logic (parsing, formatting) must have 100% test coverage.
-- **Mocking:** Use `createMockHass` (or similar helpers) in tests to simulate the Home Assistant environment.
-- **Regression Testing:** Always add a test case for reported bugs before fixing them.
-
-## 6. Local Development & Demo
-- **Visual Validation:** The local demo (`demo/index.html`) is the primary environment for rapid visual testing without a live Home Assistant instance.
-- **Component Showcase:** Every UI component (cards, details views) must be integrated into the demo page.
-- **Scenario Coverage:** For each component, the demo must include:
+## 6. Testing & Quality
+- **Coverage:** Aim for 100% coverage on parsing and formatting logic.
+- **Linting:** Resolve all linting issues before committing.
+- **Local Demo Requirement:** Every component must have a dedicated section in `demo/index.html` with:
   - Navigation links in the header.
-  - Buttons to trigger all relevant data scenarios (e.g., "Mixed Warnings", "Empty State").
-  - UI controls (switches/inputs) to test all configuration options in real-time.
-- **Consistency:** Ensure the mock environment accurately reflects the current CSS variable standards of Home Assistant.
+  - Buttons for all data scenarios.
+  - Real-time configuration controls.
