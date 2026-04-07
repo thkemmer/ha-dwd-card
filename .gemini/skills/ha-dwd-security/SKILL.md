@@ -1,44 +1,23 @@
 ---
-name: ha-dwd-security
-description: Automated security maintenance and dependency updates for the HA DWD Card project. Ensures vulnerabilities are fixed without breaking core functionality.
+name: ha-dwd-maintenance
+description: Protocol for security updates and dependency maintenance. Focuses on vulnerability identification and remediation, leveraging the central development workflow for verification.
 ---
 
-# Security Maintenance Protocol
+# Security & Dependency Maintenance
 
-This skill provides a standardized workflow to detect, fix, and validate security vulnerabilities in the project's dependencies.
+This protocol ensures the project remains secure and up to date.
 
-## 1. Audit Phase (Identification)
-**Goal:** Map all security risks and their severity.
-- **Action:** Run `npm audit` for local dependency checks.
-- **Action:** (Optional) Check `gh api repos/:owner/:repo/dependabot/alerts` for GitHub-detected vulnerabilities.
-- **Priority:** Focus on 'Critical' and 'High' severity first.
+## 1. Identification (Audit)
+- **Action**: Run `npm audit` regularly.
+- **Priority**: Focus on 'Critical' and 'High' severity.
 
-## 2. Remediation Phase (Atomic Fixes)
-**Goal:** Apply fixes without introducing regressions.
-- **Action:** Try `npm audit fix` for automatic, non-breaking updates.
-- **Action:** If `npm audit fix` fails or requires a major version bump, update packages individually using `npm install [package]@[version]`.
-- **Constraint:** One update (or small logical group) at a time. Do not update unrelated dependencies in the same commit.
+## 2. Remediation
+- **Atomic Fixes**: Use `npm audit fix` for non-breaking updates.
+- **Manual Updates**: If major version bumps are needed, update individually: `npm install [package]@[version]`.
+- **Commit Pattern**: Commits MUST include CVE IDs or GHSA links (e.g., `security: update flatted to 3.5.2 to fix GHSA-25h7-pfq9-p65f`).
 
-## 3. Local Verification Loop
-**Goal:** Confirm the fix works and the project is stable.
-After *each* update step:
-1.  **Install:** `npm install`
-2.  **Test:** `npm test`
-3.  **Lint:** `npm run lint`
-4.  **Build:** `npm run build`
-- **Backtrack:** If a test or build fails, revert the change and mark the dependency for a manual architectural review (it might be a breaking change).
-
-## 4. Remote Validation (GitHub CI)
-**Goal:** Final confirmation in the "Source of Truth" environment.
-- **Action:** Push the fixes to a temporary branch (e.g., `security-updates`).
-- **Action:** Wait for the GitHub CI (`ci.yml`) to complete successfully.
-  *Command:* `gh run list --branch security-updates --limit 1`
-
-## 5. Finalization
-**Goal:** Secure the codebase.
-- **Action:** Merge the validated `security-updates` branch into `main`.
-- **Action:** Commit message must include the CVE IDs or a brief description of the fixed packages (e.g., `security: update flatted to 3.5.2 to fix GHSA-25h7-pfq9-p65f`).
-
-## 6. Proactive Security
-- **Action:** Keep Node.js and npm versions up to date.
-- **Action:** Minimize the number of production dependencies.
+## 3. Mandatory Verification
+Every maintenance change MUST follow the **ha-dwd-development** workflow:
+1. **Stage 0**: Run tests, build, and lint.
+2. **CI Check**: Verify via `gh run list` after pushing to a temporary branch.
+3. **Merge**: Only merge to `main` after local and remote validation is successful.

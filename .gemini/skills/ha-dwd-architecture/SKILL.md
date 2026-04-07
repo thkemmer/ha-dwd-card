@@ -1,49 +1,49 @@
 ---
-name: ha-dwd-architecture
-description: Holistic architecture and implementation guidelines. Mandatory for every feature development task. Covers naming, data structures, UI patterns, and the two-stage validation workflow.
+name: ha-dwd-development
+description: Central development protocol for all changes (features, fixes, maintenance). Defines the mandatory lifecycle stages, architectural standards, and the QA review protocol.
 ---
 
-# HA DWD Card: Architecture & Implementation Protocol
+# HA DWD Card: Development & Architecture Protocol
 
-This document is the **mandatory reference** for every development task in this project. It ensures technical consistency and operational reliability.
+This is the **Single Source of Truth** for modifying the codebase. Every change (including security updates) must follow this protocol.
 
-## 1. MANDATORY: Development Workflow (Validation Chain)
-Every UI-related change must pass through this validation before completion:
-1.  **Stage 0: Immediate Verification:** Run `npm test` and `npm run build` after EVERY source code change, no matter how small or "visual only" it is. Never assume a change is safe without verification.
-2.  **Stage 1: Local Demo:** Verify the UI in `demo/index.html` via `npm start`. All scenarios and config options must be showcased.
-3.  **Stage 2: Real Hardware/HA:** Build a dev version (`npm run build:dev`) and verify it on a real Home Assistant instance to ensure CSS/API compatibility and visual editor availability.
-4.  **Stage 3: Documentation Proofing:** Before finishing a task, ensure the following are updated and synchronized:
-    - **README.md:** Update configuration tables, features list, and provide YAML examples.
-    - **ROADMAP.md:** Move completed items from "Planned" to "Done".
-    - **Source Sync:** Verify that all `@property` and `interface` options found in the source code are accurately reflected in the documentation.
+## 1. MANDATORY: Workflow & Validation Chain
+No change is complete until it has passed all stages:
 
-## 2. Component Structure & Registration
-- **Card Registration:** Always register the card in `window.customCards` at the **top of the file** (after imports/constants, before the class definition). This ensures HA discovers the card immediately during module load.
-- **Class Names:** Use PascalCase with the prefix `HaDwd` (e.g., `HaDwdCard`).
-- **Custom Elements:** Use kebab-case with the prefix `ha-dwd-` (e.g., `ha-dwd-card`).
-- **Dev Suffixing:** Always use the `DEV_SUFFIX` constant for element names:
-  ```typescript
-  const DEV_SUFFIX = __DEV__ ? '-dev' : '';
-  customElements.define(`ha-dwd-component${DEV_SUFFIX}`, HaDwdComponent);
-  ```
+### Stage 0: Immediate Verification (The Loop)
+After **every** source change (`src/`), run:
+1. `npm test` (Verify logic)
+2. `npm run build` (Verify compilation)
+3. `npm run lint` (Verify style)
+*Never assume a visual-only change is safe.*
 
-## 3. Data Management & Parsing
-- **Centralized Logic:** All parsing logic must reside in `src/dwd-data.ts` or `src/pollen-data.ts`.
-- **YAML Mocks:** Create representative YAML files in `example_data/` for any new entity types or attributes.
+### Stage 1: Local Demo (Visual Proof)
+Verify in `demo/index.html` via `npm start`.
+- Must showcase all new config options.
+- Must test at least two different data scenarios.
 
-## 4. UI Implementation Patterns (LitElement)
-- **Attribute Binding:** Always use attribute binding (`icon="${icon}"`) instead of property binding for `ha-icon`.
-- **Theming:** Strictly use Home Assistant CSS variables (e.g., `--primary-text-color`).
-- **Layout:** Implement `getLayoutOptions()` for dashboard grid support.
+### Stage 2: Real Hardware (Integration)
+Build a dev version (`npm run build:dev`) and verify on a real HA instance.
+- Check visual editor availability.
+- Verify CSS variable compatibility.
 
-## 5. Visual Editor Standards
-- **Sync Requirement:** Every new configuration option *must* be added to the corresponding editor component.
-- **Location:** The editor can be in the same file or a separate file if it exceeds 500 lines.
+### Stage 3: Documentation Proofing
+- **README.md**: Sync configuration tables and YAML examples.
+- **ROADMAP.md**: Move items to "Done".
+- **Source Sync**: Definitions in code must match documentation.
 
-## 6. Testing & Quality
-- **Coverage:** Aim for 100% coverage on parsing and formatting logic.
-- **Linting:** Resolve all linting issues before committing.
-- **Local Demo Requirement:** Every component must have a dedicated section in `demo/index.html` with:
-  - Navigation links in the header.
-  - Buttons for all data scenarios.
-  - Real-time configuration controls.
+## 2. Component Standards
+- **Registration**: Card registration (`window.customCards`) MUST be at the **top of the file**.
+- **Naming**: PascalCase for classes (`HaDwdCard`), kebab-case for elements (`ha-dwd-card`).
+- **Dev Suffix**: Always use the `DEV_SUFFIX` constant for element names.
+
+## 3. Data & UI Patterns
+- **Centralized Logic**: All parsing in `src/dwd-data.ts` or `src/pollen-data.ts`.
+- **Lit Patterns**: Use attribute binding (`icon="${icon}"`) for `ha-icon`.
+- **Theming**: Use HA CSS variables (e.g., `--primary-text-color`).
+
+## 4. Quality Assurance & Review Protocol
+Reviews must verify:
+- **Coverage**: Business logic MUST maintain 100% coverage (`npm run test:coverage`).
+- **Technical Debt**: No new `any` casts or suppressed warnings without explicit justification.
+- **Resilience**: Graceful handling of missing entity attributes.
