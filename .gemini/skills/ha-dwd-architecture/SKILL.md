@@ -36,3 +36,12 @@ This document defines the technical standards and patterns to ensure consistency
 - **Vitest:** All business logic (parsing, formatting) must have 100% test coverage.
 - **Mocking:** Use `createMockHass` (or similar helpers) in tests to simulate the Home Assistant environment.
 - **Regression Testing:** Always add a test case for reported bugs before fixing them.
+
+## 6. Local Development & Demo
+- **Visual Validation:** The local demo (`demo/index.html`) is the primary environment for rapid visual testing without a live Home Assistant instance.
+- **Component Showcase:** Every UI component (cards, details views) must be integrated into the demo page.
+- **Scenario Coverage:** For each component, the demo must include:
+  - Navigation links in the header.
+  - Buttons to trigger all relevant data scenarios (e.g., "Mixed Warnings", "Empty State").
+  - UI controls (switches/inputs) to test all configuration options in real-time.
+- **Consistency:** Ensure the mock environment accurately reflects the current CSS variable standards of Home Assistant.
