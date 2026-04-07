@@ -17,6 +17,15 @@ const DEV_SUFFIX = __DEV__ ? '-dev' : '';
 const CUSTOM_ELEMENT_NAME = `ha-dwd-pollen-details-card${DEV_SUFFIX}`;
 const EDITOR_ELEMENT_NAME = `ha-dwd-pollen-details-card-editor${DEV_SUFFIX}`;
 
+// Register the card in Home Assistant's card picker
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: CUSTOM_ELEMENT_NAME,
+  name: `DWD Pollenflug Details Card${__DEV__ ? ' (Dev)' : ''}`,
+  preview: true,
+  description: 'Displays detailed pollen exposure forecast (3 days).',
+});
+
 @customElement(CUSTOM_ELEMENT_NAME)
 export class HaDwdPollenDetailsCard extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
