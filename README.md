@@ -7,10 +7,11 @@
 
 A custom Home Assistant lovelace card to display Deutscher Wetterdienst (DWD) weather warnings with a modern, clean design. This project provides two different cards to suit your needs: a compact overview card and a detailed information card.
 
-| **Standard Card** | **Details Card** |
-| :---: | :---: |
-| ![Standard Card](assets/ha-dwd-card_preview.png) | ![Details Card](assets/ha-dwd-details-card_preview.png) |
-| *Compact overview for small displays* | *Detailed information and instructions* |
+| **Weather Card** | **Weather Details** | **Pollen Card** | **Pollen Details** |
+| :---: | :---: | :---: | :---: |
+| ![Standard Card](assets/ha-dwd-card_preview.png) | ![Details Card](assets/ha-dwd-details-card_preview.png) | ![Pollen Card](assets/ha-dwd-pollen-card_preview.png) | ![Pollen Details](assets/ha-dwd-pollen-details-card_preview.png) |
+| *Compact weather overview* | *Weather instructions* | *Compact pollen risks* | *3-day pollen forecast* |
+
 
 You can install the releases via HACS directly in Home Assistant:
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=thkemmer&repository=ha-dwd-card&category=plugin)
@@ -56,9 +57,11 @@ Both cards provide a visual editor for easy configuration.
 
 ### Visual Editor
 
-| **Standard Card Editor** | **Details Card Editor** |
+| **Weather Card Editor** | **Weather Details Editor** |
 | :---: | :---: |
 | ![Standard Card Editor](assets/ha-dwd-card_editor.png) | ![Details Card Editor](assets/ha-dwd-details-card_editor.png) |
+| **Pollen Card Editor** | **Pollen Details Editor** |
+| ![Pollen Card Editor](assets/ha-dwd-pollen-card_editor.png) | ![Pollen Details Editor](assets/ha-dwd-pollen-details-card_editor.png) |
 
 ### Standard Card (`custom:ha-dwd-card`)
 
@@ -119,9 +122,25 @@ A compact card that shows today's pollen exposure risks. It only displays active
 | `show_title` | boolean | `true` | Show or hide the card header. |
 | `hide_empty` | boolean | `false` | Hide the card if no pollen exposure is currently active. |
 | `sort_by_level` | boolean | `true` | Automatically sort the entries by exposure intensity (descending). |
+| `tap_action` | ActionConfig | `more-info` | Action to perform on tap. |
+| `hold_action` | ActionConfig | - | Action to perform on hold. |
+| `double_tap_action` | ActionConfig | - | Action to perform on double tap. |
 
-### YAML Example
+### Pollen Details Card (`custom:ha-dwd-pollen-details-card`)
 
+A comprehensive 3-day forecast for pollen exposure. Ideal for a dedicated "Allergy" dashboard.
+
+| Name | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `entities` | array | **Required** | List of sensor entity IDs from the DWD Pollen integration. |
+| `title` | string | `Pollenflug Vorhersage` | The title displayed in the card header. |
+| `show_title` | boolean | `true` | Show or hide the card header. |
+| `hide_empty` | boolean | `false` | Hide entries with no current exposure. |
+| `sort_by_level` | boolean | `true` | Automatically sort by current intensity. |
+
+### YAML Examples
+
+#### Pollen Compact Card
 ```yaml
 type: custom:ha-dwd-pollen-card
 title: "Pollenflug Heute"
@@ -130,7 +149,16 @@ sort_by_level: true
 entities:
   - sensor.pollenflug_birke_123
   - sensor.pollenflug_graser_123
-  - sensor.pollenflug_roggen_123
+```
+
+#### Pollen Details Card
+```yaml
+type: custom:ha-dwd-pollen-details-card
+title: "3-Tages-Vorhersage"
+entities:
+  - sensor.pollenflug_birke_123
+  - sensor.pollenflug_graser_123
+  - sensor.pollenflug_hasel_123
 ```
 
 ## Testing
