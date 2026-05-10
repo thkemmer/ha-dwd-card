@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "es2015",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "rootDir": "./src",
     "lib": ["es2017", "dom"],
     "strict": true,
     "noImplicitAny": true,
